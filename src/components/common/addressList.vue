@@ -1,6 +1,6 @@
 <template>
-    <div class="address" v-if="show">
-            <div class="cont">
+    <div class="address" v-if="show" @click.stop="close(1)">
+            <div class="cont" @click.stop="">
                 <div class="address-title">
                     选择联系人
 
@@ -67,8 +67,8 @@
                     <div class="pitchOn_list">
                         <el-scrollbar class="default-scrollbar footer-scrollbar" wrap-class="default-scrollbar__wrap"  view-class="default-scrollbar__view" :native="false">
                             <div class="choose">
-                                <div v-for="item in choose_data" class="choose_item" :key="item.userId">
-                                    <svg style="width:15px;height:15px;" class="icon" aria-hidden="false">
+                                <div v-for="(item,index) in choose_data" class="choose_item" :key="item.userId">
+                                    <svg style="width:15px;height:15px;" class="icon" aria-hidden="false" @click="remove(item,index)">
                                         <use xlink:href="#icon-shanchu"></use>
                                     </svg>
                                     <img :src="item.profileImg" class="profileImg">
@@ -78,7 +78,7 @@
                         </el-scrollbar>
                     </div>
                     <div class="footer_btn">
-                        <el-button type="success">确定</el-button>
+                        <el-button type="success" @click="confirm">确定</el-button>
                     </div>
                 </div>
             </div>
@@ -94,13 +94,21 @@
                 choose_data:[],
             }
         },
-        props:['show'],
+        props:['show','types','receivers','approvers'],
         watch:{
             show:function(){
                 if(this.show){
                     document.querySelector('#app').style.overflowY='hidden'
                 }else{
                     document.querySelector('#app').style.overflowY='auto'
+                } 
+            },
+            types:function(){
+                console.log(this.types)
+                if(this.types=='0'){
+                    this.choose_data =  this.approvers
+                }else{
+                    this.choose_data =  this.receivers
                 } 
             }
         },
@@ -154,13 +162,27 @@
                 if(item.mark_chose){
                     this.choose_data.push(item)
                 }else{
-                    
                     for(let i=0;i<this.pitch_on.length;i++){
                         if(this.pitch_on.userId==item.userId){
                             this.pitch_on.splice(i,1)
                         }
                     }
                 }
+            },
+            remove(item,index){//删除选中人员
+                this.choose_data.splice(index,1)
+
+                this.perso_data.forEach(el=>{
+                    if(el.userId==item.userId){
+                        el.mark_chose=false;
+                    }
+                })
+            },
+            close(){
+                this.$emit('close')
+            },
+            confirm(){//确认按钮
+                this.$emit('choose',this.choose_data)
             }
         },
 
@@ -289,6 +311,7 @@
                 line-height 40px;
                 padding-left  80px;
                 border-bottom 1px solid #fff
+                border-top 1px solid #fff
                 
 
                 &:hover{
@@ -305,6 +328,7 @@
                 color #24b36b;
                 background-color #f5f5f5
                 border-bottom 1px solid #ccc
+                border-top 1px solid #ccc
             }
 
             .organ_img{

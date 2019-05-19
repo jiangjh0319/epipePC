@@ -1,10 +1,10 @@
 <template>
-    <div class="main" @click="control" v-if="show">
+    <div class="main" @click.prevent="control" v-if="show">
         
-        <div class="infor">
+        <div class="infor" @click.stop="">
             <div class="infor-title">
                     选择联系人
-                <div class="close">
+                <div class="close" @click.stop="control">
                     <svg  class="icon" aria-hidden="false">
                         <use xlink:href="#icon-x"></use>
                     </svg>
@@ -18,15 +18,22 @@
                                 <img class="profileImg" :src="info.profileImg"/>
                                 <div>
                                     {{info.username}}
-                                    <p>等待我的审批</p>
+                                    <p v-if="info.auditStatus=='0'">等待{{info.auditUserName?info.auditUserName:info.auditName}}的审批</p>
+                                    <p v-else>{{info.auditStatus|stateName}}</p>
                                 </div>
                             </div>
 
-                            <div></div>
+                            <div class="infor-text">
+                                <DetailsText :type="oaType" :data="info||{}">
+
+                                </DetailsText>
+
+                            </div>
+
                             <div class="approve">
-                                <div>
+                                <div style="margin-bottom:15px;">
                                     <span class="info-title">审批人</span>
-                                    <a>已添加 1 人</a>
+                                    <a>已添加 {{info.auditers?info.auditers.length:0}} 人</a>
                                 </div>
 
                                 <div class="approve-list">
@@ -45,7 +52,7 @@
                                             </svg>
                                         </div>
                                     </div>
-                                    <div  v-for="item in info.auditers" :key="item.userId">
+                                    <div  v-for="(item,index) in info.auditers" :key="item.userId">
                                         <div class="approve-list-item">
                                             <div>
                                                 <img :src="item.profileImg" class="profileImg"/>
@@ -55,7 +62,7 @@
                                             <span>{{item.auditTime}}</span>
                                         </div>
                                         <div class="approve-list-other">
-                                            <svg class="icon icon-back" aria-hidden="false">
+                                            <svg class="icon icon-back" aria-hidden="false" v-if="index!=info.auditers.length-1">
                                                 <use xlink:href="#icon-jiantou1"></use>
                                             </svg>
                                             <p>{{item.reason}}</p>
@@ -76,12 +83,12 @@
                             <div class="copy">
                                 <div>
                                     <span class="info-title">抄送人</span>
-                                    <a>已添加  人</a>
+                                    <a>已添加 {{info.receivers?info.receivers.length:0}} 人</a>
                                 </div>
                                 <div class="copy-list">
-                                    <div class="copy-list-item" v-for="item in info.auditers" :key="item.userId">
+                                    <div class="copy-list-item" v-for="item in info.receivers" :key="item.userId">
                                         <img class="profileImg" :src="item.profileImg"/>
-                                        <p>{{item.name}}</p>
+                                        <p class="omit">{{item.name}}</p>
 
                                     </div>
                                 </div>
@@ -95,24 +102,46 @@
 </template>
 
 <script>
+    import DetailsText from './details_text.vue'
+
     export default {
         data() {
             return {
                 info:{},
+                ajax:['',{url:'leave/apply',name:'leaveId'},{url:'letter',name:'letterId'},{url:'contract',name:'contractId'}, {url:'/outsign/task/infos',name:'outsideId'},
+                {url:'trip',name:'tripId'}, {url:'stamp',name:'stampId'} ,{url:'reimburse',name:'reimburseId'},{url:'pay',name:'payApplyId'},{url:'dimission',name:'dimissionApplyId'},
+                {url:'borrow',name:'borrowApplyId'},{url:'reception',name:'receptionApplyId'},{url:'absence',name:'absenceApplyId'}, {url:'car',name:'carApplyId'}, 
+                {url:'employee',name:'employeeApplyId'}, {url:'project',name:'projectApplyId'}, {url:'regular',name:'regularApplyId'}, {url:'meal',name:'mealApplyId'},
+                {url:'document',name:'documentApplyId'},{url:'overtime',name:'overTimeApplyId'},{url:'changeposition',name:'positionApplyId'},{url:'buy',name:'userBuyApplyId'},
+                {url:'material',name:'materialReceiveApplyId'}]
             }
         },
-        props:['show','data'],
+        props:['show','data','oaType'],
         methods: {
             control(){
                 this.$emit('isShow')
             },
             getDetails(){
                 let that = this;
-                 this.axios.get('/work/trip/info?tripId='+this.data.applyId+'&pushId=0').then(function(res){
-                     that.info = res.data.b;
+                let url = '/work/'+this.ajax[this.oaType].url+'/info'
+                if(this.oaType==4){
+                    url = this.ajax[this.oaType].url
+                }
+                 this.axios.get(url+'?'+this.ajax[this.oaType].name+'='+this.data.applyId+'&pushId=0').then(function(res){
+                     console.log(res.data.b.data)
+                     if(res.data.b.data){
+                        that.info = res.data.b.data[0];
+                     }else{
+                         that.info = res.data.b;
+                     }
+
                  })
             }
         },
+        components:{
+            DetailsText,
+        },
+      
         created(){
             
         },
@@ -200,7 +229,7 @@
         left: 0;
         overflow: auto;
         background-color: rgba(0,0,0,0.2)
-        z-index 9999
+        z-index 9
         user-select none
     }
 
@@ -212,6 +241,7 @@
         left 0
         right 0
         bottom 0
+        z-index 99
         margin auto 
         background-color #fff;
         
@@ -254,6 +284,10 @@
                 }
             }
 
+            .infor-text{
+                padding-bottom:20px;
+            }
+
             .approve,.copy{
 
                 .profileImg{
@@ -263,7 +297,7 @@
             }
 
             .approve{
-
+                padding-bottom 15px;
 
                 &-list-item{
                     display flex;

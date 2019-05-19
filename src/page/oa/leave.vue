@@ -92,10 +92,10 @@
                 <el-form-item  label="审批人">
                     <span>审批指引</span>
                     <div class="approver-list">
-                        <div class="approver-li">
+                        <div class="approver-li" v-for="(item,index) in approvers_data" :key="index">
                             <div class="ap_item">
-                                <img src="./../../assets/tou.png"/>
-                                张三
+                                <img :src="item.profileImg"/>
+                                {{item.name}}
                             </div>
                             <div class="arrows">
                                 <svg style="width:15px;height:15px" class="icon" aria-hidden="false">
@@ -105,11 +105,11 @@
                         </div>
 
                         <div class="approver-li">
-                            <div class="approver-add">
+                            <div class="approver-add"  @click="selectOpen(0)">
                                 <svg style="width:50px;height:50px;" class="icon" aria-hidden="false">
                                     <use xlink:href="#icon-tianjiarenyuan"></use>
                                 </svg>
-                                <div @click="openAdd=true">添加</div>
+                                <div>添加</div>
                             </div>
                         </div>
                     </div>
@@ -118,13 +118,13 @@
                 <el-form-item  label="抄送人">
                     <span>审批通过后抄送相关人</span>
                     <div class="approver-list">
-                        <div class="approver-li">
+                        <div class="approver-li" v-for="(item,index) in receivers_data" :key="index">
                             <div class="user-info">
                                 <svg style="width:15px;height:15px;" class="icon" aria-hidden="false">
                                     <use xlink:href="#icon-shanchu"></use>
                                 </svg>
-                                <img src="./../../assets/tou.png"/>
-                                张三
+                                <img :src="item.profileImg"/>
+                                {{item.name}}
                             </div>
                             <div class="arrows">
                                 <svg style="width:15px;height:15px" class="icon" aria-hidden="false">
@@ -134,7 +134,7 @@
                         </div>
 
                         <div class="approver-li">
-                            <div class="approver-add">
+                            <div class="approver-add"  @click="selectOpen(1)">
                                 <svg style="width:50px;height:50px;" class="icon" aria-hidden="false">
                                     <use xlink:href="#icon-tianjiarenyuan"></use>
                                 </svg>
@@ -148,6 +148,11 @@
         </div>
         <AddressList
             :show="openAdd"
+            v-on:close="close"
+            v-on:choose="choose"
+            :types="peopleType"
+            :approvers="approvers_data"
+            :receivers="receivers_data"
         ></AddressList>
     </div>
 </template>
@@ -167,8 +172,11 @@
                     leaveType:'',
                     desc: '',
                     beginTime:'',
-                    endTime:''
+                    endTime:'',
                     },
+                approvers_data:[],//审批人
+                receivers_data:[],//抄送人
+                peopleType:0,//打开通讯录类型
                 openAdd:false,
             }
         },
@@ -185,6 +193,25 @@
                     })
                 }
             })
+        },
+        methods:{
+            close(){
+                this.openAdd=false
+            },
+            choose(arr){
+                this.openAdd=false
+           
+                if(this.peopleType){
+                    this.receivers_data = JSON.parse(JSON.stringify(arr))
+                }else{
+                    this.approvers_data = JSON.parse(JSON.stringify(arr))
+                }
+            },
+            selectOpen(type){
+                this.peopleType = type
+
+                this.openAdd = true
+            }
         }
     }
 </script>

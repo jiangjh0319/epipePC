@@ -39,7 +39,7 @@ axios.interceptors.request.use(
     }else{
       if(!config.headers.auth_token){
           // config.headers.auth_token = window.localStorage.auth_token;
-          config.headers.auth_token = "d7504c6e-80f4-455a-afff-6d1f2d99bf8d"
+          config.headers.auth_token = "56cde173-9075-440e-830e-010922e7a279"
       }
     }
     return config;

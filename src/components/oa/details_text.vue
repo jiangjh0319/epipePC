@@ -1,219 +1,220 @@
 <template>
     <div>
-            <div v-if="oaType==1">
+            <div v-if="type==1">
                 <div class="infor-box">
                     <span>审批编号</span>
-                    <p>{{dataObj.applyNo}}</p>
+                    <p>{{data.applyNo}}</p>
                 </div>
                 <div class="infor-box">
                     <span >部门</span>
-                    <p>{{dataObj.officeName}}</p>
+                    <p>{{data.officeName}}</p>
                 </div>
                 <div class="infor-box">
                     <span>请假类型</span>
-                    <p>{{dataObj.leaveType}}</p>
+                    <p>{{data.leaveType}}</p>
                 </div>
                 <div class="infor-box">
                     <span>开始时间</span>
-                    <p>{{dataObj.beginTime|timeStrSlice}}</p>
+                    <p>{{data.beginTime|timeStrSlice}}</p>
                 </div>
                 <div class="infor-box">
                     <span>结束时间</span>
-                    <p>{{dataObj.endTime |timeStrSlice}}</p>
+                    <p>{{data.endTime |timeStrSlice}}</p>
                 </div>
                 <div class="infor-box">
                     <span >时&emsp;&emsp;长</span>
-                    <p>{{dataObj.leaveDuration|dayNum}} 天</p>
+                    <p>{{data.leaveDuration|dayNum}} 天</p>
                 </div>
                 <div class="infor-box">
                     <span>请假事由</span>
-                    <p v-html="dataObj.reason"> 
+                    <p v-html="data.reason"> 
                     </p>
                 </div>
             </div>
-            <div v-else-if="oaType==2">
+            <div v-else-if="type==2">
+             
                 <div class="infor-box">
                     <span>审批编号</span>
-                    <p>{{dataObj.applyNo}}</p>
+                    <p>{{data.applyNo}}</p>
                 </div>
                 <div class="infor-box">
                     <span >部&emsp;&emsp;门</span>
-                    <p>{{dataObj.officeName}}</p>
+                    <p>{{data.officeName}}</p>
                 </div>
                 <div class="infor-box">
                     <span>主&emsp;&emsp;题</span>
-                    <p>{{dataObj.theme}}</p>
+                    <p>{{data.theme}}</p>
                 </div>
           
                 <div class="infor-box">
                     <span>请示内容</span>
-                    <p v-html="dataObj.content"></p>
+                    <p v-html="data.content"></p>
                 </div>
             </div>
-            <div v-else-if="oaType==3">
+            <div v-else-if="type==3">
+                
                 <div class="infor-box">
                     <span>审批编号</span>
-                    <p>{{dataObj.contractNoAuto}}</p>
+                    <p>{{data.contractNoAuto}}</p>
                 </div>
                 <div class="infor-box">
                     <span >合同编号</span>
-                    <p>{{dataObj.contractNoInput}}</p>
+                    <p>{{data.contractNoInput}}</p>
                 </div>
                 <div class="infor-box">
                     <span>合同名称</span>
-                    <p>{{dataObj.contractName}}</p>
+                    <p>{{data.contractName}}</p>
                 </div>
                 <div class="infor-box">
                     <span>送审单位</span>
-                    <p>{{dataObj.applyCompanyName}}</p>
+                    <p>{{data.applyCompanyName}}</p>
                 </div>
                 <div class="infor-box">
                     <span>项目责任人</span>
-                    <p>{{dataObj.username}}</p>
+                    <p>{{data.username}}</p>
                 </div>
                 <div class="infor-box">
                     <span>使用单位</span>
-                    <p>{{dataObj.receiveCompanyName}}</p>
+                    <p>{{data.receiveCompanyName}}</p>
                 </div>
                 <div class="infor-box">
                     <span>使用单位责任人</span>
-                    <p>{{dataObj.receiveName}}</p>
+                    <p>{{data.receiveName}}</p>
                 </div>
                  <div class="infor-box">
                     <span>合同标的</span>
-                    <p>{{dataObj.contractObj}}</p>
+                    <p>{{data.contractObj}}</p>
                 </div>
                 <div class="infor-box">
                     <span class="contractDescTitle">合同要点说明</span>
-                    <p style="margin-top:0.1rem;" v-html="dataObj.contractDesc"></p>
+                    <p style="margin-top:0.1rem;" v-html="data.contractDesc"></p>
                 </div>
             </div>
-            <div v-else-if="oaType==4">
+            <div v-else-if="type==4">
                 <div class="infor-box">
                     <span>审批编号</span>
-                    <p>{{dataObj.applyNo}}</p>
+                    <p>{{data.applyNo}}</p>
                 </div>
                 <div class="infor-box">
                     <span >公出事由</span>
-                    <p>{{dataObj.outsideReason}}</p>
+                    <p>{{data.outsideReason}}</p>
                 </div>
                 <div class="infor-box">
                     <span>公出类型</span>
-                    <p>{{dataObj.outsideType}}</p>
+                    <p>{{data.outsideType}}</p>
                 </div>
                 <div class="infor-box">
                     <span>开始时间</span>
-                    <p>{{dataObj.beginTime}}</p>
+                    <p>{{data.beginTime}}</p>
                 </div>
                 <div class="infor-box">
                     <span>结束时间</span>
-                    <p>{{dataObj.endTime}}</p>
+                    <p>{{data.endTime}}</p>
                 </div>
                 <div class="infor-box">
                     <span>公出地点</span>
-                    <p @click="goAddress()">
+                    <p >
                         <svg class="icon icon-back" aria-hidden="false" style="color:#0fc37c">
                             <use xlink:href="#icon-location1"></use>
                         </svg>
-                        {{dataObj.outsideAddress}}</p>
+                        {{data.outsideAddress}}</p>
                 </div>
-                <div class="infor-box" v-if="dataObj.peerNames">
+                <div class="infor-box" v-if="data.peerNames">
                     <span>同行人员</span>
-                    <p>{{dataObj.peerNames|nameFor}}</p>
+                    <p>{{data.peerNames}}</p>
                 </div>
                  <div class="infor-box">
                     <span class="contractDescTitle">附加内容</span>
-                    <p style="margin-top:0.1rem;" v-html="dataObj.applyContent"></p>
+                    <p style="margin-top:0.1rem;" v-html="data.applyContent"></p>
                 </div>
             </div>
-            <div v-else-if="oaType==5">
+
+            <div v-else-if="type==5">
                  <div class="infor-box">
                     <span>审批编号</span>
-                    <p>{{dataObj.applyNo}}</p>
+                    <p>{{data.applyNo}}</p>
                 </div>
                 <div class="infor-box">
                     <span>标&emsp;&emsp;题</span>
-                    <p>{{dataObj.tripTitle}}</p>
+                    <p>{{data.tripTitle}}</p>
                 </div>
                 <div class="infor-box">
                     <span>公出地点</span>
-                    <p @click="goAddress(index)"> 
-                        <svg class="icon icon-back" aria-hidden="false" style="color:#609df6">
-                            <use xlink:href="#icon-location1"></use>
-                        </svg>
-                        {{item.destination}}</p>
+                    <p> 
+                    
+                        {{data.destination}}</p>
                 </div>
                 <div class="infor-box">
                     <span>开始时间</span>
-                    <p>{{item.beginTime}}</p>
+                    <p>{{data.beginTime}}</p>
                 </div>
                 <div class="infor-box">
                     <span>结束时间</span>
-                    <p>{{item.endTime}}</p>
+                    <p>{{data.endTime}}</p>
                 </div>
                 <div class="infor-box">
                     <span>出差天数</span>
-                    <p>{{item.tripDuration}} 天</p>
+                    <p>{{data.tripDuration}} 天</p>
                 </div>
-                <div class="infor-box" v-if="item.peerNames&&item.peerNames!='undefined'">
+                <div class="infor-box" v-if="data.peerNames&&data.peerNames!='undefined'">
                     <span>同行人员</span>
-                    <p>{{item.peerNames|nameFor}}</p>
+                    <p>{{data.peerNames|nameFor}}</p>
                 </div>
                 <div class="infor-box">
                     <span class="contractDescTitle">出差事由</span>
-                    <p style="margin-top:0.1rem;" v-html="dataObj.tripReason?dataObj.tripReason:''"></p>
+                    <p style="margin-top:0.1rem;" v-html="data.tripReason?data.tripReason:''"></p>
                 </div>
             </div>
-            <div v-else-if="oaType==6">
+            <div v-else-if="type==6">
                <div class="infor-box">
                     <span>审批编号</span>
-                    <p>{{dataObj.applyNo}}</p>
+                    <p>{{data.applyNo}}</p>
                 </div>
                 <div class="infor-box">
                     <span>标&emsp;&emsp;题</span>
-                    <p>{{dataObj.stampApplyTitle}}</p>
+                    <p>{{data.stampApplyTitle}}</p>
                 </div>
                 <div class="infor-box">
                     <span >用印部门</span>
-                    <p>{{dataObj.officeName}}</p>
+                    <p>{{data.officeName}}</p>
                 </div>
                 <div class="infor-box">
                     <span>用印承办人</span>
-                    <p>{{dataObj.username}}</p>
+                    <p>{{data.username}}</p>
                 </div>
                 <div class="infor-box">
                     <span>文件名称</span>
-                    <p class="line1">{{dataObj.fileName}}</p>
+                    <p class="line1">{{data.fileName}}</p>
                 </div>
                 <div class="infor-box">
                     <span>文件类别</span>
-                    <p>{{dataObj.fileCategory}}</p>
+                    <p>{{data.fileCategory}}</p>
                 </div>
                 <div class="infor-box">
                     <span >文件数量</span>
-                    <p>{{dataObj.fileQuqntity}} </p>
+                    <p>{{data.fileQuqntity}} </p>
                 </div>
                 <div class="infor-box">
                     <span >印章名称</span>
-                    <p>{{dataObj.sealName}}</p>
+                    <p>{{data.sealName}}</p>
                 </div>
             </div>
-            <div v-else-if="oaType==7">
+            <div v-else-if="type==7">
                <div class="infor-box">
                     <span>审批编号</span>
-                    <p>{{dataObj.applyNo}}</p>
+                    <p>{{data.applyNo}}</p>
                 </div>
                 <div class="infor-box">
                     <span>标&emsp;&emsp;题</span>
-                    <p>{{dataObj.reimburseApplyTitle}}</p>
+                    <p>{{data.reimburseApplyTitle}}</p>
                 </div>
                 <div class="infor-box">
                     <span >报 &nbsp;销 &nbsp;人 </span>
-                    <p>{{dataObj.username}}</p>
+                    <p>{{data.username}}</p>
                 </div>
                 <div class="infor-box">
                     <span>所属部门</span>
-                    <p>{{dataObj.officeName}}</p>
+                    <p>{{data.officeName}}</p>
                 </div>
                 <div class="infor-box">
                     <span>报销金额</span>
@@ -233,214 +234,214 @@
                 </div>
                 <div class="infor-box">
                     <span>总报销金额 </span>
-                    <p>{{dataObj.totalAmount}} 元</p>
+                    <p>{{data.totalAmount}} 元</p>
                 </div>
             </div>
-            <div v-else-if="oaType==8">
+            <div v-else-if="type==8">
                <div class="infor-box">
                     <span>审批编号</span>
-                    <p>{{dataObj.applyNo}}</p>
+                    <p>{{data.applyNo}}</p>
                 </div>
                 <div class="infor-box">
                     <span>标&emsp;&emsp;题</span>
-                    <p>{{dataObj.payTitle}}</p>
+                    <p>{{data.payTitle}}</p>
                 </div>
                 <div class="infor-box">
                     <span style="letter-spacing:0.05rem">申请人</span>
-                    <p>{{dataObj.username}}</p>
+                    <p>{{data.username}}</p>
                 </div>
                 <div class="infor-box">
                     <span>所属部门</span>
-                    <p>{{dataObj.officeName}}</p>
+                    <p>{{data.officeName}}</p>
                 </div>
                 <div class="infor-box">
                     <span>付款金额 </span>
-                    <p>{{dataObj.payAmount}} 元</p>
+                    <p>{{data.payAmount}} 元</p>
                 </div>
                  <div class="infor-box">
                     <span>付款方式 </span>
-                    <p>{{dataObj.payType}} </p>
+                    <p>{{data.payType}} </p>
                 </div>
                  <div class="infor-box">
                     <span>付款日期 </span>
-                    <p>{{dataObj.payDate}} </p>
+                    <p>{{data.payDate}} </p>
                 </div>
                  <div class="infor-box">
                     <span>收款人全称 </span>
-                    <p>{{dataObj.receiverName}} </p>
+                    <p>{{data.receiverName}} </p>
                 </div>
                  <div class="infor-box">
                     <span>银行账户 </span>
-                    <p>{{dataObj.bankAcount}} </p>
+                    <p>{{data.bankAcount}} </p>
                 </div>
                  <div class="infor-box">
                     <span style="letter-spacing:0.05rem">开户行 </span>
-                    <p>{{dataObj.bankName}} </p>
+                    <p>{{data.bankName}} </p>
                 </div>
                 <div class="infor-box">
                     <span>付款事由 </span>
-                    <p>{{dataObj.payReason}} </p>
+                    <p>{{data.payReason}} </p>
                 </div>
             </div>
-            <div v-else-if="oaType==9">
+            <div v-else-if="type==9">
                 <div class="infor-box">
                     <span>审批编号</span>
-                    <p>{{dataObj.applyNo}}</p>
+                    <p>{{data.applyNo}}</p>
                 </div>
                 <div class="infor-box">
                     <span>标&emsp;&emsp;题</span>
-                    <p>{{dataObj.dimissionTitle}}</p>
+                    <p>{{data.dimissionTitle}}</p>
                 </div>
                 <div class="infor-box">
                     <span style="letter-spacing:0.05rem">申请人 </span>
-                    <p>{{dataObj.username}}</p>
+                    <p>{{data.username}}</p>
                 </div>
                 <div class="infor-box">
                     <span>所属部门 </span>
-                    <p>{{dataObj.officeName}}</p>
+                    <p>{{data.officeName}}</p>
                 </div>
                 <div class="infor-box">
                     <span>员工编号 </span>
-                    <p>{{dataObj.employeeNo}} </p>
+                    <p>{{data.employeeNo}} </p>
                 </div>
                  <div class="infor-box">
                     <span>职&emsp;&emsp;务 </span>
-                    <p>{{dataObj.position}} </p>
+                    <p>{{data.position}} </p>
                 </div>
                  <div class="infor-box">
                     <span>职务类别 </span>
-                    <p>{{dataObj.positionType}} </p>
+                    <p>{{data.positionType}} </p>
                 </div>
                  <div class="infor-box">
                     <span>学&emsp;&emsp;历 </span>
-                    <p>{{dataObj.education}} </p>
+                    <p>{{data.education}} </p>
                 </div>
                  <div class="infor-box">
                     <span>入职日期 </span>
-                    <p>{{dataObj.hireDate | timeSlice}} </p>
+                    <p>{{data.hireDate | timeSlice}} </p>
                 </div>
                  <div class="infor-box">
                     <span>合同到期日 </span>
-                    <p>{{dataObj.contractEndDate | timeSlice}} </p>
+                    <p>{{data.contractEndDate | timeSlice}} </p>
                 </div>
                   <div class="infor-box">
                     <span>离职类别 </span>
-                    <p>{{dataObj.dimissionType}} </p>
+                    <p>{{data.dimissionType}} </p>
                 </div>
                   <div class="infor-box">
                     <span>最后工作日 </span>
-                    <p>{{dataObj.dimissionDate |timeSlice}} </p>
+                    <p>{{data.dimissionDate |timeSlice}} </p>
                 </div>
                 <div class="infor-box">
                     <span>离职原因 </span>
-                    <p>{{dataObj.dimissionDesc}} </p>
+                    <p>{{data.dimissionDesc}} </p>
                 </div>
             </div>
-            <div v-else-if="oaType==10">
+            <div v-else-if="type==10">
                  <div class="infor-box">
                     <span>审批编号</span>
-                    <p>{{dataObj.applyNo}}</p>
+                    <p>{{data.applyNo}}</p>
                 </div>
                 <div class="infor-box">
                     <span>标&emsp;&emsp;题</span>
-                    <p>{{dataObj.borrowTitle}}</p>
+                    <p>{{data.borrowTitle}}</p>
                 </div>
                 <div class="infor-box">
                     <span style="letter-spacing:0.05rem">申请人</span>
-                    <p>{{dataObj.username}}</p>
+                    <p>{{data.username}}</p>
                 </div>
                 <div class="infor-box">
                     <span>所属部门</span>
-                    <p>{{dataObj.officeName}}</p>
+                    <p>{{data.officeName}}</p>
                 </div>
                  <div class="infor-box">
                     <span>借款金额 </span>
-                    <p>{{dataObj.borrowAmount}} 元</p>
+                    <p>{{data.borrowAmount}} 元</p>
                 </div>
                  <div class="infor-box">
                     <span>使用日期 </span>
-                    <p>{{dataObj.useDate |timeSlice}} </p>
+                    <p>{{data.useDate |timeSlice}} </p>
                 </div>
                  <div class="infor-box">
                     <span>归回日期 </span>
-                    <p>{{dataObj.returnDate |timeSlice}} </p>
+                    <p>{{data.returnDate |timeSlice}} </p>
                 </div>
                  <div class="infor-box">
                     <span style="letter-spacing:0.05rem">收款人 </span>
-                    <p>{{dataObj.borrowerName}} </p>
+                    <p>{{data.borrowerName}} </p>
                 </div>
                  <div class="infor-box">
                     <span>银行账户 </span>
-                    <p>{{dataObj.borrowerAccount}} </p>
+                    <p>{{data.borrowerAccount}} </p>
                 </div>
                  <div class="infor-box">
                     <span style="letter-spacing:0.05rem">开户行 </span>
-                    <p>{{dataObj.borrowerBank}} </p>
+                    <p>{{data.borrowerBank}} </p>
                 </div>
                 <div class="infor-box">
                     <span>借款事由 </span>
-                    <p>{{dataObj.borrowReason}} </p>
+                    <p>{{data.borrowReason}} </p>
                 </div>
             </div>
-            <div v-else-if="oaType==11">
+            <div v-else-if="type==11">
                  <div class="infor-box">
                     <span>审批编号</span>
-                    <p>{{dataObj.applyNo}}</p>
+                    <p>{{data.applyNo}}</p>
                 </div>
                 <div class="infor-box">
                     <span>标&emsp;&emsp;题</span>
-                    <p>{{dataObj.receptionTitle}}</p>
+                    <p>{{data.receptionTitle}}</p>
                 </div>
                  <div class="infor-box">
                     <span style="letter-spacing:0.05rem">申请人</span>
-                    <p>{{dataObj.username}}</p>
+                    <p>{{data.username}}</p>
                 </div>
                 <div class="infor-box">
                     <span>所属部门</span>
-                    <p>{{dataObj.officeName}}</p>
+                    <p>{{data.officeName}}</p>
                 </div>
                 <div class="infor-box">
                     <span>来宾单位 </span>
-                    <p>{{dataObj.visitorCompany}} </p>
+                    <p>{{data.visitorCompany}} </p>
                 </div>
                  <div class="infor-box">
                     <span>随行人员 </span>
-                    <p>{{dataObj.visitors }} </p>
+                    <p>{{data.visitors }} </p>
                 </div>
                  <div class="infor-box">
                     <span>到访时间 </span>
-                    <p>{{dataObj.visitDate }} </p>
+                    <p>{{data.visitDate }} </p>
                 </div>
                  <div class="infor-box">
                     <span>交通工具 </span>
-                    <p>{{dataObj.visitTrafficWay}} </p>
+                    <p>{{data.visitTrafficWay}} </p>
                 </div>
                  <div class="infor-box">
                     <span>接待等级</span>
-                    <p>{{dataObj.receptionLevel}} </p>
+                    <p>{{data.receptionLevel}} </p>
                 </div>
                 <div class="infor-box">
                     <span>来访目的 </span>
-                    <p>{{dataObj.visitGoal}} </p>
+                    <p>{{data.visitGoal}} </p>
                 </div>
                 
             </div>
-            <div v-else-if="oaType==12">
+            <div v-else-if="type==12">
                 <div class="infor-box">
                     <span>审批编号</span>
-                    <p>{{dataObj.applyNo}}</p>
+                    <p>{{data.applyNo}}</p>
                 </div>
                 <div class="infor-box">
                     <span>标&emsp;&emsp;题</span>
-                    <p>{{dataObj.absenceTitle}}</p>
+                    <p>{{data.absenceTitle}}</p>
                 </div>
                 <div class="infor-box">
                     <span style="letter-spacing:0.02rem;width:0.6;">申 请 人</span>
-                    <p>{{dataObj.username}}</p>
+                    <p>{{data.username}}</p>
                 </div>
                 <div class="infor-box">
                     <span>所属部门</span>
-                    <p>{{dataObj.officeName}}</p>
+                    <p>{{data.officeName}}</p>
                 </div>
                 <div class="infor-box">
                     <span>时&emsp;&emsp;间 </span>
@@ -451,442 +452,442 @@
                     <p>{{item.absenceReason }} </p>
                 </div>
             </div>
-            <div v-else-if="oaType==13">
+            <div v-else-if="type==13">
                 <div class="infor-box">
                     <span>审批编号</span>
-                    <p>{{dataObj.applyNo}}</p>
+                    <p>{{data.applyNo}}</p>
                 </div>
                 <div class="infor-box">
                     <span>标题</span>
-                    <p>{{dataObj.carTitle}}</p>
+                    <p>{{data.carTitle}}</p>
                 </div>
                 <div class="infor-box">
                     <span>用车人</span>
-                    <p>{{dataObj.username}}</p>
+                    <p>{{data.username}}</p>
                 </div>
                 <div class="infor-box">
                     <span>使用部门</span>
-                    <p>{{dataObj.officeName}}</p>
+                    <p>{{data.officeName}}</p>
                 </div>
                 <div class="infor-box">
                     <span>车辆类型</span>
-                    <p>{{dataObj.carType}}</p>
+                    <p>{{data.carType}}</p>
                 </div>
                 <div class="infor-box">
                     <span>数量（辆）</span>
-                    <p>{{dataObj.carNum}}</p>
+                    <p>{{data.carNum}}</p>
                 </div>
                 <div class="infor-box">
                     <span>用车时间</span>
-                    <p>{{dataObj.beginTime}}</p>
+                    <p>{{data.beginTime}}</p>
                 </div>
                 <div class="infor-box">
                     <span>返回时间</span>
-                    <p>{{dataObj.endTime}}</p>
+                    <p>{{data.endTime}}</p>
                 </div>
-                <div class="infor-box" v-if="dataObj.peerNames">
+                <div class="infor-box" v-if="data.peerNames">
                     <span>随行人员</span>
-                    <p>{{dataObj.peerNames|nameFor}}</p>
+                    <p>{{data.peerNames|nameFor}}</p>
                 </div>
                 <div class="infor-box">
                     <span>用车事由</span>
-                    <p>{{dataObj.carReason}}</p>
+                    <p>{{data.carReason}}</p>
                 </div>
             </div>
-            <div v-else-if="oaType==14">
+            <div v-else-if="type==14">
                 <div class="infor-box">
                     <span>审批编号</span>
-                    <p>{{dataObj.applyNo}}</p>
+                    <p>{{data.applyNo}}</p>
                 </div>
                 <div class="infor-box">
                     <span>标&emsp;&emsp;题</span>
-                    <p>{{dataObj.employeeTitle}}</p>
+                    <p>{{data.employeeTitle}}</p>
                 </div>
                 <div class="infor-box">
                     <span style="letter-spacing:0.05rem">申请人</span>
-                    <p>{{dataObj.username}}</p>
+                    <p>{{data.username}}</p>
                 </div>
                 <div class="infor-box">
                     <span>所属部门</span>
-                    <p>{{dataObj.officeName}}</p>
+                    <p>{{data.officeName}}</p>
                 </div>
                 <div class="infor-box">
                     <span>招聘岗位 </span>
-                    <p>{{dataObj.position}}</p>
+                    <p>{{data.position}}</p>
                 </div>
                 <div class="infor-box">
                     <span>需求人数 </span>
-                    <p>{{dataObj.num}}</p>
+                    <p>{{data.num}}</p>
                 </div>
                 <div class="infor-box">
                     <span>到岗日期 </span>
-                    <p>{{dataObj.arrivalDate.slice(0,-8)}}</p>
+                    <p>{{data.arrivalDate.slice(0,-8)}}</p>
                 </div>
                 <div class="infor-box">
                     <span>申请理由 </span>
-                    <p>{{dataObj.employeeReason}}</p>
+                    <p>{{data.employeeReason}}</p>
                 </div>
                 <div class="infor-box">
                     <span>性&emsp;&emsp;别 </span>
-                    <p>{{dataObj.sex}}</p>
+                    <p>{{data.sex}}</p>
                 </div>
                  <div class="infor-box">
                     <span>婚&emsp;&emsp;姻 </span>
-                    <p>{{dataObj.marriage}}</p>
+                    <p>{{data.marriage}}</p>
                 </div>
                  <div class="infor-box">
                     <span>年&emsp;&emsp;龄 </span>
-                    <p>{{dataObj.age}}</p>
+                    <p>{{data.age}}</p>
                 </div>
                  <div class="infor-box">
                     <span>学&emsp;&emsp;历 </span>
-                    <p>{{dataObj.education}}</p>
+                    <p>{{data.education}}</p>
                 </div>
                 <div class="infor-box">
                     <span>专&emsp;&emsp;业 </span>
-                    <p>{{dataObj.major}}</p>
+                    <p>{{data.major}}</p>
                 </div>
-                <div v-if="dataObj.qualifications" class="infor-box">
+                <div v-if="data.qualifications" class="infor-box">
                     <span>资格证书 </span>
-                    <p>{{dataObj.qualifications}}</p>
+                    <p>{{data.qualifications}}</p>
                 </div>
-                <div v-if="dataObj.computerLevel" class="infor-box" >
+                <div v-if="data.computerLevel" class="infor-box" >
                     <span style="letter-spacing:0.05rem">计算机 </span>
-                    <p>{{dataObj.computerLevel}}</p>
+                    <p>{{data.computerLevel}}</p>
                 </div>
-                <div v-if="dataObj.foreignLevel" class="infor-box">
+                <div v-if="data.foreignLevel" class="infor-box">
                     <span>外语水平 </span>
-                    <p>{{dataObj.foreignLevel}}</p>
+                    <p>{{data.foreignLevel}}</p>
                 </div>
                 <div class="infor-box">
                     <span>经验技能 </span>
-                    <p>{{dataObj.skill}}</p>
+                    <p>{{data.skill}}</p>
                 </div>
-                <div v-if="dataObj.writings" class="infor-box">
+                <div v-if="data.writings" class="infor-box">
                     <span>公文写作 </span>
-                    <p>{{dataObj.writings}}</p>
+                    <p>{{data.writings}}</p>
                 </div>
                 <div class="infor-box">
                     <span>必要条件 </span>
-                    <p>{{dataObj.condition}}</p>
+                    <p>{{data.condition}}</p>
                 </div>
-                <div v-if="dataObj.priority" class="infor-box">
+                <div v-if="data.priority" class="infor-box">
                     <span>优先录用 </span>
-                    <p>{{dataObj.priority}}</p>
+                    <p>{{data.priority}}</p>
                 </div>
-                <div v-if="dataObj.other" class="infor-box">
+                <div v-if="data.other" class="infor-box">
                     <span>其他要求 </span>
-                    <p>{{dataObj.other}}</p>
+                    <p>{{data.other}}</p>
                 </div>
                 <div class="infor-box">
                     <span>工作职责 </span>
-                    <p>{{dataObj.responsibility}}</p>
+                    <p>{{data.responsibility}}</p>
                 </div>
             </div>
-            <div v-else-if="oaType==15">
+            <div v-else-if="type==15">
                 <div class="infor-box">
                     <span>审批编号&emsp;</span>
-                    <p>{{dataObj.applyNo}}</p>
+                    <p>{{data.applyNo}}</p>
                 </div>
                 <div class="infor-box">
                     <span>标&emsp;&emsp;题 &emsp;</span>
-                    <p>{{dataObj.projectTitle}}</p>
+                    <p>{{data.projectTitle}}</p>
                 </div>
                 <div class="infor-box">
                     <span style="letter-spacing:0.04rem">申请人&emsp;</span>
-                    <p>{{dataObj.username}}</p>
+                    <p>{{data.username}}</p>
                 </div>
                 <div class="infor-box">
                     <span>所属部门&emsp;</span>
-                    <p>{{dataObj.officeName}}</p>
+                    <p>{{data.officeName}}</p>
                 </div>
                 <div class="infor-box">
                     <span>项目编号&emsp; </span>
-                    <p>{{dataObj.projectNo}}</p>
+                    <p>{{data.projectNo}}</p>
                 </div>
                  <div class="infor-box">
                     <span>申请时间&emsp; </span>
-                    <p>{{dataObj.applyTime}} </p>
+                    <p>{{data.applyTime}} </p>
                 </div>
                  <div class="infor-box">
                     <span>项目名称&emsp; </span>
-                    <p>{{dataObj.projectName}} </p>
+                    <p>{{data.projectName}} </p>
                 </div>
                  <div class="infor-box">
                     <span>预估金额&emsp; </span>
-                    <p>{{dataObj.projectBudget}} 元</p>
+                    <p>{{data.projectBudget}} 元</p>
                 </div>
                  <div class="infor-box">
                     <span>立项时间&emsp; </span>
-                    <p>{{dataObj.buildDate}} </p>
+                    <p>{{data.buildDate}} </p>
                 </div>
                  <div class="infor-box">
                     <span >单位联系人 </span>
-                    <p>{{dataObj.connectionName}} </p>
+                    <p>{{data.connectionName}} </p>
                 </div>
                 <div class="infor-box">
                     <span>项目背景&emsp; </span>
-                    <p>{{dataObj.projectBackground}} </p>
+                    <p>{{data.projectBackground}} </p>
                 </div>
                 <div class="infor-box">
                     <span>需求概述&emsp; </span>
-                    <p>{{dataObj.description}} </p>
+                    <p>{{data.description}} </p>
                 </div>
             </div>
-            <div v-else-if="oaType==16">
+            <div v-else-if="type==16">
                 <div class="infor-box">
                     <span>审批编号 &emsp;&emsp;</span>
-                    <p>{{dataObj.applyNo}}</p>
+                    <p>{{data.applyNo}}</p>
                 </div>
                 <div class="infor-box">
                     <span>标&emsp; &emsp;题 &emsp;&emsp;</span>
-                    <p>{{dataObj.regularTitle}}</p>
+                    <p>{{data.regularTitle}}</p>
                 </div>
                 <div class="infor-box">
                     <span >申请人 &emsp;&emsp;&emsp;</span>
-                    <p>{{dataObj.username}}</p>
+                    <p>{{data.username}}</p>
                 </div>
                 <div class="infor-box">
                     <span>所属部门 &emsp;&emsp;</span>
-                    <p>{{dataObj.officeName}}</p>
+                    <p>{{data.officeName}}</p>
                 </div>
                 <div class="infor-box">
                     <span>职&emsp; &emsp;务 &emsp;&emsp; </span>
-                    <p>{{dataObj.position}} </p>
+                    <p>{{data.position}} </p>
                 </div>
                  <div class="infor-box">
                     <span>年&emsp; &emsp;龄 &emsp;&emsp; </span>
-                    <p>{{dataObj.age}} </p>
+                    <p>{{data.age}} </p>
                 </div>
                  <div class="infor-box">
                     <span>性&emsp; &emsp;别 &emsp;&emsp; </span>
-                    <p>{{dataObj.sex}} </p>
+                    <p>{{data.sex}} </p>
                 </div>
                  <div class="infor-box">
                     <span>籍&emsp; &emsp;贯 &emsp;&emsp; </span>
-                    <p>{{dataObj.birthPlace}} </p>
+                    <p>{{data.birthPlace}} </p>
                 </div>
                  <div class="infor-box">
                     <span>出生日期 &emsp;&emsp; </span>
-                    <p>{{dataObj.birthday.slice(0,-8)}} </p>
+                    <p>{{data.birthday.slice(0,-8)}} </p>
                 </div>
                  <div class="infor-box">
                     <span >学&emsp; &emsp;历 &emsp;&emsp; </span>
-                    <p>{{dataObj.education}} </p>
+                    <p>{{data.education}} </p>
                 </div>
                 <div class="infor-box">
                     <span>专&emsp; &emsp;业 &emsp;&emsp; </span>
-                    <p>{{dataObj.major}} </p>
+                    <p>{{data.major}} </p>
                 </div>
                 <div class="infor-box">
                     <span>毕业时间 &emsp;&emsp; </span>
-                    <p>{{dataObj.graduationDate.slice(0,-8)}} </p>
+                    <p>{{data.graduationDate.slice(0,-8)}} </p>
                 </div>
                 <div class="infor-box">
                     <span>入司时间 &emsp;&emsp; </span>
-                    <p>{{dataObj.hireDate.slice(0,-8)}} </p>
+                    <p>{{data.hireDate.slice(0,-8)}} </p>
                 </div>
                 <div class="infor-box">
                     <span>试用开始时间 </span>
-                    <p>{{dataObj.beginTime.slice(0,-8)}} </p>
+                    <p>{{data.beginTime.slice(0,-8)}} </p>
                 </div>
                 <div class="infor-box">
                     <span>试用结束时间 </span>
-                    <p>{{dataObj.endTime.slice(0,-8)}} </p>
+                    <p>{{data.endTime.slice(0,-8)}} </p>
                 </div>
             </div>
-            <div v-else-if="oaType==17">
+            <div v-else-if="type==17">
                 <div class="infor-box">
                     <span>审批编号</span>
-                    <p>{{dataObj.applyNo}}</p>
+                    <p>{{data.applyNo}}</p>
                 </div>
                 <div class="infor-box">
                     <span>标&emsp;&emsp;题 </span>
-                    <p>{{dataObj.mealTitle}}</p>
+                    <p>{{data.mealTitle}}</p>
                 </div>
                 <div class="infor-box">
                     <span style="letter-spacing:0.04rem">申请人</span>
-                    <p>{{dataObj.username}}</p>
+                    <p>{{data.username}}</p>
                 </div>
                 <div class="infor-box">
                     <span>所属部门</span>
-                    <p>{{dataObj.officeName}}</p>
+                    <p>{{data.officeName}}</p>
                 </div>
                 <div class="infor-box">
                     <span>就餐类型 </span>
-                    <p>{{dataObj.mealType}}</p>
+                    <p>{{data.mealType}}</p>
                 </div>
                 <div class="infor-box">
                     <span>就餐人数 </span>
-                    <p>{{dataObj.mealNums}}</p>
+                    <p>{{data.mealNums}}</p>
                 </div>
                  <div class="infor-box">
                     <span>开始时间 </span>
-                    <p>{{dataObj.beginTime}} </p>
+                    <p>{{data.beginTime}} </p>
                 </div>
                  <div class="infor-box">
                     <span>结束时间 </span>
-                    <p>{{dataObj.endTime}} </p>
+                    <p>{{data.endTime}} </p>
                 </div>
-                 <div class="infor-box" v-if="dataObj.mealStandard">
+                 <div class="infor-box" v-if="data.mealStandard">
                     <span>就餐标准 </span>
-                    <p>{{dataObj.mealStandard}} </p>
+                    <p>{{data.mealStandard}} </p>
                 </div>
-                 <div class="infor-box" v-if="dataObj.mealPersons">
+                 <div class="infor-box" v-if="data.mealPersons">
                     <span>人员名单 </span>
-                    <p>{{dataObj.mealPersons}} </p>
+                    <p>{{data.mealPersons}} </p>
                 </div>
-                 <div class="infor-box" v-if="dataObj.mealRemarks">
+                 <div class="infor-box" v-if="data.mealRemarks">
                     <span >备&emsp;&emsp;注 </span>
-                    <p>{{dataObj.mealRemarks}} </p>
+                    <p>{{data.mealRemarks}} </p>
                 </div>
             </div>
-            <div v-else-if="oaType==18">
+            <div v-else-if="type==18">
                 <div class="infor-box">
                     <span>审批编号</span>
-                    <p>{{dataObj.applyNo}}</p>
+                    <p>{{data.applyNo}}</p>
                 </div>
                 <div class="infor-box">
                     <span>标&emsp;&emsp;题 </span>
-                    <p>{{dataObj.documentTitle}}</p>
+                    <p>{{data.documentTitle}}</p>
                 </div>
                 <div class="infor-box">
                     <span style="letter-spacing:0.04rem">申请人</span>
-                    <p>{{dataObj.username}}</p>
+                    <p>{{data.username}}</p>
                 </div>
                 <div class="infor-box">
                     <span>所属部门</span>
-                    <p>{{dataObj.officeName}}</p>
+                    <p>{{data.officeName}}</p>
                 </div>
                 <div class="infor-box">
                     <span>文件编号 </span>
-                    <p>{{dataObj.documentNo}}</p>
+                    <p>{{data.documentNo}}</p>
                 </div>
                  <div class="infor-box">
                     <span>主&emsp;&emsp;送 </span>
-                    <p>{{dataObj.sendTo}} </p>
+                    <p>{{data.sendTo}} </p>
                 </div>
-                 <div class="infor-box" v-if="dataObj.copyTo">
+                 <div class="infor-box" v-if="data.copyTo">
                     <span>抄&emsp;&emsp;送 </span>
-                    <p>{{dataObj.copyTo}} </p>
+                    <p>{{data.copyTo}} </p>
                 </div>
-                 <div class="infor-box" v-if="dataObj.documentReason">
+                 <div class="infor-box" v-if="data.documentReason">
                     <span >事&emsp;&emsp;由 </span>
-                    <p>{{dataObj.documentReason}} </p>
+                    <p>{{data.documentReason}} </p>
                 </div>
             </div>
-            <div v-else-if="oaType==19">
+            <div v-else-if="type==19">
                 <div class="infor-box">
                     <span>审批编号&emsp;&emsp;</span>
-                    <p>{{dataObj.applyNo}}</p>
+                    <p>{{data.applyNo}}</p>
                 </div>
                 <div class="infor-box">
                     <span style="letter-spacing:0.04rem">申请人&emsp;&emsp;</span>
-                    <p>{{dataObj.username}}</p>
+                    <p>{{data.username}}</p>
                 </div>
                 <div class="infor-box">
                     <span>所属部门&emsp;&emsp;</span>
-                    <p>{{dataObj.officeName}}</p>
+                    <p>{{data.officeName}}</p>
                 </div>
                 <div class="infor-box">
                     <span>开始时间&emsp;&emsp; </span>
-                    <p>{{dataObj.beginTime |timeSlice}} </p>
+                    <p>{{data.beginTime |timeSlice}} </p>
                 </div>
                  <div class="infor-box">
                     <span>结束时间&emsp;&emsp; </span>
-                    <p>{{dataObj.endTime |timeSlice}} </p>
+                    <p>{{data.endTime |timeSlice}} </p>
                 </div>
                  <div class="infor-box" >
                     <span>时&emsp;&emsp;长&emsp;&emsp; </span>
-                    <p>{{dataObj.duration}} 小时</p>
+                    <p>{{data.duration}} 小时</p>
                 </div>
                  <div class="infor-box" >
                     <span>是否法定假日 </span>
-                    <p>{{dataObj.legalHoliday?"是":"否"}} </p>
+                    <p>{{data.legalHoliday?"是":"否"}} </p>
                 </div>
                  <div class="infor-box" >
                     <span >加班核算方式 </span>
-                    <p>{{dataObj.accountType}} </p>
+                    <p>{{data.accountType}} </p>
                 </div>
                  <div class="infor-box" >
                     <span >备&emsp;&emsp;注&emsp;&emsp; </span>
-                    <p>{{dataObj.reason}} </p>
+                    <p>{{data.reason}} </p>
                 </div>
             </div>
-            <div v-else-if="oaType==20">
+            <div v-else-if="type==20">
                 <div class="infor-box">
                     <span>审批编号&emsp; </span>
-                    <p>{{dataObj.applyNo}}</p>
+                    <p>{{data.applyNo}}</p>
                 </div>
                 <div class="infor-box">
                     <span >申请人&emsp;&emsp;</span>
-                    <p>{{dataObj.username}}</p>
+                    <p>{{data.username}}</p>
                 </div>
                 <div class="infor-box">
                     <span>所属部门&emsp;</span>
-                    <p>{{dataObj.officeName}}</p>
+                    <p>{{data.officeName}}</p>
                 </div>
                  <div class="infor-box">
                     <span>姓&emsp;&emsp;名&emsp; </span>
-                    <p>{{dataObj.name}} </p>
+                    <p>{{data.name}} </p>
                 </div>
-                 <div class="infor-box" v-if="dataObj.no&&dataObj.no!='null'">
+                 <div class="infor-box" v-if="data.no&&data.no!='null'">
                     <span>工&emsp;&emsp;号&emsp; </span>
-                    <p>{{dataObj.no}} </p>
+                    <p>{{data.no}} </p>
                 </div>
                  <div class="infor-box" >
                     <span>所属部门&emsp; </span>
-                    <p>{{dataObj.exOfficeName}}</p>
+                    <p>{{data.exOfficeName}}</p>
                 </div>
-                 <div class="infor-box" v-if="dataObj.exPosition!=''">
+                 <div class="infor-box" v-if="data.exPosition!=''">
                     <span>职位名称&emsp; </span>
-                    <p>{{dataObj.exPosition}} </p>
+                    <p>{{data.exPosition}} </p>
                 </div>
                  <div class="infor-box" >
                     <span >入职日期&emsp; </span>
-                    <p>{{dataObj.hireDate|timeSlice}} </p>
+                    <p>{{data.hireDate|timeSlice}} </p>
                 </div>
                  <div class="infor-box" >
                     <span >调岗原因&emsp; </span>
-                    <p>{{dataObj.reason}} </p>
+                    <p>{{data.reason}} </p>
                 </div>
                 <div class="infor-box" >
                     <span>调岗后部门 </span>
-                    <p>{{dataObj.afterOfficeName}}</p>
+                    <p>{{data.afterOfficeName}}</p>
                 </div>
                  <div class="infor-box" >
                     <span>调岗后职位 </span>
-                    <p>{{dataObj.afterPosition}} </p>
+                    <p>{{data.afterPosition}} </p>
                 </div>
                  <div class="infor-box" >
                     <span >调岗日期&emsp; </span>
-                    <p>{{dataObj.changeDate |timeSlice}} </p>
+                    <p>{{data.changeDate |timeSlice}} </p>
                 </div>
             </div>
-            <div v-else-if="oaType==21">
+            <div v-else-if="type==21">
                 <div class="infor-box">
                     <span>审批编号</span>
-                    <p>{{dataObj.applyNo}}</p>
+                    <p>{{data.applyNo}}</p>
                 </div>
                 <div class="infor-box">
                     <span >申请人&emsp; </span>
-                    <p>{{dataObj.username}}</p>
+                    <p>{{data.username}}</p>
                 </div>
                 <div class="infor-box">
                     <span>所属部门</span>
-                    <p>{{dataObj.officeName}}</p>
+                    <p>{{data.officeName}}</p>
                 </div>
                 <div class="infor-box">
                         <span>申请事由</span>
-                        <p>{{dataObj.userBuyApplyTheme}}</p>
+                        <p>{{data.userBuyApplyTheme}}</p>
                 </div>
-                    <div class="infor-box" v-if="dataObj.buyType">
+                    <div class="infor-box" v-if="data.buyType">
                     <span>采购类型</span>
-                    <p>{{dataObj.buyType}}</p>
+                    <p>{{data.buyType}}</p>
                 </div>
                 <div class="infor-box">
                     <span>交付日期</span>
-                    <p>{{dataObj.hopeDeliveryDate | timeSlice9}}</p>
+                    <p>{{data.hopeDeliveryDate | timeSlice9}}</p>
                 </div>
                 <div class="infor-box">
                     <span>名&emsp;称&emsp; </span>
@@ -910,33 +911,33 @@
                 </div>
                 <div class="infor-box">
                     <span>总价格&emsp; </span>
-                    <p>{{total}} 元</p>
+                    <p>{{item.total}} 元</p>
                 </div>
-                <div class="infor-box" v-if="dataObj.payType">
+                <div class="infor-box" v-if="data.payType">
                     <span>支付方式 </span>
-                    <p>{{dataObj.payType}} </p>
+                    <p>{{data.payType}} </p>
                 </div>
-                <div class="infor-box" v-if="dataObj.userBuyApplyRemarks">
+                <div class="infor-box" v-if="data.userBuyApplyRemarks">
                     <span>备&emsp;&emsp;注 </span>
-                    <p>{{dataObj.userBuyApplyRemarks}} </p>
+                    <p>{{data.userBuyApplyRemarks}} </p>
                 </div>
             </div>
-            <div v-else-if="oaType==22">
+            <div v-else-if="type==22">
                 <div class="infor-box">
                     <span>审批编号 </span>
-                    <p>{{dataObj.applyNo}}</p>
+                    <p>{{data.applyNo}}</p>
                 </div>
                 <div class="infor-box">
                     <span >申请人&emsp; </span>
-                    <p>{{dataObj.username}}</p>
+                    <p>{{data.username}}</p>
                 </div>
                 <div class="infor-box">
                     <span>所属部门 </span>
-                    <p>{{dataObj.officeName}}</p>
+                    <p>{{data.officeName}}</p>
                 </div>
                  <div class="infor-box">
                         <span>物品用途 </span>
-                        <p>{{dataObj.materialReceiveTheme}}</p>
+                        <p>{{data.materialReceiveTheme}}</p>
                 </div>
                 <div class="styles infor" >
                     <div class="infor-box">
@@ -950,7 +951,7 @@
                 </div>
                 <div class="infor-box">
                     <span>备&emsp;&emsp;注 </span>
-                    <p>{{dataObj.materialReceiveRemarks}} </p>
+                    <p>{{data.materialReceiveRemarks}} </p>
                 </div>
             </div>
 
@@ -959,10 +960,23 @@
 
 <script>
     export default {
-        
+        data(){
+            return{
+              
+                item:{},
+            }
+        },
+        props:['type','data']
     }
 </script>
 
 <style lang="stylus" scoped>
+    .infor-box{
+        display flex
 
+        span{
+            width 100px;
+            color:#999;
+        }
+    }
 </style>

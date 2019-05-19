@@ -19,7 +19,7 @@
         </div>
         <div v-for="(item,index) in data" :key="index" class="content">
             <div class="list-item">
-                <div class="item" @click="lookOver(item)">
+                <div class="item" @click.stop="lookOver(item)">
                     <!-- 用户信息 -->
                     <div class="user_infor">
                         <img :src="item.profileImg" class="profileImg"/>
@@ -44,6 +44,13 @@
                         <div v-if="type==1" style="color:#ff7a7a">
                             <span>等待你的审批</span>
                         </div>
+                     
+                        <div v-else-if="type==3||type==2" style="color:#ff7a7a">
+                            <span>{{item.fianlStatus | status}}</span>
+                        </div>
+                        <div v-else-if="type==4" style="color:#24b36b">
+                            <span>已同意</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -52,6 +59,7 @@
             <Details
             :show='showDetails'
             :data = 'choose'
+            :oaType="choose.typecode"
             v-on:isShow = "showDetails=false"
             >
             </Details>
@@ -67,6 +75,7 @@
             return {
                 showDetails:false,
                 choose:{},
+                typecode:0,
                 oa:['','请假','请示函','合同', '公出', '出差' ,'用印' ,'报销','付款','离职',
                 '借款','接待','补卡', '用车', '人员需求','项目立项', '转正', '就餐',
                 '行文呈批','加班','员工调岗','采购','物品领用']
@@ -75,6 +84,27 @@
         components:{
             TextTemplate,
             Details
+        },
+        filters:{
+            status:function(value){
+                switch (value){
+                case '0':
+                    return "等待审批";
+                    break;
+                case '1':
+                    return "已同意";
+                    break;
+                case '2':
+                    return "已拒绝";
+                    break;
+                case '3':
+                    return "已撤销";
+                    break;
+                case '4':
+                    return "已退回";
+                    break;
+                }
+            }
         },
         props:['data','type'],
         methods: {
