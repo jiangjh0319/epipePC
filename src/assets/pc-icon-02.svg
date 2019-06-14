@@ -1,0 +1,28 @@
+<svg id="图层_1" data-name="图层 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #8c8c8c;
+        opacity: 0;
+      }
+
+      .cls-2 {
+        fill: none;
+        stroke: #000;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.45px;
+      }
+    </style>
+  </defs>
+  <title>pc-icon</title>
+  <rect class="cls-1" width="28" height="28"/>
+  <g>
+    <path class="cls-2" d="M1,6.47V19.13a2.32,2.32,0,0,0,2.31,2.32H9.24a2,2,0,0,1,1.57.78l2.48,3.29a.82.82,0,0,0,1.3,0l2.48-3.29a2,2,0,0,1,1.57-.78h6.05A2.32,2.32,0,0,0,27,19.13V6.47a2.32,2.32,0,0,0-2.31-2.32H3.31A2.32,2.32,0,0,0,1,6.47Z"/>
+    <g>
+      <circle cx="7.23" cy="12.84" r="1.48"/>
+      <circle cx="14" cy="12.84" r="1.48"/>
+      <circle cx="20.77" cy="12.84" r="1.48"/>
+    </g>
+  </g>
+</svg>

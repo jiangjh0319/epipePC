@@ -1,0 +1,34 @@
+<svg id="图层_1" data-name="图层 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #8c8c8c;
+        opacity: 0;
+      }
+
+      .cls-2, .cls-3 {
+        fill: none;
+        stroke: #000;
+        stroke-linecap: round;
+        stroke-width: 1.58px;
+      }
+
+      .cls-2 {
+        stroke-linejoin: round;
+      }
+
+      .cls-3 {
+        stroke-miterlimit: 10;
+      }
+    </style>
+  </defs>
+  <title>pc-icon</title>
+  <rect class="cls-1" width="28" height="28"/>
+  <g>
+    <path class="cls-2" d="M4.47,8.29V5A1.52,1.52,0,0,1,6,3.5H24.27A1.52,1.52,0,0,1,25.79,5V23a1.52,1.52,0,0,1-1.52,1.52H6A1.52,1.52,0,0,1,4.47,23V19.53m0,5"/>
+    <g>
+      <line class="cls-3" x1="22.37" y1="13.97" x2="7.86" y2="13.97"/>
+      <polygon points="9.01 10.04 2.21 13.97 9.01 17.9 9.01 10.04"/>
+    </g>
+  </g>
+</svg>

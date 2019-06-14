@@ -10,7 +10,7 @@ const dev = 'http://192.168.3.166:8280/member/v1'; //测试
 // const dev = 'http://192.168.3.181:8280/member/v3'; // 闵文杰
 const product = 'https://apps.epipe.cn/member/v1';//正式环境
 axios.defaults.baseURL = window.location.href.indexOf("apps.epipe.cn")>0 ? product : dev;
- axios.defaults.baseURL = product;
+//  axios.defaults.baseURL = product;
 
 function getCookie(name) {
   var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
@@ -38,8 +38,8 @@ axios.interceptors.request.use(
       window.localStorage.setItem("auth_token",getCookie("auth_token"));
     }else{
       if(!config.headers.auth_token){
-          // config.headers.auth_token = window.localStorage.auth_token;
-          config.headers.auth_token = "56cde173-9075-440e-830e-010922e7a279"
+          config.headers.auth_token = window.localStorage.auth_token;
+          // config.headers.auth_token = "56cde173-9075-440e-830e-010922e7a279"
       }
     }
     return config;
@@ -48,13 +48,5 @@ axios.interceptors.request.use(
     return Promise.reject(err);
   });
 // http响应拦截器
-axios.interceptors.response.use(data => {// 如果code是10  就是token过期了
-  if (data.data.h.code == 10) {
-    // window.location.href = "epipe://?&mark=login_out"
-  }
-  return data
-}, error => {
-  return Promise.reject(error)
-})
 
 export default axios

@@ -6,7 +6,7 @@
                     <p>{{data.applyNo}}</p>
                 </div>
                 <div class="infor-box">
-                    <span >部门</span>
+                    <span >部&emsp;&emsp;门</span>
                     <p>{{data.officeName}}</p>
                 </div>
                 <div class="infor-box">
@@ -15,11 +15,11 @@
                 </div>
                 <div class="infor-box">
                     <span>开始时间</span>
-                    <p>{{data.beginTime|timeStrSlice}}</p>
+                    <p>{{data.beginTime|slice3}}</p>
                 </div>
                 <div class="infor-box">
                     <span>结束时间</span>
-                    <p>{{data.endTime |timeStrSlice}}</p>
+                    <p>{{data.endTime |slice3}}</p>
                 </div>
                 <div class="infor-box">
                     <span >时&emsp;&emsp;长</span>
@@ -32,7 +32,6 @@
                 </div>
             </div>
             <div v-else-if="type==2">
-             
                 <div class="infor-box">
                     <span>审批编号</span>
                     <p>{{data.applyNo}}</p>
@@ -51,7 +50,7 @@
                     <p v-html="data.content"></p>
                 </div>
             </div>
-            <div v-else-if="type==3">
+            <div v-else-if="type==3" class="width120">
                 
                 <div class="infor-box">
                     <span>审批编号</span>
@@ -105,11 +104,11 @@
                 </div>
                 <div class="infor-box">
                     <span>开始时间</span>
-                    <p>{{data.beginTime}}</p>
+                    <p>{{data.beginTime|slice3}}</p>
                 </div>
                 <div class="infor-box">
                     <span>结束时间</span>
-                    <p>{{data.endTime}}</p>
+                    <p>{{data.endTime |slice3}}</p>
                 </div>
                 <div class="infor-box">
                     <span>公出地点</span>
@@ -138,27 +137,33 @@
                     <span>标&emsp;&emsp;题</span>
                     <p>{{data.tripTitle}}</p>
                 </div>
-                <div class="infor-box">
-                    <span>公出地点</span>
-                    <p> 
+                <div v-for="(item,index) in data.tripList" :key="index">
+                    <div class="desc" v-if="data.tripList.length!=1">
+                        行程明细{{index+1}}
+                    </div>
+                    <div class="infor-box">
+                        <span>公出地点</span>
+                        <p> 
+                            {{item.destination}}
+                        </p>
+                    </div>
+                    <div class="infor-box">
+                        <span>开始时间</span>
+                        <p>{{item.beginTime|slice3}}</p>
+                    </div>
+                    <div class="infor-box">
+                        <span>结束时间</span>
+                        <p>{{item.endTime|slice3}}</p>
+                    </div>
+                    <div class="infor-box">
+                        <span>出差天数</span>
+                        <p>{{item.tripDuration}} 天</p>
+                    </div>
                     
-                        {{data.destination}}</p>
-                </div>
-                <div class="infor-box">
-                    <span>开始时间</span>
-                    <p>{{data.beginTime}}</p>
-                </div>
-                <div class="infor-box">
-                    <span>结束时间</span>
-                    <p>{{data.endTime}}</p>
-                </div>
-                <div class="infor-box">
-                    <span>出差天数</span>
-                    <p>{{data.tripDuration}} 天</p>
-                </div>
-                <div class="infor-box" v-if="data.peerNames&&data.peerNames!='undefined'">
-                    <span>同行人员</span>
-                    <p>{{data.peerNames|nameFor}}</p>
+                    <div class="infor-box" v-if="data.peerNames&&data.peerNames!='undefined'">
+                        <span>同行人员</span>
+                        <p>{{item.peerNames|nameFor}}</p>
+                    </div>
                 </div>
                 <div class="infor-box">
                     <span class="contractDescTitle">出差事由</span>
@@ -171,7 +176,7 @@
                     <p>{{data.applyNo}}</p>
                 </div>
                 <div class="infor-box">
-                    <span>标&emsp;&emsp;题</span>
+                    <span>标题</span>
                     <p>{{data.stampApplyTitle}}</p>
                 </div>
                 <div class="infor-box">
@@ -216,21 +221,26 @@
                     <span>所属部门</span>
                     <p>{{data.officeName}}</p>
                 </div>
-                <div class="infor-box">
-                    <span>报销金额</span>
-                    <p>{{item.reimburseAmount}} 元</p>
-                </div>
-                <div class="infor-box">
-                    <span>日&emsp;&emsp;期</span>
-                    <p>{{item.reimburseDate | timelice}}</p>
-                </div>
-                <div class="infor-box">
-                    <span>报销类别</span>
-                    <p>{{item.reimburseType}}</p>
-                </div>
-                <div class="infor-box">
-                    <span>报销明细</span>
-                    <p>{{item.reimburseDesc}} </p>
+                <div v-for="(item,index) in data.list" :key="index">
+                    <div class="desc" v-if="data.list.length!=1">
+                        报销明细{{index+1}}
+                    </div>
+                    <div class="infor-box">
+                        <span>报销金额</span>
+                        <p>{{item.reimburseAmount}} 元</p>
+                    </div>
+                    <div class="infor-box">
+                        <span>日&emsp;&emsp;期</span>
+                        <p>{{item.reimburseDate | substr10}}</p>
+                    </div>
+                    <div class="infor-box">
+                        <span>报销类别</span>
+                        <p>{{item.reimburseType}}</p>
+                    </div>
+                    <div class="infor-box">
+                        <span>报销明细</span>
+                        <p>{{item.reimburseDesc}} </p>
+                    </div>
                 </div>
                 <div class="infor-box">
                     <span>总报销金额 </span>
@@ -318,11 +328,11 @@
                 </div>
                  <div class="infor-box">
                     <span>入职日期 </span>
-                    <p>{{data.hireDate | timeSlice}} </p>
+                    <p>{{data.hireDate | substr10}} </p>
                 </div>
                  <div class="infor-box">
                     <span>合同到期日 </span>
-                    <p>{{data.contractEndDate | timeSlice}} </p>
+                    <p>{{data.contractEndDate | substr10}} </p>
                 </div>
                   <div class="infor-box">
                     <span>离职类别 </span>
@@ -330,7 +340,7 @@
                 </div>
                   <div class="infor-box">
                     <span>最后工作日 </span>
-                    <p>{{data.dimissionDate |timeSlice}} </p>
+                    <p>{{data.dimissionDate |substr10}} </p>
                 </div>
                 <div class="infor-box">
                     <span>离职原因 </span>
@@ -360,11 +370,11 @@
                 </div>
                  <div class="infor-box">
                     <span>使用日期 </span>
-                    <p>{{data.useDate |timeSlice}} </p>
+                    <p>{{data.useDate |slice3}} </p>
                 </div>
                  <div class="infor-box">
                     <span>归回日期 </span>
-                    <p>{{data.returnDate |timeSlice}} </p>
+                    <p>{{data.returnDate |slice3}} </p>
                 </div>
                  <div class="infor-box">
                     <span style="letter-spacing:0.05rem">收款人 </span>
@@ -410,7 +420,7 @@
                 </div>
                  <div class="infor-box">
                     <span>到访时间 </span>
-                    <p>{{data.visitDate }} </p>
+                    <p>{{data.visitDate|substr10}} </p>
                 </div>
                  <div class="infor-box">
                     <span>交通工具 </span>
@@ -443,13 +453,18 @@
                     <span>所属部门</span>
                     <p>{{data.officeName}}</p>
                 </div>
-                <div class="infor-box">
-                    <span>时&emsp;&emsp;间 </span>
-                    <p>{{item.absenceDate}} </p>
-                </div>
-                 <div class="infor-box">
-                    <span>原&emsp;&emsp;因 </span>
-                    <p>{{item.absenceReason }} </p>
+                <div v-for="(item,index) in data.absenceList" :key="index">
+                    <div class="desc" v-if="data.absenceList.length!=1">
+                        补卡明细{{index+1}}
+                    </div>
+                    <div class="infor-box">
+                        <span>时&emsp;&emsp;间 </span>
+                        <p>{{item.absenceDate|slice3}} </p>
+                    </div>
+                    <div class="infor-box">
+                        <span>原&emsp;&emsp;因 </span>
+                        <p>{{item.absenceReason }} </p>
+                    </div>
                 </div>
             </div>
             <div v-else-if="type==13">
@@ -479,11 +494,11 @@
                 </div>
                 <div class="infor-box">
                     <span>用车时间</span>
-                    <p>{{data.beginTime}}</p>
+                    <p>{{data.beginTime|substr10}}</p>
                 </div>
                 <div class="infor-box">
                     <span>返回时间</span>
-                    <p>{{data.endTime}}</p>
+                    <p>{{data.endTime|substr10}}</p>
                 </div>
                 <div class="infor-box" v-if="data.peerNames">
                     <span>随行人员</span>
@@ -500,7 +515,7 @@
                     <p>{{data.applyNo}}</p>
                 </div>
                 <div class="infor-box">
-                    <span>标&emsp;&emsp;题</span>
+                    <span>标题</span>
                     <p>{{data.employeeTitle}}</p>
                 </div>
                 <div class="infor-box">
@@ -521,30 +536,30 @@
                 </div>
                 <div class="infor-box">
                     <span>到岗日期 </span>
-                    <p>{{data.arrivalDate.slice(0,-8)}}</p>
+                    <p>{{data.arrivalDate|substr10}}</p>
                 </div>
                 <div class="infor-box">
                     <span>申请理由 </span>
                     <p>{{data.employeeReason}}</p>
                 </div>
                 <div class="infor-box">
-                    <span>性&emsp;&emsp;别 </span>
+                    <span>性别 </span>
                     <p>{{data.sex}}</p>
                 </div>
                  <div class="infor-box">
-                    <span>婚&emsp;&emsp;姻 </span>
+                    <span>婚姻 </span>
                     <p>{{data.marriage}}</p>
                 </div>
                  <div class="infor-box">
-                    <span>年&emsp;&emsp;龄 </span>
+                    <span>年龄 </span>
                     <p>{{data.age}}</p>
                 </div>
                  <div class="infor-box">
-                    <span>学&emsp;&emsp;历 </span>
+                    <span>学历 </span>
                     <p>{{data.education}}</p>
                 </div>
                 <div class="infor-box">
-                    <span>专&emsp;&emsp;业 </span>
+                    <span>专业 </span>
                     <p>{{data.major}}</p>
                 </div>
                 <div v-if="data.qualifications" class="infor-box">
@@ -552,7 +567,7 @@
                     <p>{{data.qualifications}}</p>
                 </div>
                 <div v-if="data.computerLevel" class="infor-box" >
-                    <span style="letter-spacing:0.05rem">计算机 </span>
+                    <span >计算机 </span>
                     <p>{{data.computerLevel}}</p>
                 </div>
                 <div v-if="data.foreignLevel" class="infor-box">
@@ -586,105 +601,105 @@
             </div>
             <div v-else-if="type==15">
                 <div class="infor-box">
-                    <span>审批编号&emsp;</span>
+                    <span>审批编号</span>
                     <p>{{data.applyNo}}</p>
                 </div>
                 <div class="infor-box">
-                    <span>标&emsp;&emsp;题 &emsp;</span>
+                    <span>标题</span>
                     <p>{{data.projectTitle}}</p>
                 </div>
                 <div class="infor-box">
-                    <span style="letter-spacing:0.04rem">申请人&emsp;</span>
+                    <span style="letter-spacing:0.04rem">申请人</span>
                     <p>{{data.username}}</p>
                 </div>
                 <div class="infor-box">
-                    <span>所属部门&emsp;</span>
+                    <span>所属部</span>
                     <p>{{data.officeName}}</p>
                 </div>
                 <div class="infor-box">
-                    <span>项目编号&emsp; </span>
+                    <span>项目编号 </span>
                     <p>{{data.projectNo}}</p>
                 </div>
                  <div class="infor-box">
-                    <span>申请时间&emsp; </span>
-                    <p>{{data.applyTime}} </p>
+                    <span>申请时间 </span>
+                    <p>{{data.applyTime|substr10}} </p>
                 </div>
                  <div class="infor-box">
-                    <span>项目名称&emsp; </span>
+                    <span>项目名称</span>
                     <p>{{data.projectName}} </p>
                 </div>
                  <div class="infor-box">
-                    <span>预估金额&emsp; </span>
+                    <span>预估金额</span>
                     <p>{{data.projectBudget}} 元</p>
                 </div>
                  <div class="infor-box">
-                    <span>立项时间&emsp; </span>
-                    <p>{{data.buildDate}} </p>
+                    <span>立项时间</span>
+                    <p>{{data.buildDate|substr10}} </p>
                 </div>
                  <div class="infor-box">
                     <span >单位联系人 </span>
                     <p>{{data.connectionName}} </p>
                 </div>
                 <div class="infor-box">
-                    <span>项目背景&emsp; </span>
+                    <span>项目背景 </span>
                     <p>{{data.projectBackground}} </p>
                 </div>
                 <div class="infor-box">
-                    <span>需求概述&emsp; </span>
+                    <span>需求概述</span>
                     <p>{{data.description}} </p>
                 </div>
             </div>
-            <div v-else-if="type==16">
+            <div v-else-if="type==16" class="width120">
                 <div class="infor-box">
-                    <span>审批编号 &emsp;&emsp;</span>
+                    <span>审批编号</span>
                     <p>{{data.applyNo}}</p>
                 </div>
                 <div class="infor-box">
-                    <span>标&emsp; &emsp;题 &emsp;&emsp;</span>
+                    <span>标题</span>
                     <p>{{data.regularTitle}}</p>
                 </div>
                 <div class="infor-box">
-                    <span >申请人 &emsp;&emsp;&emsp;</span>
+                    <span >申请人</span>
                     <p>{{data.username}}</p>
                 </div>
                 <div class="infor-box">
-                    <span>所属部门 &emsp;&emsp;</span>
+                    <span>所属部门</span>
                     <p>{{data.officeName}}</p>
                 </div>
                 <div class="infor-box">
-                    <span>职&emsp; &emsp;务 &emsp;&emsp; </span>
+                    <span>职务 </span>
                     <p>{{data.position}} </p>
                 </div>
                  <div class="infor-box">
-                    <span>年&emsp; &emsp;龄 &emsp;&emsp; </span>
+                    <span>年龄 </span>
                     <p>{{data.age}} </p>
                 </div>
                  <div class="infor-box">
-                    <span>性&emsp; &emsp;别 &emsp;&emsp; </span>
+                    <span>性别 </span>
                     <p>{{data.sex}} </p>
                 </div>
                  <div class="infor-box">
-                    <span>籍&emsp; &emsp;贯 &emsp;&emsp; </span>
+                    <span>籍贯 </span>
                     <p>{{data.birthPlace}} </p>
                 </div>
                  <div class="infor-box">
-                    <span>出生日期 &emsp;&emsp; </span>
+                    <span>出生日期 </span>
                     <p>{{data.birthday.slice(0,-8)}} </p>
                 </div>
                  <div class="infor-box">
-                    <span >学&emsp; &emsp;历 &emsp;&emsp; </span>
+                    <span >学历 </span>
                     <p>{{data.education}} </p>
                 </div>
                 <div class="infor-box">
-                    <span>专&emsp; &emsp;业 &emsp;&emsp; </span>
+                    <span>专业 </span>
                     <p>{{data.major}} </p>
                 </div>
                 <div class="infor-box">
-                    <span>毕业时间 &emsp;&emsp; </span>
+                    <span>毕业时间 </span>
                     <p>{{data.graduationDate.slice(0,-8)}} </p>
                 </div>
                 <div class="infor-box">
-                    <span>入司时间 &emsp;&emsp; </span>
+                    <span>入司时间 </span>
                     <p>{{data.hireDate.slice(0,-8)}} </p>
                 </div>
                 <div class="infor-box">
@@ -706,7 +721,7 @@
                     <p>{{data.mealTitle}}</p>
                 </div>
                 <div class="infor-box">
-                    <span style="letter-spacing:0.04rem">申请人</span>
+                    <span>申请人</span>
                     <p>{{data.username}}</p>
                 </div>
                 <div class="infor-box">
@@ -723,11 +738,11 @@
                 </div>
                  <div class="infor-box">
                     <span>开始时间 </span>
-                    <p>{{data.beginTime}} </p>
+                    <p>{{data.beginTime|slice3}} </p>
                 </div>
                  <div class="infor-box">
                     <span>结束时间 </span>
-                    <p>{{data.endTime}} </p>
+                    <p>{{data.endTime|slice3}} </p>
                 </div>
                  <div class="infor-box" v-if="data.mealStandard">
                     <span>就餐标准 </span>
@@ -738,7 +753,7 @@
                     <p>{{data.mealPersons}} </p>
                 </div>
                  <div class="infor-box" v-if="data.mealRemarks">
-                    <span >备&emsp;&emsp;注 </span>
+                    <span >备注 </span>
                     <p>{{data.mealRemarks}} </p>
                 </div>
             </div>
@@ -748,7 +763,7 @@
                     <p>{{data.applyNo}}</p>
                 </div>
                 <div class="infor-box">
-                    <span>标&emsp;&emsp;题 </span>
+                    <span>标题 </span>
                     <p>{{data.documentTitle}}</p>
                 </div>
                 <div class="infor-box">
@@ -764,41 +779,41 @@
                     <p>{{data.documentNo}}</p>
                 </div>
                  <div class="infor-box">
-                    <span>主&emsp;&emsp;送 </span>
+                    <span>主送 </span>
                     <p>{{data.sendTo}} </p>
                 </div>
                  <div class="infor-box" v-if="data.copyTo">
-                    <span>抄&emsp;&emsp;送 </span>
+                    <span>抄送 </span>
                     <p>{{data.copyTo}} </p>
                 </div>
                  <div class="infor-box" v-if="data.documentReason">
-                    <span >事&emsp;&emsp;由 </span>
+                    <span >事由 </span>
                     <p>{{data.documentReason}} </p>
                 </div>
             </div>
-            <div v-else-if="type==19">
+            <div v-else-if="type==19" class="width120">
                 <div class="infor-box">
-                    <span>审批编号&emsp;&emsp;</span>
+                    <span>审批编号</span>
                     <p>{{data.applyNo}}</p>
                 </div>
                 <div class="infor-box">
-                    <span style="letter-spacing:0.04rem">申请人&emsp;&emsp;</span>
+                    <span >申请人</span>
                     <p>{{data.username}}</p>
                 </div>
                 <div class="infor-box">
-                    <span>所属部门&emsp;&emsp;</span>
+                    <span>所属部门</span>
                     <p>{{data.officeName}}</p>
                 </div>
                 <div class="infor-box">
-                    <span>开始时间&emsp;&emsp; </span>
-                    <p>{{data.beginTime |timeSlice}} </p>
+                    <span>开始时间 </span>
+                    <p>{{data.beginTime |slice3}} </p>
                 </div>
                  <div class="infor-box">
-                    <span>结束时间&emsp;&emsp; </span>
-                    <p>{{data.endTime |timeSlice}} </p>
+                    <span>结束时间 </span>
+                    <p>{{data.endTime |slice3}} </p>
                 </div>
                  <div class="infor-box" >
-                    <span>时&emsp;&emsp;长&emsp;&emsp; </span>
+                    <span>时长 </span>
                     <p>{{data.duration}} 小时</p>
                 </div>
                  <div class="infor-box" >
@@ -810,45 +825,45 @@
                     <p>{{data.accountType}} </p>
                 </div>
                  <div class="infor-box" >
-                    <span >备&emsp;&emsp;注&emsp;&emsp; </span>
+                    <span >备注 </span>
                     <p>{{data.reason}} </p>
                 </div>
             </div>
             <div v-else-if="type==20">
                 <div class="infor-box">
-                    <span>审批编号&emsp; </span>
+                    <span>审批编号 </span>
                     <p>{{data.applyNo}}</p>
                 </div>
                 <div class="infor-box">
-                    <span >申请人&emsp;&emsp;</span>
+                    <span >申请人</span>
                     <p>{{data.username}}</p>
                 </div>
                 <div class="infor-box">
-                    <span>所属部门&emsp;</span>
+                    <span>所属部门</span>
                     <p>{{data.officeName}}</p>
                 </div>
                  <div class="infor-box">
-                    <span>姓&emsp;&emsp;名&emsp; </span>
+                    <span>姓名 </span>
                     <p>{{data.name}} </p>
                 </div>
                  <div class="infor-box" v-if="data.no&&data.no!='null'">
-                    <span>工&emsp;&emsp;号&emsp; </span>
+                    <span>工号 </span>
                     <p>{{data.no}} </p>
                 </div>
                  <div class="infor-box" >
-                    <span>所属部门&emsp; </span>
+                    <span>所属部门 </span>
                     <p>{{data.exOfficeName}}</p>
                 </div>
                  <div class="infor-box" v-if="data.exPosition!=''">
-                    <span>职位名称&emsp; </span>
+                    <span>职位名称 </span>
                     <p>{{data.exPosition}} </p>
                 </div>
                  <div class="infor-box" >
-                    <span >入职日期&emsp; </span>
-                    <p>{{data.hireDate|timeSlice}} </p>
+                    <span >入职日期 </span>
+                    <p>{{data.hireDate|substr10}} </p>
                 </div>
                  <div class="infor-box" >
-                    <span >调岗原因&emsp; </span>
+                    <span >调岗原因 </span>
                     <p>{{data.reason}} </p>
                 </div>
                 <div class="infor-box" >
@@ -860,8 +875,8 @@
                     <p>{{data.afterPosition}} </p>
                 </div>
                  <div class="infor-box" >
-                    <span >调岗日期&emsp; </span>
-                    <p>{{data.changeDate |timeSlice}} </p>
+                    <span >调岗日期 </span>
+                    <p>{{data.changeDate |substr10}} </p>
                 </div>
             </div>
             <div v-else-if="type==21">
@@ -870,7 +885,7 @@
                     <p>{{data.applyNo}}</p>
                 </div>
                 <div class="infor-box">
-                    <span >申请人&emsp; </span>
+                    <span >申请人 </span>
                     <p>{{data.username}}</p>
                 </div>
                 <div class="infor-box">
@@ -887,38 +902,43 @@
                 </div>
                 <div class="infor-box">
                     <span>交付日期</span>
-                    <p>{{data.hopeDeliveryDate | timeSlice9}}</p>
+                    <p>{{data.hopeDeliveryDate | substr10}}</p>
                 </div>
-                <div class="infor-box">
-                    <span>名&emsp;称&emsp; </span>
-                    <p>{{item.name}}</p>
-                </div>
+                <div v-for="(item,index) in data.list" :key="index">
+                    <div class="desc">
+                        采购明细 {{index+1}}
+                    </div>
                     <div class="infor-box">
-                    <span>规&emsp;格&emsp; </span>
-                    <p>{{item.specifications}}</p>
+                        <span>名称 </span>
+                        <p>{{item.name}}</p>
+                    </div>
+                        <div class="infor-box">
+                        <span>规格 </span>
+                        <p>{{item.specifications}}</p>
+                    </div>
+                    <div class="infor-box">
+                        <span>数量 </span>
+                        <p>{{item.number}}</p>
+                    </div>
+                    <div class="infor-box">
+                        <span>单位 </span>
+                        <p>{{item.unit}}</p>
+                    </div>
+                    <div class="infor-box">
+                        <span>价格 </span>
+                        <p>{{item.price}}</p>
+                    </div>
                 </div>
                 <div class="infor-box">
-                    <span>数&emsp;量&emsp; </span>
-                    <p>{{item.number}}</p>
-                </div>
-                <div class="infor-box">
-                    <span>单&emsp;位&emsp; </span>
-                    <p>{{item.unit}}</p>
-                </div>
-                <div class="infor-box">
-                    <span>价&emsp;格&emsp; </span>
-                    <p>{{item.price}}</p>
-                </div>
-                <div class="infor-box">
-                    <span>总价格&emsp; </span>
-                    <p>{{item.total}} 元</p>
+                    <span>总价格 </span>
+                    <p>{{data.total}} 元</p>
                 </div>
                 <div class="infor-box" v-if="data.payType">
                     <span>支付方式 </span>
                     <p>{{data.payType}} </p>
                 </div>
                 <div class="infor-box" v-if="data.userBuyApplyRemarks">
-                    <span>备&emsp;&emsp;注 </span>
+                    <span>备注 </span>
                     <p>{{data.userBuyApplyRemarks}} </p>
                 </div>
             </div>
@@ -939,17 +959,23 @@
                         <span>物品用途 </span>
                         <p>{{data.materialReceiveTheme}}</p>
                 </div>
-                <div class="styles infor" >
-                    <div class="infor-box">
-                        <span>物品名称 </span>
-                        <p>{{item.materialName}}</p>
+                <div v-for="(item,index) in data.list" :key="index">
+                    <div class="desc">
+                        物品明细 {{index+1}}
                     </div>
-                    <div class="infor-box" v-if="item.num">
-                        <span>数&emsp;&emsp;量 </span>
-                        <p>{{item.num}}</p>
+                
+                    <div class="styles infor" >
+                        <div class="infor-box">
+                            <span>物品名称 </span>
+                            <p>{{item.materialName}}</p>
+                        </div>
+                        <div class="infor-box" v-if="item.num">
+                            <span>数&emsp;&emsp;量 </span>
+                            <p>{{item.num}}</p>
+                        </div>
                     </div>
                 </div>
-                <div class="infor-box">
+                <div class="infor-box" v-if="data.materialReceiveRemarks">
                     <span>备&emsp;&emsp;注 </span>
                     <p>{{data.materialReceiveRemarks}} </p>
                 </div>
@@ -966,17 +992,42 @@
                 item:{},
             }
         },
-        props:['type','data']
+        props:['type','data'],
+        filters:{
+             dayNum : function(value){
+                    if(!value) return;
+                  return  value.indexOf('.5')>-1?Number(value).toFixed(1):parseInt(value)
+            },
+        }
     }
 </script>
 
 <style lang="stylus" scoped>
     .infor-box{
         display flex
+        margin-bottom:5px;
 
         span{
-            width 100px;
+            width 80px;
             color:#999;
+            text-align:right;
+            margin-right:25px;
         }
+
+        p{
+            flex 1;
+        }
+    }
+
+    .width120 span{
+        width:120px;
+    }
+
+    .desc{
+        margin-bottom:5px;
+        margin-top:15px;
+        text-indent: 15px;
+        color:#24b36b;
+        font-weight bold
     }
 </style>

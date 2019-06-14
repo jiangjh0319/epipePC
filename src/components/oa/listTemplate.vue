@@ -36,7 +36,7 @@
                     </div>
                     <!--完成时间  -->
                     <div class="endTime">
-                        <span v-if="type!=1">{{item.applyTime.slice(0,-3)}}</span>
+                        <span v-if="type!=1">{{item.completeTime.slice(0,-3)}}</span>
                     </div>
                     <!-- 审批状态 -->
                     <div class="status">
@@ -59,6 +59,7 @@
             <Details
             :show='showDetails'
             :data = 'choose'
+            :applyId = "choose.applyId"
             :oaType="choose.typecode"
             v-on:isShow = "showDetails=false"
             >

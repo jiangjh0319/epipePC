@@ -1,9 +1,25 @@
 <template>
-    <div class="main" @click.prevent="control" v-if="show">
+    <div class="main" @click.prevent="" v-if="show">
+        <Opinion
+            :show='opinionShow'
+            :type="opinionType"
+            v-on:isShow='opinion'
+            :applyId="applyId"
+            :applyType="oaType"
+            :toPeople='people[0]'
+            v-on:reload='reload'
+        ></Opinion>
+        <AddressList
+            :show="openAdd"
+            v-on:choose="choose"
+            v-on:close="openAdd=false"
+            types="other"
+        >
+        </AddressList>
         
-        <div class="infor" @click.stop="">
+        <div class="infor" @click.stop="" v-loading="loading">
             <div class="infor-title">
-                    选择联系人
+                    {{title}}
                 <div class="close" @click.stop="control">
                     <svg  class="icon" aria-hidden="false">
                         <use xlink:href="#icon-x"></use>
@@ -18,8 +34,8 @@
                                 <img class="profileImg" :src="info.profileImg"/>
                                 <div>
                                     {{info.username}}
-                                    <p v-if="info.auditStatus=='0'">等待{{info.auditUserName?info.auditUserName:info.auditName}}的审批</p>
-                                    <p v-else>{{info.auditStatus|stateName}}</p>
+                                    <p v-if="status=='0'">等待{{info.auditUserName?info.auditUserName:info.auditName}}的审批</p>
+                                    <p  v-else>{{status|stateName}}</p>
                                 </div>
                             </div>
 
@@ -29,7 +45,27 @@
                                 </DetailsText>
 
                             </div>
-
+                            <div class="file" v-if="info.accessory&&info.accessory.length">
+                                <div style="margin-bottom:15px;">
+                                    <span class="info-title">附件</span>
+                                    
+                                </div>
+                                <div class="file-list">
+                                    <div v-for="(item,index) in info.accessory" :key="index">
+                                        <div>
+                                            <img src="./../../assets/wenjian.png" v-if="!item.isImg"/>
+                                            <img :src="item.url" v-else/>
+                                            </div>
+                                        <div style="flex:1">
+                                            <p>{{item.fileName}}</p>
+                                            <span>{{item.fileSize |fileSize}}</span>
+                                        </div>
+                                        <div>
+                                            <a @click="openFile(item.url)">查看</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="approve">
                                 <div style="margin-bottom:15px;">
                                     <span class="info-title">审批人</span>
@@ -52,7 +88,21 @@
                                             </svg>
                                         </div>
                                     </div>
-                                    <div  v-for="(item,index) in info.auditers" :key="item.userId">
+
+                                    <div v-if="info.auditStatus==3">
+                                        <div class="approve-list-item">
+                                            <div>
+                                                <img :src="info.profileImg" class="profileImg"/>
+                                            </div>
+                                            <span style="margin-left:20px;">{{info.username}}</span>
+                                            <span class="careOf">已撤销</span>
+                                            <span></span>
+                                        </div>
+                                        <div class="approve-list-other">
+                                        </div>
+                                    </div>
+
+                                    <div v-if="info.auditStatus!=3"  v-for="(item,index) in info.auditers" :key="item.userId">
                                         <div class="approve-list-item">
                                             <div>
                                                 <img :src="item.profileImg" class="profileImg"/>
@@ -66,9 +116,19 @@
                                                 <use xlink:href="#icon-jiantou1"></use>
                                             </svg>
                                             <p>{{item.reason}}</p>
-                                            <div v-if="item.accessory">
-                                                <ul class="accessory">
-                                                </ul>
+                                            <div v-if="item.accessory" class="file">
+                                                <div class="accessory file-list">
+                                                    <div @click.stop="openFile(file.url)"  style="margin-top:10px;margin-bottom:0" v-for="file in item.accessory" :key="file.url">
+                                                        <div>
+                                                            <img src="./../../assets/wenjian.png" v-if="!file.isImg"/>
+                                                            <img :src="file.url" v-else/>
+                                                        </div>
+                                                        <div style="flex:1">
+                                                            <p>{{file.fileName}}</p>
+                                                            <span>{{file.fileSize |fileSize}}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -97,17 +157,71 @@
                     </el-scrollbar>
             </div>
 
+            <div class="foot-behavior" v-if="info.myselfApply!='00'&&(info.auditStatus!=1&&info.auditStatus!=2)">
+                <div class="foot-left-btn">
+                    <div @click="consent(3)"  v-if="info.myselfApply=='0'&&info.auditStatus!=3">
+                        <svg class="icon" aria-hidden="false">
+                            <use xlink:href="#icon-pc-icon-tuihui"></use>
+                        </svg>
+                        <span>退回</span>
+                    </div>
+                    <div @click="consent(4)"  v-if="info.myselfApply=='0'&&info.auditStatus!=3">
+                        <svg class="icon icon-back" style="color:#609df6" aria-hidden="false" >
+                            <use xlink:href="#icon-pc-icon-"></use>
+                        </svg>
+                        <span>评论</span>
+                    </div>
+                    <div @click="careOf"  v-if="info.myselfApply=='0'&&info.auditStatus!=3">
+                        <svg class="icon" aria-hidden="false">
+                            <use xlink:href="#icon-pc-icon-zhuanjiao"></use>
+                        </svg>
+                        <span>转交</span>
+                    </div>
+                    <div @click="audit(1)" v-if="myself">
+                        <svg class="icon" aria-hidden="false">
+                            <use xlink:href="#icon-pc-icon-chexiao"></use>
+                        </svg>
+                        <span>撤销</span>
+                    </div>
+                    <div @click="audit(6)" v-if="myself">
+                        <svg class="icon" aria-hidden="false">
+                            <use xlink:href="#icon-pc-icon-chuiban"></use>
+                        </svg>
+                        <span>催办</span>
+                    </div>
+                </div>
+                <div class="foot-right-btn" v-if="info.myselfApply=='0'&&info.auditStatus!=3">
+                    <el-button class="refuse" @click="consent(2)">拒绝</el-button>
+                    <el-button class="consent" @click="consent(1)">同意</el-button>
+                </div>
+            </div>
+
         </div>
     </div>
 </template>
 
 <script>
     import DetailsText from './details_text.vue'
+    import AddressList from './../common/addressList.vue'
+    import Opinion from './opinion.vue'
+
 
     export default {
         data() {
             return {
                 info:{},
+                status:'0',
+                opinionType:'1',
+                loading:true,
+                people:[],
+                title:'',
+                opinionShow:false,
+                openAdd:false,
+                myself:false,
+                peopleType:false,//打开通讯录类型
+                oa:['','请假','请示函','合同', '公出', '出差' ,'用印' ,'报销','付款','离职',
+                '借款','接待','补卡', '用车', '人员需求','项目立项', '转正', '就餐',
+                '行文呈批','加班','员工调岗','采购','物品领用'],
                 ajax:['',{url:'leave/apply',name:'leaveId'},{url:'letter',name:'letterId'},{url:'contract',name:'contractId'}, {url:'/outsign/task/infos',name:'outsideId'},
                 {url:'trip',name:'tripId'}, {url:'stamp',name:'stampId'} ,{url:'reimburse',name:'reimburseId'},{url:'pay',name:'payApplyId'},{url:'dimission',name:'dimissionApplyId'},
                 {url:'borrow',name:'borrowApplyId'},{url:'reception',name:'receptionApplyId'},{url:'absence',name:'absenceApplyId'}, {url:'car',name:'carApplyId'}, 
@@ -116,10 +230,48 @@
                 {url:'material',name:'materialReceiveApplyId'}]
             }
         },
-        props:['show','data','oaType'],
+        props:['show','data','oaType','applyId','typeName'],
         methods: {
             control(){
+                this.loading=true
                 this.$emit('isShow')
+            },
+            careOf(){
+                this.openAdd=true;
+            },
+            choose(arr){
+                console.log(arr)
+                this.people= arr;
+                this.openAdd = false;
+                this.consent(5)
+            },
+            reload(){
+                this.getDetails()
+                this.opinionShow = false;
+            },
+            audit(type){
+                let that = this;
+                this.axios.post('/work/audit'+this.Service.queryString({
+                    applyId:this.applyId,
+                    type:type,
+                    applyType:this.oaType,
+                })).then(function(res){
+                    if(res.data.h.code==200){
+                        let message = type==1?'撤销成功!':'催办成功!'
+                        that.$message({
+                            message,
+                            type: 'success'
+                            });
+                        if(type==1){
+                            that.getDetails()
+                        }
+                    }else{
+                        that.$message({
+                            message:res.data.h.msg,
+                            type: 'error'
+                        })
+                    }
+                })
             },
             getDetails(){
                 let that = this;
@@ -127,19 +279,86 @@
                 if(this.oaType==4){
                     url = this.ajax[this.oaType].url
                 }
-                 this.axios.get(url+'?'+this.ajax[this.oaType].name+'='+this.data.applyId+'&pushId=0').then(function(res){
-                     console.log(res.data.b.data)
+                 this.axios.get(url+'?'+this.ajax[this.oaType].name+'='+this.applyId+'&pushId=0').then(function(res){
+                     if(res.data.h.code!=200){
+                         that.$emit('isShow')
+                         that.$message.error(res.data.h.msg);
+                     }
+                    that.loading = false;
                      if(res.data.b.data){
                         that.info = res.data.b.data[0];
                      }else{
                          that.info = res.data.b;
                      }
 
+                    that.title = that.info.username+'的'+that.oa[that.oaType]+'申请'
+                    that.info.accessory = that.accessoryFors(that.info.accessory)
+
+                    if(that.info.userId==that.info.auditUserId){
+                        that.myself=true;
+                        if(that.info.auditStatus==0&&that.info.myselfApply!='00'){
+                            that.info.myselfApply="0"
+                        }
+                    }
+                    if(that.info.auditStatus==3){   
+                        that.status = '5';
+                    }else{
+                        that.status = that.info.auditStatus;
+                    }
+
+                    for(let i =0;i<that.info.auditers.length;i++){   
+                        if(that.info.auditers[i].accessory!=null){
+                            that.info.auditers[i].accessory = that.accessoryFors(that.info.auditers[i].accessory)
+                        }
+                    }
+
                  })
+            },
+            accessoryFors:function(datas){
+                if(!datas||datas.url==null) return false
+               let urlArr = datas.url.split('|')
+               let fileSizeArr = datas.fileSize.split('|')
+               let fileNameArr = datas.fileName.split('|')
+               let arrs = [];
+                for(let i=0;i<urlArr.length;i++){
+                    let bool = this.isImg(urlArr[i])
+                    arrs.push({
+                        url:urlArr[i],
+                        fileSize:fileSizeArr[i],
+                        fileName:fileNameArr[i],
+                        isImg: bool,
+                    })
+                }
+                return arrs
+            },
+            isImg:function(str){
+                //判断是否是图片 - strFilter必须是小写列举
+                var strFilter=".jpeg|.gif|.jpg|.png|.bmp|.pic|"
+                if(str.indexOf(".")>-1){
+                    var p = str.lastIndexOf(".");
+                    var strPostfix=str.substring(p,str.length) + '|';        
+                    strPostfix = strPostfix.toLowerCase();
+                    if(strFilter.indexOf(strPostfix)>-1){
+                        return true;
+                    }
+                }        
+                return false;   
+            },
+            openFile(url){
+                this.Msg.openFile(url)
+            },
+            opinion(){
+                this.opinionShow = false;
+            },
+            consent(type){//同意啊
+                this.opinionType = type
+                this.opinionShow = true
             }
         },
         components:{
             DetailsText,
+            Opinion,
+            AddressList
         },
       
         created(){
@@ -162,6 +381,9 @@
                     break;
                 case '4':
                     return "已退回";
+                    break;
+                case '5':
+                    return "已撤销";
                     break;
                 }
             },
@@ -193,7 +415,7 @@
                 }else{
                     document.querySelector('#app').style.overflowY='auto'
                 } 
-            }
+            },
         }
     }
 </script>
@@ -235,7 +457,7 @@
 
     .infor{
         width 760px;
-        height  700px;
+        height  520px;
         position absolute;
         top 0
         left 0
@@ -243,6 +465,7 @@
         bottom 0
         z-index 99
         margin auto 
+        padding-bottom: 80px;
         background-color #fff;
         
 
@@ -268,7 +491,7 @@
         }
 
         &-content{
-            height 655px;
+            height 475px;
 
             .user-info{
                 display flex;
@@ -297,7 +520,7 @@
             }
 
             .approve{
-                padding-bottom 15px;
+           
 
                 &-list-item{
                     display flex;
@@ -374,6 +597,47 @@
         }
     }
 
+    .file{
+        padding-bottom:20px;
+
+        &-list{
+
+            >div{
+                display:flex;
+                background-color:#f5f5f5;
+                margin-bottom 10px;
+                padding:15px;
+                cursor pointer
+            }
+
+            span{
+                color:#999;
+            }
+        }
+
+        img{
+            width:40px;
+            height:40px;
+            margin-right:15px;
+        }
+
+        a{
+            display inline-block;
+            width:70px;
+            height:30px;
+            border:1px solid #ccc;
+            text-align:center
+            line-height:30px;
+            border-radius:3px;
+            color:#333;
+            margin-top: 5px;
+
+            &:hover{
+                background-color:#f1f0f0;
+            }
+        }
+    }
+
     .profileImg{
         height 50px;
         width 50px;
@@ -397,4 +661,68 @@
 .careOf{
     color:#f80;
 }
-</style>
+
+//审批动作
+.foot-behavior{
+    display:flex;
+    height:80px;
+    width:100%;
+    background-color:#f5f5f5;
+    position absolute
+    bottom:0;
+    left:0;
+    border-top:1px solid #b6bcc6;
+}
+
+.foot-right-btn{
+    width:240px;
+    height:100%;
+    line-height: 80px;
+
+    >>>.el-button{
+        width:100px;
+        padding:9px 20px;
+        font-size 16px;
+        border-color:#24b36b;
+    }
+
+    >>>.el-button+.el-button {
+        margin-left: 15px;
+    }
+
+    .refuse{
+        border-color:#24b36b;
+        color:#24b36b;
+    }
+
+    .consent{
+        background-color:#24b36b;
+        color:#fff;
+    }
+}
+
+.foot-left-btn{
+    flex:1;
+    display:flex;
+    justify-content:center;
+
+    svg{
+        display:block;
+        width:28px;
+        height:28px;
+        margin:0 auto;
+        color:#f80;
+    }
+
+    span{
+        font-size 14px;
+        color:#999;
+    }
+
+    >div{
+        width:50px;
+        text-align:center;
+        align-self: center;
+    }
+}
+</style> 

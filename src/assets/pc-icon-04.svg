@@ -1,0 +1,35 @@
+<svg id="图层_1" data-name="图层 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #8c8c8c;
+        opacity: 0;
+      }
+
+      .cls-2, .cls-3 {
+        fill: none;
+        stroke: #000;
+        stroke-width: 1.53px;
+      }
+
+      .cls-2 {
+        stroke-miterlimit: 10;
+      }
+
+      .cls-3 {
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+    </style>
+  </defs>
+  <title>pc-icon</title>
+  <rect class="cls-1" width="28" height="28"/>
+  <g>
+    <path class="cls-2" d="M20.73,20.13h3.05a2.62,2.62,0,0,0,2.62-2.61V9.15a2.63,2.63,0,0,0-2.62-2.62H4.22A2.63,2.63,0,0,0,1.6,9.15v8.37a2.62,2.62,0,0,0,2.62,2.61H7.3"/>
+    <path class="cls-2" d="M7.38,14.61H20.63a0,0,0,0,1,0,0V24.73A2.66,2.66,0,0,1,18,27.39H10a2.66,2.66,0,0,1-2.66-2.66V14.61A0,0,0,0,1,7.38,14.61Z"/>
+    <path class="cls-2" d="M10,.89h8a2.63,2.63,0,0,1,2.63,2.63v3a0,0,0,0,1,0,0H7.38a0,0,0,0,1,0,0v-3A2.63,2.63,0,0,1,10,.89Z"/>
+    <line class="cls-3" x1="10.47" y1="19.82" x2="18.28" y2="19.82"/>
+    <line class="cls-3" x1="10.47" y1="22.9" x2="18.28" y2="22.9"/>
+    <path d="M22.39,9.24a.88.88,0,1,0,.87-.88.87.87,0,0,0-.87.88Zm0,0"/>
+  </g>
+</svg>
