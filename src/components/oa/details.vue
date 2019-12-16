@@ -5,9 +5,10 @@
             :type="opinionType"
             v-on:isShow='opinion'
             :applyId="applyId"
-            :applyType="oaType"
+            :applyType="oaType-1"
             :toPeople='people[0]'
             v-on:reload='reload'
+            v-on:accomplish='accomplish'
         ></Opinion>
         <AddressList
             :show="openAdd"
@@ -61,7 +62,7 @@
                                             <span>{{item.fileSize |fileSize}}</span>
                                         </div>
                                         <div>
-                                            <a @click="openFile(item.url)">查看</a>
+                                            <a @click="openFile(item.url,item.fileName)">查看</a>
                                         </div>
                                     </div>
                                 </div>
@@ -108,7 +109,7 @@
                                                 <img :src="item.profileImg" class="profileImg"/>
                                             </div>
                                             <span style="margin-left:20px;">{{item.name}}</span>
-                                            <span :class="item.status | statusClass">{{item.status | stateName}}</span>
+                                            <span :class="item.status | statusClass">{{item.status | auditersState}}</span>
                                             <span>{{item.auditTime}}</span>
                                         </div>
                                         <div class="approve-list-other">
@@ -118,7 +119,7 @@
                                             <p>{{item.reason}}</p>
                                             <div v-if="item.accessory" class="file">
                                                 <div class="accessory file-list">
-                                                    <div @click.stop="openFile(file.url)"  style="margin-top:10px;margin-bottom:0" v-for="file in item.accessory" :key="file.url">
+                                                    <div @click.stop="openFile(file.url,file.fileName)"  style="margin-top:10px;margin-bottom:0" v-for="file in item.accessory" :key="file.url">
                                                         <div>
                                                             <img src="./../../assets/wenjian.png" v-if="!file.isImg"/>
                                                             <img :src="file.url" v-else/>
@@ -157,7 +158,7 @@
                     </el-scrollbar>
             </div>
 
-            <div class="foot-behavior" v-if="info.myselfApply!='00'&&(info.auditStatus!=1&&info.auditStatus!=2)">
+            <div class="foot-behavior" v-if="info.myselfApply!='00'&&(info.auditStatus=='0'&&info.myselfApply=='0')">
                 <div class="foot-left-btn">
                     <div @click="consent(3)"  v-if="info.myselfApply=='0'&&info.auditStatus!=3">
                         <svg class="icon" aria-hidden="false">
@@ -167,7 +168,7 @@
                     </div>
                     <div @click="consent(4)"  v-if="info.myselfApply=='0'&&info.auditStatus!=3">
                         <svg class="icon icon-back" style="color:#609df6" aria-hidden="false" >
-                            <use xlink:href="#icon-pc-icon-"></use>
+                            <use xlink:href="#icon-pc-icon-pinglun"></use>
                         </svg>
                         <span>评论</span>
                     </div>
@@ -300,11 +301,8 @@
                             that.info.myselfApply="0"
                         }
                     }
-                    if(that.info.auditStatus==3){   
-                        that.status = '5';
-                    }else{
-                        that.status = that.info.auditStatus;
-                    }
+                    
+                    that.status = that.info.auditStatus;
 
                     for(let i =0;i<that.info.auditers.length;i++){   
                         if(that.info.auditers[i].accessory!=null){
@@ -344,8 +342,8 @@
                 }        
                 return false;   
             },
-            openFile(url){
-                this.Msg.openFile(url)
+            openFile(url,name){
+                this.Msg.openFile(url,name)
             },
             opinion(){
                 this.opinionShow = false;
@@ -353,6 +351,9 @@
             consent(type){//同意啊
                 this.opinionType = type
                 this.opinionShow = true
+            },
+            accomplish(){
+                this.$emit('accomplish')
             }
         },
         components:{
@@ -377,13 +378,35 @@
                     return "已拒绝";
                     break;
                 case '3':
+                    return "已撤销";
+                    break;
+                case '4':
+                    return "已退回";
+                    break;
+                case '5':
+                    return "已评论";
+                    break;
+                }
+            },
+            auditersState: function(value){
+                switch (value){
+                case '0':
+                    return "审批中";
+                    break;
+                case '1':
+                    return "已同意";
+                    break;
+                case '2':
+                    return "已拒绝";
+                    break;
+                case '3':
                     return "已转交";
                     break;
                 case '4':
                     return "已退回";
                     break;
                 case '5':
-                    return "已撤销";
+                    return "已评论";
                     break;
                 }
             },
@@ -403,6 +426,9 @@
                     break;
                 case '4':
                     return "careOf";
+                    break;
+                case '5':
+                    return "consent";
                     break;
                 }
             },
@@ -466,7 +492,6 @@
         z-index 99
         margin auto 
         padding-bottom: 80px;
-        background-color #fff;
         
 
         &-title{
@@ -492,6 +517,8 @@
 
         &-content{
             height 475px;
+            background-color #fff;
+
 
             .user-info{
                 display flex;
@@ -720,9 +747,11 @@
     }
 
     >div{
-        width:50px;
+        
+        width:70px;
         text-align:center;
         align-self: center;
+        cursor:pointer;
     }
 }
 </style> 

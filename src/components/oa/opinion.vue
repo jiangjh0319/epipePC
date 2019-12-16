@@ -3,7 +3,7 @@
 
         <div class="infor" @click.stop="" >
             <div class="infor-title">
-                    {{title}}
+                    {{title[type-1]}}
                 <div class="close" @click.stop.prevent="control">
                     <svg  class="icon" aria-hidden="false">
                         <use xlink:href="#icon-x"></use>
@@ -45,7 +45,7 @@
                                         </div>
                                         
                                         <div v-if="item.status">
-                                            <el-button>查看</el-button>
+                                            <el-button @click="seeFile(item.url,item.fileName)">查看</el-button>
                                             <el-button @click="removeFile(index)">删除</el-button>
                                         </div>
                                     </li>
@@ -57,7 +57,7 @@
                             <a class="btn" v-if="type==1" @click="ajax">确认同意</a>
                             <a class="btn" v-else-if="type==2" @click="ajax">确认拒绝</a>
                             <a class="btn" v-else-if="type==3"  @click="ajax">确认退回</a>
-                            <a class="btn" v-else-if="type==4">确认评论</a>
+                            <a class="btn" v-else-if="type==4" @click="ajax">确认评论</a>
                             <a class="btn" v-else-if="type==5" @click="ajax">确认转交</a>
                         </div>
                     </el-scrollbar>
@@ -71,13 +71,13 @@
     export default {
         data() {
             return {
-                title:'同意',
+                title:['同意','拒绝','退回','评论','转交'],
                 textNum:0,
                 radio:'5',
                 desc:'',
                 placeholder:['请输入审批意见','请输入拒绝理由','请输入退回原因','请输入评论内容','请输入审批意见'],
                 accessory:[],
-                oaType:['',2,3,5,0,4]
+                oaType:['',2,3,5,10,4]
             }
         },
         watch:{
@@ -90,6 +90,9 @@
         methods: {
             control(){
                 this.$emit('isShow')
+            },
+            removeFile(index){
+                this.accessory.splice(index,1)
             },
             ajax(){
                 let that = this;
@@ -127,6 +130,7 @@
                     }],
                 }).then((res)=>{ 
                         if(res.data.h.code==200){
+                        that.$emit('accomplish')
                         that.$message({
                             message:'操作成功!',
                             type: 'success',
@@ -139,6 +143,9 @@
                             })
                         }
                     })
+            },
+            seeFile(url,name){
+                this.Msg.openFile(url,name)
             },
             change(evfile){
                 let that = this;
@@ -172,6 +179,8 @@
 
 
                 this.axios.get('/public/upload/token?suffix='+file.name.substring(file.name.lastIndexOf('.') + 1)).then(res=>{
+                    evfile.target.value = ''
+
                     
                     let uptoken  = res.data.b.uploadToken
                     var key = res.data.b.key

@@ -15,27 +15,56 @@
 
                     <div class="address-organization">
                         <el-scrollbar class="default-scrollbar" wrap-class="default-scrollbar__wrap" view-class="default-scrollbar__view" :native="false">
-                            <div v-for="item in list" :key="item.id" @click="item.open=!item.open">
+                            <div v-for="item in list" :key="item.id" >
                                 <div class="organ_item">
-                                    <div class="organ_img">
-                                        <img src="./../../assets/10-2.png" v-if="!item.open"/>
-                                        <img src="./../../assets/10.png" v-else/>
+                                    <div class="organ_img" @click="chose(item)">
+                                        <svg v-show="item.mark_chose"  class="icon">
+                                            <use xlink:href="#icon-chenggong"></use>
+                                        </svg>
+                                        <svg v-show="!item.mark_chose"  class="icon">
+                                            <use xlink:href="#icon-meiyouxuanzhong"></use>
+                                        </svg>
                                     </div>
-                                    <p :class="item.open?'active':''">{{item.name}}</p>
+                                    <p :class="item.mark_chose?'active':''" @click="item.open=!item.open">{{item.name}}</p>
                                     
-                                    <div class="organ_icon" v-if="item.open">
+                                    <div class="organ_icon" v-show="item.open">
                                         <svg  class="icon" aria-hidden="false">
                                             <use xlink:href="#icon-sanjiao"></use>
                                         </svg>
                                     </div>
                                 </div>
                                 <div v-if="item.open">
-                                    <div v-for="(dep,ind) in item.offices" :key="dep.id" :class="dep.open?'dep_active department':'department'" @click.stop="selectOffices(dep,ind)">
-                                       <p >{{dep.name}}</p>
-                                        <div class="organ_icon" v-show="dep.open">
-                                            <svg  class="icon" aria-hidden="false">
-                                                <use xlink:href="#icon-sanjiao"></use>
-                                            </svg>
+                                    <div v-for="(dep,ind) in item.subOffice" :key="dep.id" class="department" >
+                                        <div class="department_cont">
+                                            <div class="organ_img" @click="chose(dep)">
+                                                <svg v-show="dep.mark_chose"  class="icon">
+                                                    <use xlink:href="#icon-chenggong"></use>
+                                                </svg>
+                                                <svg v-show="!dep.mark_chose"  class="icon">
+                                                    <use xlink:href="#icon-meiyouxuanzhong"></use>
+                                                </svg>
+                                            </div>
+                                            <p :class="dep.mark_chose?'active':''" @click.stop="selectOffices(dep,ind,item)">{{dep.name}}</p>
+                                            <div class="organ_icon" v-show="dep.subOffice.length&&dep.open">
+                                                <svg  class="icon" aria-hidden="false">
+                                                    <use xlink:href="#icon-sanjiao"></use>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <div v-if="dep.open">
+                                            <div v-for="(c,num) in dep.subOffice" :key="c.id" :class="c.mark_chose?'dep_active department':'department'">
+                                                <div class="department_cont" style="padding-left:45px;">
+                                                    <div class="organ_img" @click="chose(c)">
+                                                        <svg v-show="c.mark_chose"  class="icon">
+                                                            <use xlink:href="#icon-chenggong"></use>
+                                                        </svg>
+                                                        <svg v-show="!c.mark_chose"  class="icon">
+                                                            <use xlink:href="#icon-meiyouxuanzhong"></use>
+                                                        </svg>
+                                                    </div>
+                                                    <p  @click.stop="selectOffices(c,num,dep,item)">{{c.name}}</p>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -45,16 +74,8 @@
 
                     </div>
 
-                    
-
-
                     <div class="address-personnel">
                         <el-scrollbar class="default-scrollbar" wrap-class="default-scrollbar__wrap" view-class="default-scrollbar__view" :native="false">
-                            <div class="search">
-                                <el-input v-model="userName" placeholder="搜索联系人"></el-input>
-                                <el-button type="primary" @click="search" plain>搜索</el-button>
-                            </div>
-
                             <div v-for="(item,index) in perso_data" class="personnel-item" :key="item.id" @click="pitch_on(item,index)">
                                 <div class="selectImg">
                                     <img src="./../../assets/20.png" v-if="item.mark_chose"/>
@@ -74,7 +95,6 @@
 
                 <!-- 底部 -->
                 <div class="footer">
-            
 
                  <div class="pitchOn_list" >
                     
@@ -94,8 +114,8 @@
                             <div class="scroll_line" @mousedown="mouse_down($event,1)"  @mouseup="mouse_up" ref="scroll_line"></div>
                          </div> 
                          <div class="ok_btn">
-                             <el-button type="success" @click="confirm" v-if="choose_data.length">确定</el-button>
-                             <el-button type="info" disabled  v-else>确定</el-button>
+                             <el-button type="success" @click="confirm" >确定</el-button>
+                            
                          </div>
                  </div> 
 
@@ -115,11 +135,14 @@
                 list:[],
                 perso_data:[],
                 choose_data:[],
+
+                baseData:null,
+                baseData2:null,
+                baseData3:null,
                 isDown:false,
-                userName:'',
             }
         },
-        props:['show','types','receivers','approvers','other'],
+        props:['show','types','receivers','arr'],
         watch:{
             show:function(){
                 if(this.show){
@@ -129,67 +152,74 @@
                 } 
             },
             types:function(){
-                if(this.types.indexOf('app')==0){
-                    console.log('审批人',this.approvers)
-                    this.choose_data = JSON.parse(JSON.stringify(this.approvers))
-                }else if(this.types.indexOf('res')==0){
-                    console.log('抄送人',this.receivers)
-                    this.choose_data = JSON.parse(JSON.stringify(this.receivers)) 
-                }else {
-                    this.choose_data = []
-                }
-
-                this.reset()
-                setTimeout(res=>{
-                    this.scroll()
-                },100)
-            }
+                choose_data = receivers
+            },
+      
         },
         created(){
             let that = this;
-            this.axios.get('/organ/addressbook',{
-                params:{
-                showGroup : true,
-                }
+            this.axios.get('work/report/permit/list').then(function (res) {
+               let datas = res.data.b;
 
-            }).then(function (res) {
-               let datas = res.data.b.data
+            datas.push({name:'所有用户',allInFlag:true})
+            datas.push({name:'我的',allInFlag:true})
 
-                for (let i = 0; i < datas.length; i++) {
-                    datas[i].open = false;
-                    for (let j = 0; j < datas[i].offices.length; j++) {
-                        datas[i].offices[j].open = false;
+            datas.forEach(element => {
+                element.mark_chose = false
+                element.open = false
+                    if(!element.subOffice) return false
+                    element.subOffice.forEach(item=>{
+                        item.mark_chose = false
+                        item.open = false
+                        if(item.subOffice&&item.subOffice.length!=0){
 
-                        for (let a = 0; a < datas[i].offices[j].staff.length; a++) {
+                            item.subOffice.forEach(el=>{
+                                    el.mark_chose = false
+                                    el.open = false
+
+                                    if(!el.staff) return false
+
+                                    el.staff.forEach(child=>{
+                                        child.mark_chose = false
+                                    })
+                            })
+
+                        }else{
+                            if(!item.staff) return false
                             
-                          datas[i].offices[j].staff[a].mark_chose = false
+                            item.staff.forEach(child=>{
+                                child.mark_chose = false
+                            })
+                        }
 
-                          for (let b = 0; b <that.choose_data.length; b++) {
-                              if (that.choose_data[b].userId == datas[i].offices[j].staff[a].userId) {
-                                    datas[i].offices[j].staff[a].mark_chose = true
-                                }
-                          }
-                      }
-                    }
-                }
+                    })
+            });
 
-               that.list = datas
+               if(that.arr.length){
+                   that.list  = that.arr
+               }else{
+                   that.list = datas
+               }
+
+               console.log('获取数据',that.list)
             })
 
         },
         methods: {
-            selectOffices(item,index){ //选中部门
+            selectOffices(item,index,data,data2){ //选中部门
 
-                this.list.forEach(element => {
-                    element.offices.forEach(el=>{
-                        el.open = false;
-                    })
-                });
-
-                item.open = true;
+                if(item.subOffice.length){
+                    item.mark_chose = true
+                    return false;
+                }
                 this.perso_data = item.staff
+                
+                this.baseData = item
+                this.baseData2 = data
+                this.baseData3 = data2
 
-                this.reset();
+               console.log('选中部门数据',this.list)
+
 
             },
             reset(){//重置数据
@@ -202,51 +232,27 @@
                         }
 
                     }
-            },
-            search(){
-                this.axios.get('/work/report/select/receiver',{
-                    params:{
-                        name : this.userName,
-                    }
-                }).then(res=>{
-                    let arr = res.data.b.data;
 
-                    this.perso_data = arr;
-
-                    arr.forEach(el=>{
-                          
-                        this.choose_data.forEach(item=>{
-                            if(el.userId==item.userId){
-                                el.mark_chose = true;
-                            }  
-                        })
-                    })
-
-                })
             },
             pitch_on(item,index){ //选中某人 
-
                 
                 item.mark_chose = !item.mark_chose
-                this.perso_data[index].mark_chose = item.mark_chose
-                
-                if(item.mark_chose){
-                    this.choose_data.push(item)
-                }else{
-                    for(let i=0;i<this.choose_data.length;i++){
-                        if(this.choose_data[i].userId==item.userId){
-                            this.choose_data.splice(i,1)
-                            this.translate()
-                        }
+
+                if(!item.mark_chose){
+                    this.baseData.mark_chose= this.baseData.mark_chose?false:this.baseData.mark_chose;
+
+                    if(this.baseData2.mark_chose){
+                        this.baseData2.mark_chose =false
+                        this.for(this.baseData2,this.baseData2.mark_chose)
+                    }
+
+                    if(this.baseData3&&this.baseData3.mark_chose){
+                        this.baseData3.mark_chose =false
+                        this.for(this.baseData3,this.baseData3.mark_chose)
                     }
                 }
 
-                if(this.types=='other'){
-                    this.$emit('choose',this.choose_data)
-                    return                    
-                }
-
-                this.scroll()
+               console.log('选中某人数据',this.list)
 
             },
             scroll(){
@@ -272,104 +278,34 @@
                 })
                 this.scroll()
             },
-            close(type){
-                this.choose_data = [];
-                this.perso_data = [];
-                this.userName = '';
-                this.reset()
-                this.$emit('close')
-            },
-            confirm(){//确认按钮
-                this.$emit('choose',this.choose_data)
-            },
-            translate(){
-                let choose_width = this.$refs.choose.offsetWidth //盒子长度
-                let scroll_line_width = this.$refs.scroll_line.offsetWidth //滚动条长度
+            for(item,flag){
                 
-                if(scroll_line_width==0) return false;
-                let choose_list_width = this.$refs.choose_list.offsetWidth //列表长度
-                let line_max = choose_width - scroll_line_width //滚动条可移动最大距离
-                let list_max = choose_list_width - choose_width //列表可移动最大距离
-                let prop = (list_max/line_max).toFixed(3) //移动比例
-                let line_late = (this.getLateX(this.$refs.scroll_line)-0) //滚动条已经存在的 位移距离
-                let list_late = -(this.getLateX(this.$refs.choose_list)-0) //列表已经存在的 位移距离
-
-                        let nums = list_late-70<0?0:list_late-70;
-
-                        let num = line_late - (70/prop);
-                        num= num <0?0:num;
-                        // console.log(prop)
-                        // console.log((70*prop)-70)
-                         this.$refs.choose_list.style.transform="translateX(-"+nums+"px)";
-                            this.$refs.scroll_line.style.transform="translateX("+num+"px)";
-
-
-            },
-            mouse_down(e,type){
-                this.isDown = true;
-                let beginX = e.pageX
-                let endX = 0,that = this;
-
-                let choose_width = this.$refs.choose.offsetWidth //盒子长度
-                let scroll_line_width = this.$refs.scroll_line.offsetWidth //滚动条长度
-                let choose_list_width = this.$refs.choose_list.offsetWidth //列表长度
-
-                let line_max = choose_width - scroll_line_width //滚动条可移动最大距离
-                let list_max = choose_list_width - choose_width //列表可移动最大距离
-                let prop = (list_max/line_max).toFixed(3) //移动比例
-                let line_late = (this.getLateX(this.$refs.scroll_line)-0) //滚动条已经存在的 位移距离
-
-                let list_late = -(this.getLateX(this.$refs.choose_list)-0) //列表已经存在的 位移距离
-
-
-                document.onmousemove = function(ev){
-                    endX = ev.pageX
-                    var distance,line
-
-                    if(endX-beginX>0){
-                        //往左滑
-                        if(type==2){
-                            // console.log('鼠标按下向左')
-                             distance = line_late - Math.abs(endX-beginX)
-                             line=distance<0?0:distance
-                            
-                            // that.$refs.choose_list.style.transform="translateX(-"+line*prop+"px)";
-                            // that.$refs.scroll_line.style.transform="translateX("+line+"px)";
-                        }else{
-                             distance = Math.abs(endX-beginX)+line_late
-                             line = distance>line_max?line_max:distance;
-                            // that.$refs.choose_list.style.transform="translateX(-"+line*prop+"px)";
-                            // that.$refs.scroll_line.style.transform="translateX("+line+"px)";
+                if(item.subOffice&&item.subOffice.length!=0){
+                    let arr = item.subOffice
+                    for(let i=0;i<arr.length;i++){
+                        arr[i].mark_chose = flag;
+                        if(arr[i].subOffice.length!=0||arr[i].staff.length!=0){
+                            this.for(arr[i],flag)
                         }
-                         that.$refs.choose_list.style.transform="translateX(-"+line*prop+"px)";
-                            that.$refs.scroll_line.style.transform="translateX("+line+"px)";
-                        // that.$refs.choose_list.style.transform="translateX(-"+line*prop+"px)";
-                        // that.$refs.scroll_line.style.transform="translateX("+line+"px)";
-                    }else{
-                     
-
-                        if(type==2){
-                             distance = Math.abs(endX-beginX)+line_late
-                             line = distance>line_max?line_max:distance;
-                        }else{
-                             distance = line_late - Math.abs(endX-beginX)
-                             line=distance<0?0:distance
-                            // that.$refs.choose_list.style.transform="translateX("+line*prop+"px)";
-                            // that.$refs.scroll_line.style.transform="translateX("+line+"px)";
-                        }
-                        // let line = line_max-distance<0?0:distance
-                        that.$refs.choose_list.style.transform="translateX(-"+line*prop+"px)";
-                        that.$refs.scroll_line.style.transform="translateX("+line+"px)";
+                    }
+                }else if(item.staff&&item.staff.length!=0){
+                    let arr = item.staff
+                    for(let i=0;i<arr.length;i++){
+                        arr[i].mark_chose = flag;
                     }
                 }
-                
-                document.onmouseup = function(){
-                        document.onmousemove = function(ev){
-                            return false;
-                        }
 
-                        return false;
-                }
+               console.log('循环数据',this.list)
+
+            },
+            chose(item){
+                    item.mark_chose = !item.mark_chose
+                    this.for(item,item.mark_chose);
+                   console.log('选中数据',this.list)
+            },
+            confirm(){//确认按钮
+                console.log(this.list)
+                this.$emit('choose',this.list)
             },
             mouse_move(e){
                 console.log(e)
@@ -412,12 +348,6 @@
 }
 .address>>> .is-vertical{
     // background-color: rgba(144,147,153,.3);
-}
-
-
-/deep/.el-input{
-    width:auto;
-    margin-right:15px;
 }
 
  .address>>> .el-button--success{
@@ -477,11 +407,6 @@
                 cursor pointer
             }
 
-            .el-button--primary.is-plain:focus{
-                background #ecf5ff;
-                color:#409EFF;
-            }
-
             .headImg{
                 margin-right 10px;
 
@@ -513,7 +438,7 @@
                 height 60px;
                 line-height 60px;
                 border-bottom 1px solid #ccc
-                padding-left 30px;
+                padding-left 15px;
                 cursor pointer
             }
 
@@ -522,14 +447,14 @@
             }
 
             
-            .department:first-child{
+            .department_cont:first-child{
                 border-top 1px solid #fff
             }
 
-            .department{
+            .department_cont{
                 display flex;
                 line-height 40px;
-                padding-left  80px;
+                padding-left 30px;
                 border-bottom 1px solid #fff
                 border-top 1px solid #fff
 
@@ -537,24 +462,18 @@
                     cursor pointer
                     background-color #f5f5f5
                 }
-
-                .organ_icon{
-                    transform rotate(-90deg)
-                }
             }
 
             .dep_active{
                 color #24b36b;
-                background-color #f5f5f5
-                border-bottom 1px solid #ccc
-                border-top 1px solid #ccc
             }
 
             .organ_img{
-                margin-right 20px;
 
-                img{
-                    margin-top 20px;
+                svg{
+                    width:16px;
+                    height:16px;
+                    margin-right:15px;
                 }
             }
 
@@ -700,10 +619,5 @@
     // .footer-scrollbar>>>.el-scrollbar__bar.is-horizontal>div{
     //     height:3px;
     // }
-
-    .search{
-        padding:10px;
-        border-bottom:1px solid #e6e6e6;
-    }
 
 </style>

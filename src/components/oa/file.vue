@@ -1,11 +1,12 @@
 <template>
     <div>
         <el-form-item class="fileUpload" label="附件">
-                    
-            <a class="file-btn" v-if="accessory.length<10">上传附件
-                <input type="file" @change="change">
-            </a>
-            <span class="el-upload__tip">仅支持图片、文档( .doc/.docx/.ppt/.pptx/.txt/.jpg/.jpeg/.png/.xlsx/.xls/.pdf/.zip/.rar)</span>
+            <div style="display:flex;">
+                <a class="file-btn" v-if="accessory.length<10">上传附件
+                    <input type="file" @change="change">
+                </a>
+                <span class="el-upload__tip">仅支持图片、文档( .doc/.docx/.ppt/.pptx/.txt/.jpg/.jpeg/.png/</br>.xlsx/.xls/.pdf/.zip/.rar)</span>
+            </div>
 
             <div>
                 <ul class="file-list" v-if="accessory.length">
@@ -23,7 +24,7 @@
                         </div>
                         
                         <div v-if="item.status">
-                            <el-button>查看</el-button>
+                            <el-button @click="lookFile(item.url,item.fileName)">查看</el-button>
                             <el-button @click="removeFile(index)">删除</el-button>
                         </div>
                     </li>
@@ -48,8 +49,10 @@
                 let file_obj = {},size=0;
 
                 that.accessory.forEach(el=>{
+                    el.fileSize = el.fileSize - 0
                     size+=el.fileSize
                 })
+
 
                 file_obj.fileName = file.name
                 file_obj.fileSize = file.size
@@ -59,8 +62,8 @@
                 }
 
                 if(!/\.(doc|docx|ppt|pptx|txt|jpg|jpeg|png|xlsx|xls|pdf|zip|rar)$/.test(file_obj.fileName)){
-                            this.$message.error('你选择的附件格式不支持')
-                            return false;
+                        this.$message.error('你选择的附件格式不支持')
+                        return false;
                 }
 
                 file_obj.url = '1.text'
@@ -75,6 +78,8 @@
 
                 this.axios.get('/public/upload/token?suffix='+file.name.substring(file.name.lastIndexOf('.') + 1)).then(res=>{
                     
+                    evfile.target.value = ''
+    
                     let uptoken  = res.data.b.uploadToken
                     var key = res.data.b.key
                     let config = {
@@ -125,6 +130,9 @@
             },
              removeFile(index){
                 this.$emit('remove',index)
+            },
+            lookFile(url,name){
+                this.Msg.openFile(url,name)
             },
             open(url){
                 console.log(this.Msg)
@@ -211,6 +219,29 @@
     }
     
 }
+
+/deep/ .el-form-item__content{
+    // overflow hidden;
+}
+
+
+   /deep/ .el-upload__tip{
+        margin-left 20px;
+        font-size 14px;
+        display block;
+        line-height 20px;
+        margin-top:0;
+    }
+
+    /deep/ .upload-demo{
+        width 650px;
+    }
+
+     /deep/ .el-upload-list__item-name{
+        height 40px;
+        font-size 16px;
+        line-height 40px;
+    }
 
 
 </style>

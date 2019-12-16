@@ -23,7 +23,6 @@ function getCookie(name) {
 };
 
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;'
-console.log(getCookie("auth_token"))
 
 if (getCookie("auth_token")) {
   window.localStorage.setItem("auth_token",getCookie("auth_token"));

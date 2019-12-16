@@ -6,7 +6,7 @@
         ></HeadTitle>
 
         <div>
-            <ListTemplate :data="datas" :type=2></ListTemplate>
+            <ListTemplate :data="datas" :type=2 v-on:accomplish='accomplish'></ListTemplate>
             <InfiniteLoading spinner="bubbles" :on-infinite="onInfinite" ref="infiniteLoading">
                  <span slot="no-more" class="no-more">
                     暂无更多加载
@@ -36,13 +36,15 @@
             InfiniteLoading
         },
         created(){
-            let that = this;
-            this.axios.get('/work/complete/list').then(function(res){
-                        that.datas = that.dataFor(res.data.b.data);
-                 })
             document.title = '已办事宜'
+            this.getData()
         },
         methods: {
+            getData(){
+                this.axios.get('/work/complete/list').then(res=>{
+                    this.datas = this.dataFor(res.data.b.data);
+                })
+            },
             dataFor(arr){
                 let data = [],res=[];
                 for(let i= 0;i<arr.length;i++){
@@ -53,6 +55,9 @@
                     data.push(obj)
                 }
                 return data;
+            },
+            accomplish(){
+                this.getData()
             },
             onInfinite(){
                let that = this;

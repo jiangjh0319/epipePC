@@ -1,5 +1,6 @@
 <template>
     <div class="main">
+        <!-- {{token}} -->
         <div class="menu-item">
              <p class="item-title"> <i></i> <span>常用应用</span> </p>
              <div>
@@ -33,40 +34,195 @@
                     </svg>
                         我的申请
                  </div>
+                 <div class="item"  @click="openUrl('daynews')">
+                    <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
+                        <use xlink:href="#icon-ribao"></use>
+                    </svg>
+                        日报
+                 </div>
+                 <div class="item"  @click="openUrl('weeknews')">
+                    <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
+                        <use xlink:href="#icon-zhoubao"></use>
+                    </svg>
+                        周报
+                 </div>
+                 <div class="item"  @click="openUrl('monthnews')">
+                    <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
+                        <use xlink:href="#icon-yuebao"></use>
+                    </svg>
+                        月报
+                 </div>
+                  <div class="item"  @click="openUrl('workReport')">
+                    <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
+                        <use xlink:href="#icon-gongzuohuibao"></use>
+                    </svg>
+                        工作汇报
+                 </div>
              </div>
         </div>
 
         <div class="menu-item">
              <p class="item-title"> <i></i> <span>智能考勤</span> </p>
              <div>
-                <!-- <div class="item">
+                <div class="item"  @click="none()">
                     <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
                         <use xlink:href="#icon-kaoqin"></use>
                     </svg>
                         考勤打卡
-                </div> -->
+                </div>
                 <div class="item"  @click="openUrl('leave')">
                     <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
                         <use xlink:href="#icon-qingjia"></use>
                     </svg>
-                        请假
+                        请&emsp;&emsp;假
+                </div>
+                <div class="item"  @click="none()">
+                    <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
+                        <use xlink:href="#icon-waiqin"></use>
+                    </svg>
+                        公出签到
+                </div>
+                <div class="item"  @click="none()">
+                    <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
+                        <use xlink:href="#icon-gongchu"></use>
+                    </svg>
+                        公出申请
+                </div>
+                <div class="item"   @click="none()">
+                    <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
+                        <use xlink:href="#icon-chucha"></use>
+                    </svg>
+                        出&emsp;&emsp;差
+                </div>
+                <div class="item"   @click="none()">
+                    <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
+                        <use xlink:href="#icon-buqiashenqing"></use>
+                    </svg>
+                        补卡申请
                 </div>
              </div>
         </div>
         <!-- {{token}} -->
 
-         <!-- <div class="menu-item">
+         <div class="menu-item">
              <p class="item-title"> <i></i> <span>行政审批</span> </p>
              <div>
 
-                <div class="item">
+                <div class="item" @click="openUrl('letter')" >
+                    <svg style="width: 24px;height:24px"   class="icon" aria-hidden="false">
+                        <use xlink:href="#icon-qingshihan"></use>
+                    </svg>
+                        请示函&emsp;
+                 </div>
+
+                 <div class="item" @click="none()">
+                    <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
+                        <use xlink:href="#icon-yongyin"></use>
+                    </svg>
+                        用&emsp;&emsp;印
+                 </div>
+
+                 <div class="item" @click="openUrl('contract')">
+                    <svg style="width: 24px;height:24px"   class="icon" aria-hidden="false">
+                        <use xlink:href="#icon-hetongshenpi"></use>
+                    </svg>
+                        合&emsp;&emsp;同
+                 </div>
+
+                 <div class="item"  @click="none()">
+                    <svg style="width: 24px;height:24px" class="icon"  aria-hidden="false">
+                        <use xlink:href="#icon-lizhi"></use>
+                    </svg>
+                        离&emsp;&emsp;职
+                 </div>
+
+                 <div class="item"  @click="none()">
+                    <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
+                        <use xlink:href="#icon-jiedaishenqing"></use>
+                    </svg>
+                        公务接待
+                 </div>
+
+                 <div class="item"  @click="none()">
+                    <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
+                        <use xlink:href="#icon-zhaopin"></use>
+                    </svg>
+                        人员需求
+                 </div>
+
+                 <div class="item"  @click="none()">
+                    <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
+                        <use xlink:href="#icon-yongche"></use>
+                    </svg>
+                        用&emsp;&emsp;车
+                 </div>
+
+                 <div class="item"  @click="none()">
+                    <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
+                        <use xlink:href="#icon-lizhi"></use>
+                    </svg>
+                        通讯录&emsp;
+                 </div>
+
+                 <div class="item"  @click="none()">
+                    <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
+                        <use xlink:href="#icon-lixiang"></use>
+                    </svg>
+                        项目立项
+                 </div>
+
+                 <div class="item"  @click="none()">
                     <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
                         <use xlink:href="#icon-qingshihan"></use>
                     </svg>
-                        {{token}}
+                        员工转正
                  </div>
+
+                 <div class="item"  @click="none()">
+                    <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
+                        <use xlink:href="#icon-xingwen"></use>
+                    </svg>
+                        行文呈批
+                 </div>
+
+                 <div class="item"  @click="none()">
+                    <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
+                        <use xlink:href="#icon-jiucan"></use>
+                    </svg>
+                        就&emsp;&emsp;餐
+                 </div>
+
+                 <div class="item"  @click="none()">
+                    <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
+                        <use xlink:href="#icon-jiaban"></use>
+                    </svg>
+                        加&emsp;&emsp;班
+                 </div>
+
+                 <div class="item"  @click="none()">
+                    <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
+                        <use xlink:href="#icon-diaogang"></use>
+                    </svg>
+                        调&emsp;&emsp;岗
+                 </div>
+                  <div class="item"  @click="none()">
+                    <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
+                        <use xlink:href="#icon-caigou"></use>
+                    </svg>
+                        采&emsp;&emsp;购
+                 </div>
+
+                 <div class="item"  @click="none()">
+                    <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
+                        <use xlink:href="#icon-lingyong"></use>
+                    </svg>
+                        物品领用
+                 </div>
+
              </div>
-        </div> -->
+        </div>
+        <ul class="bg-bubbles">
+</ul>
     </div>
 </template>
 
@@ -108,7 +264,13 @@
             },
             openUrl(url){
                 window.open(this.Service.baseUrl+url, "_blank");
-            },            
+            },
+            none(){
+                this.$message({
+                message:'该功能尚未开发~',
+                type: 'warning'
+                });
+            }        
         }
     }
 </script>
@@ -176,5 +338,6 @@
             border-radius 4px
         }
     }
+
 
 </style>

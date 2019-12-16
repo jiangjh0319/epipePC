@@ -38,9 +38,15 @@ import axios from "axios";
 import VueAxios from "vue-axios";
 Vue.use(VueAxios, axios);
 
+import Ajax from "./js/ajax";
+
+console.log(Ajax)
+Vue.prototype.Ajax = Ajax;
+
 axios.interceptors.response.use(data => {// 如果code是10  就是token过期了
   if (data.data.h.code == 10) {
     // window.location.href = "epipe://?&mark=login_out"
+    Vue.prototype.Msg.token()
   }
   return data
 }, error => {
@@ -54,6 +60,7 @@ router.beforeEach((to, from, next) => {
   }
   next()
 })
+
 
 /* eslint-disable no-new */
 new Vue({

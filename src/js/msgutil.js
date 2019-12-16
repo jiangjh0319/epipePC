@@ -21,19 +21,26 @@ const Msg = {
             // alert('qt获取失败')
         }
      },
-     sendMessage:function(msg){
+     sendMessage:function(msg,str){
+         console.log(msg,str)
         if(typeof context == 'undefined')
         {
             // alert("context对象获取失败！");
         }
         else
         {
-            context.onMsg(msg);
+            
+            context.onMsg(msg,str);
         }
     },
-     openFile:function(url){
-        this.sendMessage(url);
-     }
+    openFile:function(url,name=''){
+        this.sendMessage(url,name)
+     },
+    token:function(){
+        context.token(1);
+
+        // this.sendMessage(1);
+    }
 
 
    

@@ -24,6 +24,10 @@
                         <span>主题 :</span>
                         <a > {{item.theme}}</a>
                     </div>
+                    <div v-if="item.letterType">
+                        <span>请示类型 :</span>
+                        <a > {{item.letterTypeName}}</a>
+                    </div>
                     <div >
                         <span>请示内容 :</span>
                         <a   v-html="item.content"></a>

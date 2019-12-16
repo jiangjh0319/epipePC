@@ -62,6 +62,7 @@
             :applyId = "choose.applyId"
             :oaType="choose.typecode"
             v-on:isShow = "showDetails=false"
+            v-on:accomplish = 'accomplish'
             >
             </Details>
         </div>
@@ -104,6 +105,9 @@
                 case '4':
                     return "已退回";
                     break;
+                case '5':
+                    return "已评论";
+                    break;
                 }
             }
         },
@@ -112,6 +116,9 @@
             lookOver(item){
                 this.showDetails = true
                 this.choose = item
+            },
+            accomplish(){
+                this.$emit('accomplish')
             }
         },
     }

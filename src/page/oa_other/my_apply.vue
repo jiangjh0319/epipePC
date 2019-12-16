@@ -6,7 +6,7 @@
         ></HeadTitle>
 
         <div>
-            <ListTemplate :data="datas" :type=3></ListTemplate>
+            <ListTemplate :data="datas" :type=3 v-on:accomplish='accomplish'></ListTemplate>
             <InfiniteLoading spinner="bubbles" :on-infinite="onInfinite" ref="infiniteLoading">
                  <span slot="no-more" class="no-more">
                     暂无更多加载
@@ -37,12 +37,17 @@
         },
         created(){
             document.title = '我的申请'
-            let that = this;
-            this.axios.get('/work/my/apply/list').then(function(res){
-                        that.datas = that.dataFor(res.data.b.data);
-                 })
+            this.getData()
         },
         methods: {
+            getData(){
+                this.axios.get('/work/my/apply/list').then(res=>{
+                        this.datas = this.dataFor(res.data.b.data);
+                })
+            },
+              accomplish(){
+                this.getData()
+            },
             dataFor(arr){
                 let data = [],res=[];
                 for(let i= 0;i<arr.length;i++){

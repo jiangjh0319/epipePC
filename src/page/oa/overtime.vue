@@ -1,22 +1,11 @@
 <template>
     <div class="main">
         <HeadTitle
-            title="请假"
+            title="加班"
             icon='qingjia'
         ></HeadTitle>
         <div class="content">
-            <el-form ref="form" :rules="rules" :model="form" label-width="100px">
-                 <el-form-item label="请假类型" prop="leaveType">
-                    <!-- <el-input v-model="form.name"></el-input> -->
-                    <el-select v-model="form.leaveType" placeholder="请选择">
-                        <el-option
-                        v-for="item in form.type"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
+            <el-form ref="form" :rules="rules" :model="form" label-width="130px">
 
                 <el-form-item label="开始时间" prop="beginTime">
                     <!-- <el-input v-model="form.name"></el-input> -->
@@ -36,11 +25,21 @@
                     <!-- <el-input v-model="form.name"></el-input> -->
                 </el-form-item>
 
-                <el-form-item label="时长 (天)" prop="day"> 
-                    <el-input v-model="form.day" placeholder="请输入时长 (0.5为单位)"></el-input>
+                <el-form-item label="时长" prop="day"> 
+                    <el-input v-model="form.day" placeholder="请输入时长 (按小时统计)"></el-input>
                 </el-form-item>
 
-                <el-form-item class="textareaBox" label="请假事由" prop="desc" >
+                <el-form-item label="是否法定假日" prop="leaveType">
+                    <!-- <el-input v-model="form.name"></el-input> -->
+                    <el-select v-model="form.leaveType" placeholder="请选择">
+                        <el-option label="是" value="1"></el-option>
+                        <el-option label="否" value="0"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="加班核算方式" prop="day"> 
+                    <el-input value="申请调休" disabled></el-input>
+                </el-form-item>
+                <el-form-item class="textareaBox" label="加班原因" prop="desc" >
                      <el-input  type="textarea" v-model="form.desc" maxlength="150" placeholder="请输入请假事由">
                      </el-input>
                      <span class="textNum">{{wordCount}}/150</span>
@@ -96,7 +95,7 @@
              var checkDay = (rule, value, callback) => {
                 if (value*10%5!=0) {
                     console.log(this.form.beginTime)
-                    callback(new Error('请输入正确的请假天数'));
+                    callback(new Error('请输入正确的加班时长'));
                 } else {
                  callback();
                 }
@@ -127,11 +126,8 @@
                     endTime:'',
                 },
                 rules: {
-                    leaveType: [
-                        { required: true, message: '请选择请假类型', trigger: 'change' },
-                    ],
                     day: [
-                        { required: true, message: '请输入请假时长', trigger: 'blur' },
+                        { required: true, message: '请输入加班时长', trigger: 'blur' },
                         { validator: checkDay, trigger: 'blur' }
                     ],
                     beginTime:[
@@ -145,7 +141,7 @@
 
                     ],
                     desc:[
-                        { required: true, message: '请输入请假事由', trigger: 'blur' },
+                        { required: true, message: '请输入加班原因', trigger: 'blur' },
                         { min:1, max: 150, message: '长度在不能超过150字符', trigger: 'blur' }
                     ]
                 },
@@ -166,15 +162,7 @@
             Copy
         },
         created(){
-            document.title='请假'
-            let that = this;
-             this.axios.get('/work/leave/type/list').then(function(res){
-                if(res.data.h.code =200 ){
-                    res.data.b.data.forEach(item=>{
-                        that.form.type.push({value:item.id,label:item.name})
-                    })
-                }
-            })
+            document.title='加班'
         },
         watch:{
             'form.desc':function(val){
@@ -232,7 +220,6 @@
 
                 that.axios.post(this.Service.saveLeave + this.Service.queryString({
                     Id :'', // id
-                    leaveType: that.form.leaveType, //请假类型
                     beginTime:that.Util.getDate(that.form.beginTime), //开始时间
                     endTime :that.Util.getDate( that.form.endTime), //结束时间
                     leaveDuration : that.form.day, //请假天数
