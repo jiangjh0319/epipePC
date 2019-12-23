@@ -7,7 +7,7 @@ Vue.use(Vuex)
 
 
 const state = {
-
+  addressDetail:''
 }
   
   const mutations = {

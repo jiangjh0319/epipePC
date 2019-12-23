@@ -82,13 +82,13 @@
                     </svg>
                         公出签到
                 </div>
-                <div class="item"  @click="none()">
+                <div class="item"  @click="openUrl('beAwayApply')">
                     <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
                         <use xlink:href="#icon-gongchu"></use>
                     </svg>
                         公出申请
                 </div>
-                <div class="item"   @click="none()">
+                <div class="item"   @click="openUrl('trip')">
                     <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
                         <use xlink:href="#icon-chucha"></use>
                     </svg>

@@ -22,6 +22,8 @@ const Stamp = r => require.ensure([], () => r(require('@/page/oa/stamp.vue')), '
 const Absence = r => require.ensure([], () => r(require('@/page/oa/absence.vue')), 'group-oa')
 const OverTime = r => require.ensure([], () => r(require('@/page/oa/overTime.vue')), 'group-oa')
 const iframeSize = r => require.ensure([], () => r(require('@/page/oa/iframeSize.vue')), 'group-oa')
+const Trip = r => require.ensure([],() => r(require('@/page/oa/trip.vue')), 'group-oa') //出差
+const BeAwayApply = r => require.ensure([],() => r(require('@/page/oa/beAwayApply.vue')), 'group-oa') //公出申请
 
 //oa_other ===============================
 const FinishAffairs = r => require.ensure([], () => r(require('@/page/oa_other/finish_affairs.vue')), 'group-oa')
@@ -55,6 +57,22 @@ export default new Router({
       component: Leave,
       meta: {
         title: '请假'
+      }
+    },
+    {
+      path: '/trip',
+      name: 'trip',
+      component: Trip,
+      meta: {
+        title: '出差'
+      }
+    },
+    {
+      path: '/beAwayApply',
+      name: 'beAwayApply',
+      component: BeAwayApply,
+      meta: {
+        title: '公出申请'
       }
     },
     {

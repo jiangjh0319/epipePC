@@ -119,7 +119,7 @@
                 userName:'',
             }
         },
-        props:['show','types','receivers','approvers','other'],
+        props:['show','types','receivers','approvers','personnels','other'],
         watch:{
             show:function(){
                 if(this.show){
@@ -130,12 +130,16 @@
             },
             types:function(){
                 if(this.types.indexOf('app')==0){
-                    console.log('审批人',this.approvers)
+                    // console.log('审批人',this.approvers)
                     this.choose_data = JSON.parse(JSON.stringify(this.approvers))
-                }else if(this.types.indexOf('res')==0){
-                    console.log('抄送人',this.receivers)
+                }else if(this.types.indexOf('rec')==0){
+                    // console.log('抄送人',this.receivers)
                     this.choose_data = JSON.parse(JSON.stringify(this.receivers)) 
-                }else {
+                }else if(this.types.indexOf('per')==0){
+                    // console.log('同行人员',this.personnels)
+                    this.choose_data = JSON.parse(JSON.stringify(this.personnels)) 
+                }
+                else {
                     this.choose_data = []
                 }
 
