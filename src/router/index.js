@@ -21,6 +21,7 @@ const Contract = r => require.ensure([], () => r(require('@/page/oa/contract.vue
 const Stamp = r => require.ensure([], () => r(require('@/page/oa/stamp.vue')), 'group-oa')
 const Absence = r => require.ensure([], () => r(require('@/page/oa/absence.vue')), 'group-oa')
 const OverTime = r => require.ensure([], () => r(require('@/page/oa/overTime.vue')), 'group-oa')
+const Meal = r => require.ensure([], () => r(require('@/page/oa/meal.vue')), 'group-oa')
 const iframeSize = r => require.ensure([], () => r(require('@/page/oa/iframeSize.vue')), 'group-oa')
 
 //oa_other ===============================
@@ -95,6 +96,14 @@ export default new Router({
       component: OverTime,
       meta: {
         title: '加班'
+      }
+    },
+     {
+      path: '/meal',
+      name: 'meal',
+      component: Meal,
+      meta: {
+        title: '就餐'
       }
     },
     {
