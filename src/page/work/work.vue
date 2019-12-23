@@ -94,7 +94,7 @@
                     </svg>
                         出&emsp;&emsp;差
                 </div>
-                <div class="item"   @click="none()">
+                <div class="item"   @click="openUrl('absence')">
                     <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
                         <use xlink:href="#icon-buqiashenqing"></use>
                     </svg>
@@ -185,14 +185,14 @@
                         行文呈批
                  </div>
 
-                 <div class="item"  @click="none()">
+                 <div class="item"  @click="openUrl('meal')">
                     <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
                         <use xlink:href="#icon-jiucan"></use>
                     </svg>
                         就&emsp;&emsp;餐
                  </div>
 
-                 <div class="item"  @click="none()">
+                 <div class="item"  @click="openUrl('overtime')">
                     <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
                         <use xlink:href="#icon-jiaban"></use>
                     </svg>

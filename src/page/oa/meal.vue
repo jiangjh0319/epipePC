@@ -1,12 +1,32 @@
 <template>
     <div class="main">
         <HeadTitle
-            title="加班"
+            title="就餐"
             icon='qingjia'
         ></HeadTitle>
         <div class="content">
             <el-form ref="form" :rules="rules" :model="form" label-width="130px">
+                <el-form-item label="文件标题" prop="mealTitle"> 
+                    <el-input v-model="form.mealTitle" placeholder="请输入标题"></el-input>
+                </el-form-item>
+                <el-form-item label="提交人" > 
+                    <el-input v-model="form.userName" disabled placeholder="请输入提交人"></el-input>
+                </el-form-item>
+                <el-form-item label="所属部门"> 
+                    <el-input v-model="form.departmentName" disabled placeholder="请输入所属部门"></el-input>
+                </el-form-item>
 
+
+                <el-form-item label="就餐人数" prop="num"> 
+                    <el-input v-model="form.num" placeholder="请输入就餐人数"></el-input>
+                </el-form-item>
+
+                <el-form-item label="就餐类型" prop="mealType">
+                    <!-- <el-input v-model="form.name"></el-input> -->
+                    <el-select v-model="form.mealType" placeholder="请选择">
+                        <el-option :label="item.key" :value="item.value" v-for="item in form.type" :key="item.value"></el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item label="开始时间" prop="beginTime">
                     <!-- <el-input v-model="form.name"></el-input> -->
                     <el-date-picker
@@ -24,26 +44,20 @@
                     </el-date-picker>
                     <!-- <el-input v-model="form.name"></el-input> -->
                 </el-form-item>
-
-                <el-form-item label="时长" prop="day"> 
-                    <el-input v-model="form.day" placeholder="请输入时长 (按小时统计)"></el-input>
-                </el-form-item>
-
-                <el-form-item label="是否法定假日" prop="isLegalHoliday">
-                    <!-- <el-input v-model="form.name"></el-input> -->
-                    <el-select v-model="form.isLegalHoliday" placeholder="请选择">
-                        <el-option label="是" value="1"></el-option>
-                        <el-option label="否" value="0"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="加班核算方式" prop="accountType"> 
-                    <el-input value="申请调休" disabled></el-input>
-                </el-form-item>
-                <el-form-item class="textareaBox" label="加班原因" prop="desc" >
-                     <el-input  type="textarea" v-model="form.desc" maxlength="1000" placeholder="请输入加班原因">
+                <el-form-item class="textareaBox" label="就餐标准" prop="mealStandard" >
+                     <el-input  type="textarea" v-model="form.mealStandard" maxlength="500" placeholder="请输入就餐标准">
                      </el-input>
-                     <span class="textNum">{{wordCount}}/1000</span>
-                     <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+                     <span class="textNum">{{mealStandardCount}}/500</span>
+                </el-form-item>
+                 <el-form-item class="textareaBox" label="人员名单" prop="mealPersons" >
+                     <el-input  type="textarea" v-model="form.mealPersons" maxlength="500" placeholder="请输入人员名单">
+                     </el-input>
+                     <span class="textNum">{{mealPersonsCount}}/500</span>
+                </el-form-item>
+                 <el-form-item class="textareaBox" label="备注" prop="mealRemarks" >
+                     <el-input  type="textarea" v-model="form.mealRemarks" maxlength="1000" placeholder="请输入备注">
+                     </el-input>
+                     <span class="textNum">{{mealRemarksCount}}/1000</span>
                 </el-form-item>
 
                 <File :accessory="accessory"
@@ -94,7 +108,7 @@
         data() {
              var checkDay = (rule, value, callback) => {
                 if (isNaN(value)) {
-                    callback(new Error('请输入正确的加班时长'));
+                    callback(new Error('请输入正确的就餐人数'));
                 } else {
                  callback();
                 }
@@ -117,16 +131,26 @@
             return {
                 form: {
                     name: '',
-                    day:'',
+                    mealTitle:'',
+                    num:'',
                     type: [],
-                    isLegalHoliday:'',
-                    desc: '',
+                    mealType:'',
+                    mealPersons:'',
+                    mealRemarks:'',
+                    mealStandard:'',
                     beginTime:'',
                     endTime:'',
+                    departmentName:'',
+                    userName:''
                 },
                 rules: {
-                    day: [
-                        { required: true, message: '请输入加班时长', trigger: 'blur' },
+                    mealTitle:[
+                        { required: true, message: '请输入文件标题', trigger: 'blur' },
+                        { min:1, max: 1000, message: '长度在不能超过100字符', trigger: 'blur' }
+
+                    ],
+                    num: [
+                        { required: true, message: '请输入就餐人数', trigger: 'blur' },
                         { validator: checkDay, trigger: 'blur' }
                     ],
                     beginTime:[
@@ -134,13 +158,23 @@
                         { validator: beginCheck, trigger: 'change' }
 
                     ],
+                    mealType:[
+                        { required: true, message: '请选择就餐类型', trigger: 'change' },
+                    ],
                     endTime:[
                         { required: true, message: '请选择结束时间', trigger: 'change' },
                         { validator: endCheck, trigger: 'change' }
 
                     ],
-                    desc:[
-                        { required: true, message: '请输入加班原因', trigger: 'blur' },
+                    mealStandard:[
+                        { required: true, message: '请输入就餐标准', trigger: 'blur' },
+                        { min:1, max: 500, message: '长度在不能超过500字符', trigger: 'blur' }
+                    ],
+                    mealPersons:[
+                        { required: true, message: '请输入人员名单', trigger: 'blur' },
+                        { min:1, max: 500, message: '长度在不能超过500字符', trigger: 'blur' }
+                    ],
+                    mealRemarks:[
                         { min:1, max: 1000, message: '长度在不能超过1000字符', trigger: 'blur' }
                     ]
                 },
@@ -150,7 +184,9 @@
                 openAdd:false,
                 accessory:[],
                 btnStatus:true,
-                wordCount:0,
+                mealStandardCount:0,
+                mealPersonsCount:0,
+                mealRemarksCount:0,
             }
         },
         components:{
@@ -161,11 +197,24 @@
             Copy
         },
         created(){
-            document.title='加班'
+            document.title='就餐'
+            this.Ajax.get('/user/info').then(res=>{
+                this.form.departmentName = res.data.b.officeName
+                this.form.userName = res.data.b.name
+            })
+             this.Ajax.get('/work/meal/type').then((res)=>{
+                    if(res.data.h.code =200 ) this.form.type = res.data.b;
+                })
         },
         watch:{
-            'form.desc':function(val){
-                this.wordCount = val.length
+            'form.mealStandard':function(val){
+                this.mealStandardCount = val.length
+            },
+            'form.mealPersons':function(val){
+                this.mealPersonsCount = val.length
+            },
+            'form.mealRemarks':function(val){
+                this.mealRemarksCount = val.length
             }
         },
         methods:{
@@ -221,21 +270,23 @@
                     Id :'', // id
                     beginTime:that.Util.getDate(that.form.beginTime), //开始时间
                     endTime :that.Util.getDate( that.form.endTime), //结束时间
-                    isLegalHoliday : that.form.isLegalHoliday, //请假天数
-                    accountType:1,
-                    duration:that.form.day,
+                    mealType : that.form.mealType,//就餐类型
+                    mealNums:that.form.num, //就餐人数
+                    mealPersons: encodeURI(that.form.mealPersons.replace(/\n/g, '<br/>')),
+                    mealRemarks: encodeURI(that.form.mealRemarks.replace(/\n/g, '<br/>')),
+                    mealStandard: encodeURI(that.form.mealStandard.replace(/\n/g, '<br/>')), //就餐标准
+                    
                     auditUserIds, //审批人
                     receiverIds, //抄送人
                     auditCompanyIds,
                     receiverCompanyIds,
-                    reason : encodeURI(that.form.desc.replace(/\n/g, '<br/>')), //请假事由
                     url : fileObj.urlStr, //附件
                     fileName :fileObj.fileNameStr, //文件名称 
                     fileSize :fileObj.fileSizeStr, //文件大小
                     draftFlag : 0, //草稿还是发送
                     }
 
-                that.Ajax.postForm('/work/overtime/save',params).then( (res)=>{
+                that.Ajax.postForm('/work/meal/save',params).then( (res)=>{
                         if(res.data.h.code!=200){
                             that.$message(res.data.h.msg)
                         }else if(res.data.h.code == 200){
@@ -297,6 +348,10 @@
             color #999
     }
     
+
+    .textNum{
+        right:-120px;
+    }
     
      /deep/ .textareaBox textarea{
         width 650px
@@ -352,9 +407,6 @@
         cursor pointer;
     }
 
-    .textNum{
-        right:-120px;
-    }
 
 
 </style>
