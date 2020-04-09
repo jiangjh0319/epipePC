@@ -123,6 +123,57 @@ const Util = {
     
     return id;
   },
+  checkApprovers(arr){
+    for (let index = 0; index < arr.length; index++) {
+        if(arr[index].auditers.length<1&&(arr[index].approvalUserType==3||arr[index].approvalUserType==1)) return true
+    }
+
+    return false
+  },
+  approverFormat(arr,numStr){//审批人数据格式化
+    
+    let data = {userIdsStr:'',companyIdsStr:''};
+    let arrs = numStr.split('|')
+    arr.forEach((item,index) => {
+      if(item.index>-1){
+        arrs[index]=item.auditers.length;
+      }
+      if(item.approvalUserType==3){
+        arrs = this.nullVal(arrs,item.auditers.length)
+      }
+        item.auditers.forEach(el=>{
+            data.userIdsStr += el.userId+'|'
+            data.companyIdsStr += el.companyId+'|'
+        })
+    });
+    data.numStr = arrs.join('|')
+    data.userIdsStr = data.userIdsStr.slice(0,-1).replace(/null/g,'').replace(/\|\|/g,'|')
+    data.companyIdsStr = data.companyIdsStr.slice(0,-1).replace(/null/g,'').replace(/\|\|/g,'|')
+    return data;
+  },
+  nullVal(arr,val){
+    for(let i=0;i<arr.length;i++){
+      if(arr[i]=='null'){
+        arr[i]=val
+        return arr
+      }
+    }
+  
+    return arr;
+  },
+  approverDataInit(arr){
+    let data = arr;
+
+    data.forEach(item=>{
+        if(item.approvalUserType==1&&item.auditers.length>1&&item.remarks==2){
+          item.isSelect=true;
+          item.approvealList = item.auditers;
+          item.auditers= [];
+          item.index=-1;
+        }
+    })
+    return data
+  },
   fileFo:function(accessory){
     let obj = {urlStr:"",fileSizeStr:"",fileNameStr:""}
     for(let i=0;i<accessory.length;i++){

@@ -22,6 +22,7 @@ const Stamp = r => require.ensure([], () => r(require('@/page/oa/stamp.vue')), '
 const Absence = r => require.ensure([], () => r(require('@/page/oa/absence.vue')), 'group-oa')
 const OverTime = r => require.ensure([], () => r(require('@/page/oa/overTime.vue')), 'group-oa')
 const Meal = r => require.ensure([], () => r(require('@/page/oa/meal.vue')), 'group-oa')
+const Pay = r => require.ensure([], () => r(require('@/page/oa/pay.vue')), 'group-oa')
 const iframeSize = r => require.ensure([], () => r(require('@/page/oa/iframeSize.vue')), 'group-oa')
 const Trip = r => require.ensure([],() => r(require('@/page/oa/trip.vue')), 'group-oa') //出差
 const BeAwayApply = r => require.ensure([],() => r(require('@/page/oa/beAwayApply.vue')), 'group-oa') //公出申请
@@ -66,6 +67,14 @@ export default new Router({
       component: Trip,
       meta: {
         title: '出差'
+      }
+    },
+    {
+      path: '/pay',
+      name: 'pay',
+      component: Pay,
+      meta: {
+        title: '付款'
       }
     },
     {

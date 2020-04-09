@@ -39,11 +39,12 @@
                 </File>
 
                  <Approve
-                    :approvers_data='approvers_data'
+                    :approver_list='allApprovers'
                     v-on:selectOpen='selectOpen'
                     v-on:remove='remove'
-                    guideType=2
-
+                    hintType=2
+                    v-on:del_poeple="del_poeple"
+                    v-on:address="add_people"
                 >
 
                 </Approve>
@@ -51,6 +52,8 @@
                     :receivers_data='receivers_data'
                     v-on:selectOpen='selectOpen'
                     v-on:remove='remove'
+                    :show_add='!showCopy'
+                    v-if="showCopy||receivers_data.length"
                 >
                 </Copy>
 
@@ -68,6 +71,7 @@
             :types="peopleType"
             :approvers="approvers_data"
             :receivers="receivers_data"
+            :showGroup="showGroup"
             
         ></AddressList>
     </section>
@@ -75,7 +79,9 @@
 
 <script>
     import File from './../../components/oa/file.vue'
-    import Approve from './../../components/oa/approve_contacts.vue'
+    // import Approve from './../../components/oa/approve_contacts.vue'
+    import Approve from './../../components/oa/new_approve.vue'
+
     import Copy from './../../components/oa/copy_contacts.vue'
     import AddressList from './../../components/common/addressList.vue'
     import HeadTitle from './../../components/common/headTitle.vue'
@@ -86,6 +92,10 @@
                 accessory:[],
                 approvers_data:[],
                 receivers_data:[],
+                allApprovers:[],
+                approver_index:0,
+                showCopy:false,
+                showGroup:false,
                 form:{
                     contractName:'',
                     contractNoInput:'',
@@ -132,6 +142,15 @@
                 this.form.applyCompany = res.data.b.organName
                 this.form.applyUserName = res.data.b.name
             })
+
+            this.axios.get('/process/apply/enter?req=2').then((res)=>{
+                let data = res.data.b;
+                this.allApprovers = data.links;
+                this.showCopy = data.approvalReceiverFlag=='1'?true:false;
+                if(data.receivers.length>0){
+                        this.receivers_data = data.receivers
+                }
+            })
         },
         watch:{
             'form.contractDesc':function(val){
@@ -165,11 +184,23 @@
             },
             choose(arr){
                 this.openAdd=false
-                if(this.peopleType.indexOf('app')!=0){
+                if(this.peopleType.indexOf('other')!=0){
                     this.receivers_data = JSON.parse(JSON.stringify(arr))
                 }else{
-                    this.approvers_data = JSON.parse(JSON.stringify(arr))
+                    this.allApprovers[this.approver_index].auditers = JSON.parse(JSON.stringify(arr))
                 }
+            },
+            add_people(index){
+                this.approver_index = index
+                this.showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
+                this.approvers_data = this.allApprovers[index].auditers
+                this.peopleType = 'other'+(Math.random()+'').slice(2,10)
+                setTimeout(()=>{
+                    this.openAdd = true
+                },200)
+            },
+            del_poeple(index,num){
+                this.allApprovers[index].auditers.splice(num,1)
             },
             submitForm(formName){
                 if(!this.btnStatus) return ''
@@ -185,20 +216,15 @@
             },
             submit(){
 
-                if(!this.approvers_data.length){
-                    this.$message.error('请选择审批人');
-                    return;
-                }
 
                 let that = this;
                 
-                let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj,params;
+                let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj,params,approves;
 
                 receiverIds = that.Util.getIds(that.receivers_data,'userId')
-                auditUserIds = that.Util.getIds(that.approvers_data,'userId')
-                auditCompanyIds = that.Util.getIds(that.approvers_data,'companyId')
                 receiverCompanyIds = that.Util.getIds(that.receivers_data,'companyId')
-                 fileObj = that.Util.fileFo(that.accessory)
+                fileObj = that.Util.fileFo(that.accessory)
+                approves = that.Util.approverFormat(that.allApprovers)
 
                 params = {
                     Id :'', // id
@@ -213,10 +239,12 @@
                     Url : fileObj.urlStr, //附件
                     fileName:fileObj.fileNameStr, 
                     fileSize:fileObj.fileSizeStr,
-                    auditUserIds, //审批人
                     receiverIds, //抄送人
-                    auditCompanyIds,
                     receiverCompanyIds,
+                    auditUserIds:approves.userIdsStr, //审批人
+                    auditCompanyIds:approves.companyIdsStr,
+                    applyLinkIds:approves.applyLinkIdsStr,
+                    linkAuditNum:approves.numStr,
                     draftFlag : 0, //草稿还是发送
                 }
 

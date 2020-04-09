@@ -218,6 +218,12 @@
                     </svg>
                         物品领用
                  </div>
+                 <div class="item" @click="openUrl('pay')">
+                    <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
+                        <use xlink:href="#icon-lingyong"></use>
+                    </svg>
+                        付款
+                 </div>
 
              </div>
         </div>

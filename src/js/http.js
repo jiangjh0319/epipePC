@@ -7,6 +7,8 @@ axios.defaults.withCredentials = true;
 axios.defaults.timeout = 5000;
 
 const dev = 'http://192.168.3.166:8280/member/v1'; //测试
+// const dev = 'http://192.168.3.40:8080/member/v4'; //
+
 // const dev = 'http://192.168.3.181:8280/member/v3'; // 闵文杰
 const product = 'https://apps.epipe.cn/member/v1';//正式环境
 axios.defaults.baseURL = window.location.href.indexOf("apps.epipe.cn")>0 ? product : dev;

@@ -45,8 +45,6 @@
 
                     </div>
 
-                    
-
 
                     <div class="address-personnel">
                         <el-scrollbar class="default-scrollbar" wrap-class="default-scrollbar__wrap" view-class="default-scrollbar__view" :native="false">
@@ -119,7 +117,7 @@
                 userName:'',
             }
         },
-        props:['show','types','receivers','approvers','personnels','other'],
+        props:['show','types','receivers','approvers','other','showGroup'],
         watch:{
             show:function(){
                 if(this.show){
@@ -130,17 +128,15 @@
             },
             types:function(){
                 if(this.types.indexOf('app')==0){
-                    // console.log('审批人',this.approvers)
+                    console.log('审批人',this.approvers)
                     this.choose_data = JSON.parse(JSON.stringify(this.approvers))
-                }else if(this.types.indexOf('rec')==0){
-                    // console.log('抄送人',this.receivers)
+                }else if(this.types.indexOf('res')==0){
+                    console.log('抄送人',this.receivers)
                     this.choose_data = JSON.parse(JSON.stringify(this.receivers)) 
-                }else if(this.types.indexOf('per')==0){
-                    // console.log('同行人员',this.personnels)
-                    this.choose_data = JSON.parse(JSON.stringify(this.personnels)) 
-                }
-                else {
-                    this.choose_data = []
+                }else {
+                    this.choose_data = JSON.parse(JSON.stringify(this.approvers))
+                    this.perso_data= [];
+                    this.getData()
                 }
 
                 this.reset()
@@ -150,36 +146,7 @@
             }
         },
         created(){
-            let that = this;
-            this.axios.get('/organ/addressbook',{
-                params:{
-                showGroup : true,
-                }
-
-            }).then(function (res) {
-               let datas = res.data.b.data
-
-                for (let i = 0; i < datas.length; i++) {
-                    datas[i].open = false;
-                    for (let j = 0; j < datas[i].offices.length; j++) {
-                        datas[i].offices[j].open = false;
-
-                        for (let a = 0; a < datas[i].offices[j].staff.length; a++) {
-                            
-                          datas[i].offices[j].staff[a].mark_chose = false
-
-                          for (let b = 0; b <that.choose_data.length; b++) {
-                              if (that.choose_data[b].userId == datas[i].offices[j].staff[a].userId) {
-                                    datas[i].offices[j].staff[a].mark_chose = true
-                                }
-                          }
-                      }
-                    }
-                }
-
-               that.list = datas
-            })
-
+            this.getData();
         },
         methods: {
             selectOffices(item,index){ //选中部门
@@ -195,6 +162,37 @@
 
                 this.reset();
 
+            },
+            getData(){
+                let that = this;
+                this.axios.get('/organ/addressbook',{
+                    params:{
+                    showGroup : !this.showGroup,
+                    }
+
+                }).then( (res)=>{
+                let datas = res.data.b.data
+
+                    for (let i = 0; i < datas.length; i++) {
+                        datas[i].open = false;
+                        for (let j = 0; j < datas[i].offices.length; j++) {
+                            datas[i].offices[j].open = false;
+
+                            for (let a = 0; a < datas[i].offices[j].staff.length; a++) {
+                                
+                            datas[i].offices[j].staff[a].mark_chose = false
+
+                            for (let b = 0; b <that.choose_data.length; b++) {
+                                if (that.choose_data[b].userId == datas[i].offices[j].staff[a].userId) {
+                                        datas[i].offices[j].staff[a].mark_chose = true
+                                    }
+                            }
+                        }
+                        }
+                    }
+
+                that.list = datas
+                })
             },
             reset(){//重置数据
                         for(let j=0;j<this.perso_data.length;j++){
@@ -245,7 +243,7 @@
                     }
                 }
 
-                if(this.types=='other'){
+                if(this.types.indexOf('other')>-1){
                     this.$emit('choose',this.choose_data)
                     return                    
                 }

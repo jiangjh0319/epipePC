@@ -35,7 +35,7 @@
                                 <img class="profileImg" :src="info.profileImg"/>
                                 <div>
                                     {{info.username}}
-                                    <p v-if="status=='0'">等待{{info.auditUserName?info.auditUserName:info.auditName}}的审批</p>
+                                    <p v-if="status=='0'">等待{{info.auditUserName?info.auditUserName:info.auditName}}的{{info | awaits}}</p>
                                     <p  v-else>{{status|stateName}}</p>
                                 </div>
                             </div>
@@ -67,7 +67,96 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="approve">
+                            <!-- ========================================================================== -->
+                            <div v-if="info.links">
+                                <div class="flow_list">
+                                    <div class="flow_list_item">
+                                        <div >
+                                            <div class="user_info">
+                                                <img :src="info.profileImg" class="head_img"/>
+                                                <div class="user_info_d">
+                                                    <span>{{info.username}}</span>
+                                                    <span>发起申请</span>
+                                                    <span>{{info.applyTime | timeStrSlice}}</span>
+                                                </div>
+                                            </div>
+                                            <div class="user_info_rest arrows" style="height:30px;"></div>
+
+                                        </div>
+                                    </div>
+                                    <div class="flow_list_item" v-if="info.auditStatus=='3'" style="margin-top:10px">
+                                        <div >
+                                            <div class="user_info">
+                                                <img :src="info.profileImg" class="head_img"/>
+                                                <div class="user_info_d">
+                                                    <span>{{info.username}}</span>
+                                                    <span class="careOf">已撤销</span>
+                                                    <span></span>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div v-for="(item,index) in info.links" :key="index" class="flow_item" v-if="index<=endIndex&&info.auditStatus!='3'">
+                                        <div v-if="item.flow" >
+                                            <div class="user_info">
+                                                <img :src="item.profileImg" class="head_img"/>
+                                                <div class="user_info_d">
+                                                    <span>{{item.name}}</span>
+                                                    <span :class="item.status | statusClass">{{item.status | stateName}}</span>
+                                                    <span>{{item.auditTime | timeStrSlice}}</span>
+                                                </div>
+                                            </div>
+                                            <div class="user_info_rest arrows">
+                                                <p>{{item.reason}}</p>
+                                                <div v-if="item.accessory" class="file">
+                                                    <div class="accessory file-list">
+                                                        <div @click.stop="openFile(file.url,file.fileName)"  style="margin-top:10px;margin-bottom:0" v-for="file in item.accessory" :key="file.url">
+                                                            <div>
+                                                                <img src="./../../assets/wenjian.png" v-if="!file.isImg"/>
+                                                                <img :src="file.url" v-else/>
+                                                            </div>
+                                                            <div style="flex:1">
+                                                                <p>{{file.fileName}}</p>
+                                                                <span>{{file.fileSize |fileSize}}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div v-else-if="item.auditers.length"  class="flow_list_item" >
+                                            <div class="user_info">
+                                                <img src="../../assets/group.png" class="head_img"/>
+                                                <div class="approve_state">
+                                                    <p>审批人 <span v-if="item.status=='0'">审批中</span></p>
+                                                    <span class="approver_type">{{item |info}}</span>
+                                                </div>
+                                            </div>
+                                            <div class="approvers_list arrows">
+                                                <div v-for="(child,num) in item.auditers" :key="num" class="approvers_list_item">
+                                                    <img class="user_img" :src="child.profileImg"/>
+                                                    <span class="omit">{{child.name}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div v-else>
+                                            <div class="user_info">
+                                                <img src="../../assets/head.png" class="head_img"/>
+                                                <div>
+                                                    <p style="font-size:15px;">{{item.approvalUserType==1?item.quartersName:'主管'}}</p>
+                                                    <span style="color:#999;font-size:12px;">{{item.approvalUserScope==2?'未找到审批人自动通过':'未找到审批人转交管理员'}}</span>
+                                                </div>
+                                            </div>
+                                            <div class="approvers_list arrows"></div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            <div class="approve" v-else>
                                 <div style="margin-bottom:15px;">
                                     <span class="info-title">审批人</span>
                                     <a>已添加 {{info.auditers?info.auditers.length:0}} 人</a>
@@ -216,22 +305,23 @@
                 loading:true,
                 people:[],
                 title:'',
+                endIndex:99999,
                 opinionShow:false,
                 openAdd:false,
                 myself:false,
                 peopleType:false,//打开通讯录类型
                 oa:['','请假','请示函','合同', '公出', '出差' ,'用印' ,'报销','付款','离职',
                 '借款','接待','补卡', '用车', '人员需求','项目立项', '转正', '就餐',
-                '行文呈批','加班','员工调岗','采购','物品领用'],
+                '行文呈批','加班','员工调岗','采购','物品领用','权限异动'],
                 ajax:['',{url:'leave/apply',name:'leaveId'},{url:'letter',name:'letterId'},{url:'contract',name:'contractId'}, {url:'/outsign/task/infos',name:'outsideId'},
                 {url:'trip',name:'tripId'}, {url:'stamp',name:'stampId'} ,{url:'reimburse',name:'reimburseId'},{url:'pay',name:'payApplyId'},{url:'dimission',name:'dimissionApplyId'},
                 {url:'borrow',name:'borrowApplyId'},{url:'reception',name:'receptionApplyId'},{url:'absence',name:'absenceApplyId'}, {url:'car',name:'carApplyId'}, 
                 {url:'employee',name:'employeeApplyId'}, {url:'project',name:'projectApplyId'}, {url:'regular',name:'regularApplyId'}, {url:'meal',name:'mealApplyId'},
                 {url:'document',name:'documentApplyId'},{url:'overtime',name:'overTimeApplyId'},{url:'changeposition',name:'positionApplyId'},{url:'buy',name:'userBuyApplyId'},
-                {url:'material',name:'materialReceiveApplyId'}]
+                {url:'material',name:'materialReceiveApplyId'},{url:'move/erpprimove/info',name:'erpprimoveApplyId'}]
             }
         },
-        props:['show','data','oaType','applyId','typeName'],
+        props:['show','data','oaType','applyId','typeName',],
         methods: {
             control(){
                 this.loading=true
@@ -277,10 +367,10 @@
             getDetails(){
                 let that = this;
                 let url = '/work/'+this.ajax[this.oaType].url+'/info'
-                if(this.oaType==4){
+                if(this.oaType==4||this.oaType==23){
                     url = this.ajax[this.oaType].url
                 }
-                 this.axios.get(url+'?'+this.ajax[this.oaType].name+'='+this.applyId+'&pushId=0').then(function(res){
+                 this.axios.get(url+'?'+this.ajax[this.oaType].name+'='+this.applyId+'&pushId=0').then((res)=>{
                      if(res.data.h.code!=200){
                          that.$emit('isShow')
                          that.$message.error(res.data.h.msg);
@@ -291,6 +381,7 @@
                      }else{
                          that.info = res.data.b;
                      }
+
 
                     that.title = that.info.username+'的'+that.oa[that.oaType]+'申请'
                     that.info.accessory = that.accessoryFors(that.info.accessory)
@@ -304,9 +395,64 @@
                     
                     that.status = that.info.auditStatus;
 
-                    for(let i =0;i<that.info.auditers.length;i++){   
-                        if(that.info.auditers[i].accessory!=null){
-                            that.info.auditers[i].accessory = that.accessoryFors(that.info.auditers[i].accessory)
+                    if(that.info.links){
+                        let arr = that.info.links,newArr=[];
+                        arr.forEach(item=>{
+                            for(let i =0;i<item.auditers.length;i++){
+                                if(item.auditers[i].accessory!=null){
+                                        item.auditers[i].accessory = that.accessoryFors(item.auditers[i].accessory)
+                                }
+                            }
+                        })
+
+                        for(let i=0;i<arr.length;i++){
+                            let ar = JSON.parse(JSON.stringify(arr[i]))
+                            ar.auditers = [];
+                            let data = arr[i].auditers;
+
+                            if(arr[i].admins.length){
+                                let flow = arr[i]
+                                flow.auditers = arr[i].admins;
+                                flow.admins = [];
+                                flow.linkType = 4;
+                                arr.splice(i,0,flow)
+                            }
+
+
+                            data.forEach(item=>{
+                                if(item.status!=='00'&&item.status!='0'){
+                                    item.flow = true;
+                                    newArr.push(item)
+                                }else{
+                                    item.hide = true;
+                                    ar.auditers.push(item)
+                                }
+
+                                if(item.status=='0'){
+
+                                    ar.status = '0'
+                                }
+                            })
+
+                            if(ar.auditers.length==1&&ar.auditers[0].status=='0'){
+                                ar.auditers[0].flow = true
+                                newArr.push(ar.auditers[0])
+                            }else if(ar.auditers.length>0){
+                                newArr.push(ar)
+                            }
+
+
+                            if(!ar.auditers.length&&(ar.approvalUserType==1||ar.approvalUserType==2)&&ar.approvalUserScope==2){
+                                newArr.push(ar)
+                            }
+                            
+                        }
+                        that.info.links = newArr;
+                    }else{
+                        for(let i =0;i<that.info.auditers.length;i++){   
+                            if(that.info.auditers[i].accessory!=null){
+                                that.info.auditers[i].accessory = that.accessoryFors(that.info.auditers[i].accessory)
+                            }
                         }
                     }
 
@@ -388,6 +534,15 @@
                     break;
                 }
             },
+            awaits:function(data){
+                let str = '';
+                if(data.linkType==3){
+                    str='或签'
+                }else if(data.linkType=4){
+                    str='会签'
+                }
+                return  str+='审批';
+            }, 
             auditersState: function(value){
                 switch (value){
                 case '0':
@@ -430,6 +585,17 @@
                 case '5':
                     return "consent";
                     break;
+                }
+            },
+            info(item){
+                if(item.auditers.length<2){
+                    return item.auditers.length+'人审批'
+                }if(item.linkType==2){
+                    return item.auditers.length+'人依次审批'
+                }else if(item.linkType==4){
+                    return item.auditers.length+'人或签'
+                }else if(item.linkType==3){
+                    return item.auditers.length+'人会签'
                 }
             },
         },
@@ -754,4 +920,140 @@
         cursor:pointer;
     }
 }
+
+
+.approvers_list{
+    position relative
+    display flex;
+    padding-left 55px;
+    flex-wrap wrap;
+    margin-top:10px;
+
+    &_item{
+        width 50px;
+        text-align center;
+        font-size 12px;
+        color:#999;
+        margin-right:25px;
+        margin-bottom:10px;
+    }
+}
+
+.flow_item:last-child .arrows{
+        min-height:0;
+
+        &:after,&:before{
+            display none;
+        }
+    }
+
+
+.user_info{
+    display flex;
+
+    .head_img{
+        width:50x;
+        height:50px;
+        border-radius:50%;
+        margin-right 10px;
+    }
+
+    &_rest{
+        color:#666;
+        margin-top:10px;
+        padding-left 45px;
+
+        >p{
+            font-size 14px;
+            margin-bottom 10px;
+        }
+
+        
+    }
+
+
+    &_d{
+        flex 1;
+        display:block;
+        line-height 50px;
+        font-size 14px;
+
+
+        span:first-child{
+            float:left;
+            font-size 15px;
+            color #333;
+            width:70px;
+            overflow: hidden;
+            text-overflow:ellipsis;
+            white-space: nowrap;
+        }
+
+        span:last-child{
+            color #666;
+            margin-left:15px;
+        }
+    }
+
+    .approve_state{
+
+        >p{
+            font-size 15px;
+
+            span{
+                color #f80;
+            }
+        }
+
+        span{
+            font-size 12px;
+        }
+
+        .approver_type{
+            color:#999;
+        }
+    }
+}
+
+.arrows{
+    position relative;
+    min-height:20px;
+
+
+        &:after{
+            position absolute
+            content ''
+            top:0;
+            left 24px;
+            height 100%;
+            width:2px;
+            background-color #02D6B2
+        }
+
+        &:before{
+                position: absolute;
+                content: '';
+                width: 6px;
+                height: 6px;
+                border: 2px solid #02d6b2;
+                border-top: none;
+                border-left: none;
+                bottom: -1px;
+                left: 21px;
+                transform: rotate(45deg);
+        }
+    }
+
+.user_img{
+        display block;
+        width:37px;
+        height:37px;
+        border-radius:50%;
+        margin 0 auto;
+    }
+
+    .flow_item{
+        margin-top:10px;
+    }
+
 </style> 

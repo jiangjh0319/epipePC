@@ -88,7 +88,7 @@
                 },
                 rules:{
                     letterType: [
-                        { required: true, message: '请选择请假类型', trigger: 'change' },
+                        { required: true, message: '请选择请示类型', trigger: 'change' },
                     ],
                     desc:[
                         { required: true, message: '请示函内容不能为空', trigger: 'blur' },

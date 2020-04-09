@@ -18,7 +18,7 @@
                             </div>
                         </div>
 
-                        <div class="approver-li">
+                        <div class="approver-li" v-if="!show_add">
                             <div class="approver-add"  @click="selectOpen('rec')">
                                 <svg style="width:50px;height:50px;" class="icon" aria-hidden="false">
                                     <use xlink:href="#icon-tianjiarenyuan"></use>
@@ -37,7 +37,7 @@
             return {
             }
         },
-        props:['receivers_data','isShow'],
+        props:['receivers_data','isShow','show_add'],
         methods:{
             remove(type,index){
                 this.$emit('remove',type,index)

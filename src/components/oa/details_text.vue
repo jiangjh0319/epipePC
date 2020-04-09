@@ -980,6 +980,40 @@
                     <p>{{data.materialReceiveRemarks}} </p>
                 </div>
             </div>
+             <div v-else-if="type==23">
+                <div class="infor-box">
+                    <span>审批编号 </span>
+                    <p>{{data.applyNo}}</p>
+                </div>
+                <div class="infor-box">
+                    <span >姓&emsp;&emsp;名 </span>
+                    <p>{{data.applyName}}</p>
+                </div>
+                <div class="infor-box">
+                    <span>部&emsp;&emsp;门 </span>
+                    <p>{{data.applyDept}}</p>
+                </div>
+                <div class="infor-box">
+                    <span>职&emsp;&emsp;位 </span>
+                    <p>{{data.position}}</p>
+                </div>
+                 <div class="infor-box">
+                        <span>异动原因 </span>
+                        <p>{{data.moveReason}}</p>
+                </div>
+                <div class="infor-box">
+                    <span>异动类型 </span>
+                    <p>{{data.moveType}}</p>
+                </div>
+                <div class="infor-box" >
+                    <span>需申请权限 </span>
+                    <p>{{data.wantPri}}</p>
+                </div>
+                <div class="infor-box" v-if="data.applyRason">
+                    <span>申请原因 </span>
+                    <p>{{data.applyRason}} </p>
+                </div>
+            </div>
 
     </div>
 </template>

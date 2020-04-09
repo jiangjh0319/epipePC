@@ -228,7 +228,7 @@
                     receiverIds, //抄送人
                     auditCompanyIds,
                     receiverCompanyIds,
-                    reason : encodeURI(that.form.desc.replace(/\n/g, '<br/>')), //请假事由
+                    reason : that.form.desc.replace(/\n/g, '<br/>'), //请假事由
                     url : fileObj.urlStr, //附件
                     fileName :fileObj.fileNameStr, //文件名称 
                     fileSize :fileObj.fileSizeStr, //文件大小
