@@ -33,13 +33,22 @@
                 >
                 </File>
 
-                 <Approve
+                <!-- <Approve
                     :approvers_data='approvers_data'
                     v-on:selectOpen='selectOpen'
                     v-on:remove='remove'
                     guideType=3
                 >
 
+                </Approve> -->
+                <Approve
+                    :approver_list='allApprovers'
+                    v-on:selectOpen='selectOpen'
+                    v-on:remove='remove'
+                    hintType=2
+                    v-on:del_poeple="del_poeple"
+                    v-on:address="add_people"
+                >
                 </Approve>
                 <Copy
                     :receivers_data='receivers_data'
@@ -69,7 +78,8 @@
 
 <script>
     import File from './../../components/oa/file.vue'
-    import Approve from './../../components/oa/approve_contacts.vue'
+    // import Approve from './../../components/oa/approve_contacts.vue'
+    import Approve from './../../components/oa/new_approve.vue'
     import Copy from './../../components/oa/copy_contacts.vue'
     import AddressList from './../../components/common/addressList.vue'
     import HeadTitle from './../../components/common/headTitle.vue'
@@ -102,6 +112,13 @@
                 openAdd:false,
                 peopleType:false,//打开通讯录类型
 
+                linkAuditNum:'',
+                applyLinkIds:'',
+                allApprovers:[],
+                showCopy:false,
+                showGroup:false,
+                approver_index:0,
+
             }
         },
         components:{
@@ -118,6 +135,18 @@
                     res.data.b.forEach(item=>{
                         this.form.type.push({value:item.value,label:item.key})
                     })
+                }
+            })
+            // added 新审批组件获取审批人数据
+            this.axios.get('/process/apply/enter?req=7').then((res)=>{
+                let data = res.data.b;
+                this.allApprovers  = this.Util.approverDataInit(data.links);
+                this.linkAuditNum = data.linkAuditNum;
+                this.applyLinkIds = data.applyLinkIds;
+                
+                this.showCopy = data.approvalReceiverFlag=='1'?true:false;
+                if(data.receivers.length>0){
+                        this.receivers_data = data.receivers
                 }
             })
         },
@@ -145,14 +174,28 @@
                 }
             },
             choose(arr){
+                // modify 修改审批组件方法
                 this.openAdd=false
-           
-                if(this.peopleType.indexOf('app')!=0){
+                if(this.peopleType.indexOf('other')!=0){
                     this.receivers_data = JSON.parse(JSON.stringify(arr))
                 }else{
-                    this.approvers_data = JSON.parse(JSON.stringify(arr))
+                    this.allApprovers[this.approver_index].auditers = JSON.parse(JSON.stringify(arr))
                 }
             },
+            // added 审批组件新增函数 --start 
+            add_people(index){
+                this.approver_index = index
+                this.showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
+                this.approvers_data = this.allApprovers[index].auditers
+                this.peopleType = 'other'+(Math.random()+'').slice(2,10)
+                setTimeout(()=>{
+                    this.openAdd = true
+                },200)
+            },
+            del_poeple(index,num){
+                this.allApprovers[index].auditers.splice(num,1)
+            },
+            // --end
             submitForm(formName){
                 if(!this.btnStatus) return ''
                 this.$refs[formName].validate((valid) => {
@@ -163,20 +206,35 @@
                 }
                 });
             },
-            submit(){
-                if(!this.approvers_data.length){
-                    this.$message.error('请选择审批人');
-                    return;
-                }
-                
-                let that = this;
-                let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj,params;
+            // modify 修改submit函数
 
-                receiverIds = that.Util.getIds(that.receivers_data,'userId')
-                auditUserIds = that.Util.getIds(that.approvers_data,'userId')
-                auditCompanyIds = that.Util.getIds(that.approvers_data,'companyId')
-                receiverCompanyIds = that.Util.getIds(that.receivers_data,'companyId')
-                 fileObj = that.Util.fileFo(that.accessory)
+            submit(){
+                let that = this;
+
+                if(this.Util.checkApprovers(this.allApprovers)){
+                    this.$message('请选择审批人!')
+                    return 
+                }
+
+                let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj,params,approves;
+                receiverIds = this.Util.getIds(this.receivers_data,'userId')
+                receiverCompanyIds = this.Util.getIds(this.receivers_data,'companyId')
+                fileObj = this.Util.fileFo(this.accessory)
+                approves = this.Util.approverFormat(this.allApprovers,this.linkAuditNum)
+                
+                // if(!this.approvers_data.length){
+                //     this.$message.error('请选择审批人');
+                //     return;
+                // }
+                
+                // let that = this;
+                // let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj,params;
+
+                // receiverIds = that.Util.getIds(that.receivers_data,'userId')
+                // auditUserIds = that.Util.getIds(that.approvers_data,'userId')
+                // auditCompanyIds = that.Util.getIds(that.approvers_data,'companyId')
+                // receiverCompanyIds = that.Util.getIds(that.receivers_data,'companyId')
+                //  fileObj = that.Util.fileFo(that.accessory)
                 
                 params = {
                     Id :'', // id
@@ -186,11 +244,17 @@
                     letterType:that.form.letterType,
                     fileName:fileObj.fileNameStr, 
                     fileSize:fileObj.fileSizeStr,
-                    auditUserIds, //审批人
+                    // auditUserIds, //审批人
                     receiverIds, //抄送人
-                    auditCompanyIds,
-                    receiverCompanyIds,
+                    // auditCompanyIds,
+                    // receiverCompanyIds,
                     draftFlag : 0, //草稿还是发送
+
+                    receiverCompanyIds,
+                    auditUserIds:approves.userIdsStr, //审批人
+                    auditCompanyIds:approves.companyIdsStr,
+                    applyLinkIds:this.applyLinkIds,
+                    linkAuditNum:approves.numStr,
                 }
 
 
