@@ -115,7 +115,7 @@
                         请示函&emsp;
                  </div>
 
-                 <div class="item" @click="none()">
+                 <div class="item" @click="openUrl('stamp')">
                     <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
                         <use xlink:href="#icon-yongyin"></use>
                     </svg>

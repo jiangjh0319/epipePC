@@ -53,14 +53,22 @@
 
                 </File>
 
-                <Approve
+                <!-- <Approve
                     :approvers_data='approvers_data'
                     v-on:selectOpen='selectOpen'
                     v-on:remove='remove'
                     guideType=0
                 >
+                </Approve> -->
 
-                </Approve>
+                <Approve
+                    :approver_list='allApprovers'
+                    v-on:selectOpen='selectOpen'
+                    v-on:remove='remove'
+                    hintType=0
+                    v-on:del_poeple="del_poeple"
+                    v-on:address="add_people"
+                >
                 <Copy
                     :receivers_data='receivers_data'
                     v-on:selectOpen='selectOpen'
@@ -86,7 +94,7 @@
 
 <script>
     import HeadTitle from './../../components/common/headTitle.vue'
-    import Approve from './../../components/oa/approve_contacts.vue'
+    import Approve from './../../components/oa/new_approve.vue'
     import Copy from './../../components/oa/copy_contacts.vue'
     import AddressList from './../../components/common/addressList.vue'
     import File from './../../components/oa/file.vue'
@@ -173,6 +181,18 @@
                     res.data.b.data.forEach(item=>{
                         that.form.type.push({value:item.id,label:item.name})
                     })
+                }
+            })
+
+             this.axios.get('/process/apply/enter?req=0').then((res)=>{
+                let data = res.data.b;
+                this.allApprovers  = this.Util.approverDataInit(data.links);
+                this.linkAuditNum = data.linkAuditNum;
+                this.applyLinkIds = data.applyLinkIds;
+                
+                this.showCopy = data.approvalReceiverFlag=='1'?true:false;
+                if(data.receivers.length>0){
+                        this.receivers_data = data.receivers
                 }
             })
         },

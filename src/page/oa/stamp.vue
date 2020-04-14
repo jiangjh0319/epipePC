@@ -29,7 +29,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="文件数量" prop="fileQuantity"> 
-                    <el-input v-model.number="form.fileQuantity" maxlength="10" placeholder="请输入文件数量"></el-input>
+                    <el-input v-model.number="form.fileQuantity" maxlength="50" placeholder="请输入文件数量"></el-input>
                 </el-form-item>
                 <el-form-item label="印章名称" prop="type">  
                      <el-select v-model="form.type" placeholder="请选择">
@@ -49,6 +49,7 @@
 
                 <File :accessory="accessory"
                     v-on:remove="removeFile"
+                    num=50
                 >
                 </File>
 
@@ -234,9 +235,9 @@
                     fileQuantity:that.form.fileQuantity, //文件数量
                     stampApplyReason:that.form.stampApplyReason, 
 
-                    Url : fileObj.urlStr, //附件
-                    fileName:fileObj.fileNameStr, 
-                    fileSize:fileObj.fileSizeStr,
+                    urls : fileObj.urlStr, //附件
+                    fileNames:fileObj.fileNameStr, 
+                    fileSizes:fileObj.fileSizeStr,
                     auditUserIds, //审批人
                     receiverIds, //抄送人
                     auditCompanyIds,

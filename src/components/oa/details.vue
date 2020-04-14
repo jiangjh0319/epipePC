@@ -536,11 +536,12 @@
             },
             awaits:function(data){
                 let str = '';
-                if(data.linkType==3){
-                    str='或签'
-                }else if(data.linkType=4){
-                    str='会签'
-                }
+                console.log(data)
+                // if(data.linkType==3){
+                //     str='或签'
+                // }else if(data.linkType=4){
+                //     str='会签'
+                // }
                 return  str+='审批';
             }, 
             auditersState: function(value){

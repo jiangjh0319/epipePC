@@ -157,9 +157,7 @@
                         { min:1, max: 1000, message: '长度在不能超过1000字符', trigger: 'blur' }
                     ]
                 },
-                showCopy:false,
-                showGroup:false,
-                approver_index:0,
+                
                 approvers_data:[],//审批人
                 receivers_data:[],//抄送人
                 peopleType:false,//打开通讯录类型
@@ -167,9 +165,13 @@
                 accessory:[],
                 btnStatus:true,
                 payReasonCount:0,
+
                 linkAuditNum:'',
                 applyLinkIds:'',
                 allApprovers:[],
+                showCopy:false,
+                showGroup:false,
+                approver_index:0,
             }
         },
         components:{
@@ -271,6 +273,8 @@
                 fileObj = this.Util.fileFo(this.accessory)
                 approves = this.Util.approverFormat(this.allApprovers,this.linkAuditNum)
 
+
+
                  params = {
                     Id :'', // id
                     payDate:this.Util.getDate(this.form.payTime), 
@@ -286,10 +290,12 @@
                     fileSizes: fileObj.fileSizeStr,
                     receiverIds, //抄送人
                     receiverCompanyIds,
+                    
                     auditUserIds:approves.userIdsStr, //审批人
                     auditCompanyIds:approves.companyIdsStr,
                     applyLinkIds:this.applyLinkIds,
                     linkAuditNum:approves.numStr,
+                    
                     receiverCompanyIds,
                     draftFlag : 0, //草稿还是发送
                     }

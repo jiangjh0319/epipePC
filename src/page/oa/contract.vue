@@ -96,6 +96,8 @@
                 approver_index:0,
                 showCopy:false,
                 showGroup:false,
+                linkAuditNum:'',
+                applyLinkIds:'',
                 form:{
                     contractName:'',
                     contractNoInput:'',
@@ -146,6 +148,8 @@
             this.axios.get('/process/apply/enter?req=2').then((res)=>{
                 let data = res.data.b;
                 this.allApprovers = data.links;
+                this.applyLinkIds = data.applyLinkIds;
+                this.linkAuditNum = data.linkAuditNum;
                 this.showCopy = data.approvalReceiverFlag=='1'?true:false;
                 if(data.receivers.length>0){
                         this.receivers_data = data.receivers
@@ -224,7 +228,7 @@
                 receiverIds = that.Util.getIds(that.receivers_data,'userId')
                 receiverCompanyIds = that.Util.getIds(that.receivers_data,'companyId')
                 fileObj = that.Util.fileFo(that.accessory)
-                approves = that.Util.approverFormat(that.allApprovers)
+                approves = that.Util.approverFormat(that.allApprovers,that.linkAuditNum)
 
                 params = {
                     Id :'', // id
@@ -243,7 +247,7 @@
                     receiverCompanyIds,
                     auditUserIds:approves.userIdsStr, //审批人
                     auditCompanyIds:approves.companyIdsStr,
-                    applyLinkIds:approves.applyLinkIdsStr,
+                    applyLinkIds:that.applyLinkIds,
                     linkAuditNum:approves.numStr,
                     draftFlag : 0, //草稿还是发送
                 }
