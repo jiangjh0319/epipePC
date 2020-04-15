@@ -149,6 +149,7 @@ const Util = {
     data.numStr = arrs.join('|')
     data.userIdsStr = data.userIdsStr.slice(0,-1).replace(/null/g,'').replace(/\|\|/g,'|')
     data.companyIdsStr = data.companyIdsStr.slice(0,-1).replace(/null/g,'').replace(/\|\|/g,'|')
+    console.log(data)
     return data;
   },
   nullVal(arr,val){

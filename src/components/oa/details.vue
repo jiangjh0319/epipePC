@@ -410,7 +410,7 @@
                             ar.auditers = [];
                             let data = arr[i].auditers;
 
-                            if(arr[i].admins.length){
+                            if(arr[i].admins&&arr[i].admins.length){
                                 let flow = arr[i]
                                 flow.auditers = arr[i].admins;
                                 flow.admins = [];

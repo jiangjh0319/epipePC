@@ -40,10 +40,6 @@
                     <el-form-item label="公出地点" prop="addressDetail" :rules="[{required: true, message: '请选择出差地点'}]"> 
                         <el-input v-model="form.addressDetail" placeholder="请选择出差地点" @focus='getFocus(index)'></el-input>
                     </el-form-item>
-
-                    <!-- <el-form-item label="时长 (天)"> 
-                        <el-input v-model="form.day" placeholder="请输入时长 (0.5为单位)"></el-input>
-                    </el-form-item> -->
                     <el-form-item label="同行人员" prop="persons" :rules="[{required: true, message: '请选择同行人员'}]"> 
                         <el-input v-model="form.persons" placeholder="请选择" @focus='getPersons'></el-input>
                     </el-form-item>
@@ -60,14 +56,24 @@
 
                 </File>
 
-                <Approve
+                <!-- <Approve
                     :approvers_data='approvers_data'
                     v-on:selectOpen='selectOpen'
                     v-on:remove='remove'
                     guideType=0
                 >
+                </Approve> -->
 
+                 <Approve
+                    :approver_list='allApprovers'
+                    v-on:selectOpen='selectOpen'
+                    v-on:remove='remove'
+                    hintType=0
+                    v-on:del_poeple="del_poeple"
+                    v-on:address="add_people"
+                >
                 </Approve>
+
                 <Copy
                     :receivers_data='receivers_data'
                     v-on:selectOpen='selectOpen'
@@ -117,7 +123,7 @@
 
 <script>
     import HeadTitle from './../../components/common/headTitle.vue'
-    import Approve from './../../components/oa/approve_contacts.vue'
+    import Approve from './../../components/oa/new_approve.vue'
     import Copy from './../../components/oa/copy_contacts.vue'
     import Personnel from './../../components/oa/personnel_contacts.vue'
     import AddressList from './../../components/common/addressList.vue'
@@ -211,6 +217,12 @@
                 isShowPer:false,
                 personsData:'',
                 _index:0,
+                showCopy:false,
+                showGroup:false,
+                approver_index:0,
+                linkAuditNum:'',
+                applyLinkIds:'',
+                allApprovers:[],
                 ishowDelet:false
             }
         },
@@ -232,6 +244,18 @@
                     res.data.b.type.forEach(item=>{
                         that.form.type.push({value:item.value,label:item.key})
                     })
+                }
+            })
+
+            this.axios.get('/process/apply/enter?req=3').then((res)=>{
+                let data = res.data.b;
+                this.allApprovers  = this.Util.approverDataInit(data.links);
+                this.linkAuditNum = data.linkAuditNum;
+                this.applyLinkIds = data.applyLinkIds;
+                
+                this.showCopy = data.approvalReceiverFlag=='1'?true:false;
+                if(data.receivers.length>0){
+                        this.receivers_data = data.receivers
                 }
             })
             
@@ -259,6 +283,18 @@
                     this.form.userlocation = data.point;
                 }
             },
+            add_people(index){
+                this.approver_index = index
+                this.showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
+                this.approvers_data = this.allApprovers[index].auditers
+                this.peopleType = 'other'+(Math.random()+'').slice(2,10)
+                setTimeout(()=>{
+                    this.openAdd = true
+                },200)
+            },
+            del_poeple(index,num){
+                this.allApprovers[index].auditers.splice(num,1)
+            },
             getPersons(){
                 this.selectOpen('per');
             },
@@ -273,13 +309,12 @@
                 let arrName = []
                 let peerUserIds = [];
                 this.openAdd=false
-                if(this.peopleType.indexOf('app')==0){
+                if(this.peopleType.indexOf('other')==0){
+                    this.allApprovers[this.approver_index].auditers = JSON.parse(JSON.stringify(arr))
                     
-                     this.approvers_data = JSON.parse(JSON.stringify(arr))
                 }else if(this.peopleType.indexOf('per')==0){
 
                     this.Personnel_data = JSON.parse(JSON.stringify(arr))
-                    console.log(arr)
                     for(let val of this.Personnel_data){
                         peerUserIds.push(val.userId)
                         arrName.push(val.name)
@@ -314,20 +349,22 @@
                 });
             },
             submit(){
-           
+                if(this.Util.checkApprovers(this.allApprovers)){
+                    this.$message('请选择审批人!')
+                    return 
+                }
 
                 let that = this;
-                let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj;
                 let beginTime = '',endTime = '',day = '';
 
-                receiverIds = that.Util.getIds(that.receivers_data,'userId')
-                auditUserIds = that.Util.getIds(that.approvers_data,'userId')
-                auditCompanyIds = that.Util.getIds(that.approvers_data,'companyId')
-                receiverCompanyIds = that.Util.getIds(that.receivers_data,'companyId')
-                fileObj = that.Util.fileFo(that.accessory)
+                let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj,params,approves;
+                receiverIds = this.Util.getIds(this.receivers_data,'userId')
+                receiverCompanyIds = this.Util.getIds(this.receivers_data,'companyId')
+                fileObj = this.Util.fileFo(this.accessory)
+                approves = this.Util.approverFormat(this.allApprovers,this.linkAuditNum)
 
           
-                let params = {
+                 params = {
                     Id :'', // id
                     outSideReason : encodeURI(that.form.desc.replace(/\n/g, '<br/>')), //外出事由
                     outsideType:that.form.awayType,//外出类型
@@ -341,21 +378,18 @@
                     lon:that.form.userlocation.lng,//经度
                     lat:that.form.userlocation.lat,//纬度
                     url : fileObj.urlStr, //附件
-                    auditUserIds, //审批人
                     receiverIds, //抄送人
+                    receiverCompanyIds,
+                    auditUserIds:approves.userIdsStr, //审批人
+                    auditCompanyIds:approves.companyIdsStr,
+                    applyLinkIds:this.applyLinkIds,
+                    linkAuditNum:approves.numStr,
                     draftFlag : 0, //草稿还是发送
-                    auditCompanyIds,//审批人的公司id
-                    receiverCompanyIds,//抄送人的公司id
                     fileName :fileObj.fileNameStr, //文件名称 
                     fileSize :fileObj.fileSizeStr, //文件大小
                     
                 }
-                console.log('params',params)
             
-                if(!this.approvers_data.length){
-                    this.$message.error('请选择审批人');
-                    return;
-                }
                 that.axios.post(this.Service.saveAwayApply + this.Service.queryString(params)).then(function (res){
                 if(res.data.h.code!=200){
                         that.$message(res.data.h.msg)

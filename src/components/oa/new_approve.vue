@@ -11,12 +11,12 @@
                                     <span>{{item | info}}</span>
                                 </div>
                                 <div class="people_list">
-                                    <!-- <div class="people_list_item" v-if="item.isSelect">
+                                    <div class="people_list_item" v-if="item.isSelect">
                                         <div class="select_text" >
                                             <button>选择人员</button>
                                             <el-button @click="go_select(item.approvealList,item.quartersName,index,item.index)">选择人员</el-button>
                                         </div>
-                                    </div> -->
+                                    </div>
                                     <div   v-for="(child,num) in item.auditers" @click="go_check(item,index)" :key="child.id" class="people_list_item">
                                         <div class="people_list_user">
                                             <svg  class="icon" aria-hidden="false" v-if="item.approvalUserType==3" @click="del(index,num)">
@@ -39,8 +39,8 @@
                                         <span v-if="item.approvalUserScope==2">未找到审批人将自动通过</span>
                                         <span v-else>未找到审批人将转交管理员</span>
                                     </div>
-                                    <!-- <div v-if="item.approvalUserType==3&&((item.auditers.length<9&&item.remarks==1)||(item.auditers.length<1&&item.remarks==0))" @click="add_people(index)"> -->
-                                    <div v-if="item.approvalUserType==3&&item.auditers.length<9" @click="add_people(index)">
+                                    <div v-if="item.approvalUserType==3&&((item.auditers.length<9&&item.remarks==1)||(item.auditers.length<1&&item.remarks==0))" @click="add_people(index)">
+                                    <!-- <div v-if="item.approvalUserType==3&&item.auditers.length<9" @click="add_people(index)"> -->
                                         <div class="approver_info_people_item">
                                             <img src="../../assets/add_people.png"/>
                                         </div>
