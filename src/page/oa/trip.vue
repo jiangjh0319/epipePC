@@ -467,6 +467,7 @@
     // @import "./../../style/oa.styl"
 
     .main{
+        
         padding 30px
     }
 
