@@ -1,62 +1,31 @@
 <template>
     <div class="main">
         <HeadTitle
-            title="出差"
-            icon='chucha'
+            title="物品领用"
+            icon='recipients'
         ></HeadTitle>
         <div class="content">
             <el-form ref="form" :rules="rules" :model="form" label-width="100px">
-                 <!-- <el-form-item label="请假类型" prop="leaveType">
-                    <el-select v-model="form.leaveType" placeholder="请选择">
-                        <el-option
-                        v-for="item in form.type"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                        </el-option>
-                    </el-select>
-                </el-form-item> -->
-                <el-form-item label="标题" prop="stampApplyTitle"> 
-                    <el-input v-model="form.stampApplyTitle" placeholder="请输入标题" ></el-input>
+                <el-form-item label="物品用途" prop="materialReceiveTheme"> 
+                    <el-input v-model="form.materialReceiveTheme" placeholder="请输入标题" ></el-input>
                 </el-form-item>
                 <div v-for="(v,index) in form.list" :key="index">
                     <el-form-item v-if="ishowDelet"> 
-                        行程明细（{{index+1}}）<el-button type="danger" round @click="deleteRules(v,index)">删除</el-button>
-                    </el-form-item>
-                    <el-form-item label="出差地点" :prop="'list.'+index+'.addressDetail'" :rules="[{required: true, message: '请选择出差地点'}]"> 
-                        <el-input v-model="v.addressDetail" placeholder="请选择出差地点" @focus='getFocus(index)'></el-input>
+                        物品明细（{{index+1}}）<el-button type="danger" round @click="deleteRules(v,index)">删除</el-button>
                     </el-form-item>
 
-                    <el-form-item label="开始时间" :prop="'list.'+index+'.beginTime'" :rules="[{required: true, message: '请选择开始时间'}]">
-                        <!-- <el-input v-model="form.name"></el-input> -->
-                        <el-date-picker
-                            v-model="v.beginTime"
-                            type="datetime"
-                            placeholder="请选择">
-                        </el-date-picker>
+                    <el-form-item label="物品名称" :prop="'list.'+index+'.materialName'" :rules="[{required: true, message: '请输入物品名称'}]"> 
+                        <el-input v-model="v.materialName" placeholder="请输入物品名称"></el-input>
                     </el-form-item>
-
-                    <el-form-item label="结束时间"  :prop="'list.'+index+'.endTime'" :rules="[{required: true, message: '请选择结束时间'}]">
-                        <el-date-picker
-                            v-model="v.endTime"
-                            type="datetime"
-                            placeholder="请选择">
-                        </el-date-picker>
-                        <!-- <el-input v-model="form.name"></el-input> -->
-                    </el-form-item>
-
-                    <el-form-item label="时长 (天)" :prop="'list.'+index+'.day'" :rules="[{required: true, message: '请输入时长天数'}]"> 
-                        <el-input v-model="v.day" placeholder="请输入时长 (0.5为单位)"></el-input>
-                    </el-form-item>
-                    <el-form-item label="同行人员" :prop="'list.'+index+'.persons'" :rules="[{required: true, message: '请选择同行人员'}]"> 
-                        <el-input v-model="v.persons" placeholder="请选择" @focus='getPersons'></el-input>
+                    <el-form-item label="数量" :prop="'list.'+index+'.num'" :rules="[{required: true, message: '请输入数量'}]"> 
+                        <el-input v-model="v.num" type="number" placeholder="请输入数量"></el-input>
                     </el-form-item>
                 </div>
-                     <el-form-item> 
-                        <el-button type="primary" round @click="addList">增加行程明细</el-button>
-                    </el-form-item>
-                <el-form-item class="textareaBox" label="出差事由" prop="desc" >
-                     <el-input  type="textarea" v-model="form.desc" maxlength="150" placeholder="请输入出差事由">
+                <el-form-item> 
+                    <el-button type="primary" round @click="addList">+ 增加物品明细</el-button>
+                </el-form-item>
+                <el-form-item class="textareaBox" label="领用详情" prop="materialReceiveRemarks" >
+                     <el-input  type="textarea" v-model="form.materialReceiveRemarks" maxlength="150" placeholder="请输入领用详情,限定1000字">
                      </el-input>
                      <span class="textNum">{{wordCount}}/150</span>
                      <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
@@ -112,21 +81,6 @@
             :personnels="Personnel_data"
             
         ></AddressList>
-        
-        <el-dialog  
-        title="出差地点"
-        :visible.sync="dialogVisible"
-        width="80%"
-        :close-on-click-modal="false"
-        >
-        <template>
-            <my-map id="myMap" @func="getMsgFormSon" @hanlerfunc="getMsgData"></my-map>
-        </template>
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-        </span>
-        </el-dialog>
 
     </div>
 </template>
@@ -144,72 +98,24 @@
     // import BMap from 'BMap'
     export default {
         data() {
-             var checkDay = (rule, value, callback) => {
-                if (value*10%5!=0) {
-                    callback(new Error('请输入正确的请假天数'));
-                } else {
-                 callback();
-                }
-            };
-            var beginCheck = (rule, value, callback) => {
-                if (this.form.endTime!=''&&value.getTime()>=this.form.endTime.getTime()) {
-                    callback(new Error('开始时间不能大于结束时间'));
-                } else {
-                 callback();
-                }
-            };
-            var endCheck = (rule, value, callback) => {
-                if (this.form.beginTime!=''&&value.getTime()<=this.form.beginTime.getTime()) {
-                    callback(new Error('结束时间不能小于开始时间'));
-                   
-                } else {
-                 callback();
-                }
-            };
             return {
                 form: {
                     type: [],
-                    stampApplyTitle:'',
-                    name: '',
-                    desc: '',//出差事由
+                    materialReceiveTheme:'',//物品用途
+                    materialReceiveRemarks: '',//领用详情
                     list:[
                         {
-                            day:'',//天数
-                            beginTime:'',//开始时间
-                            endTime:'',//结束时间
-                            persons:'',//同行人员
-                            peerUserIds:'',
-                            addressDetail:''//出差地点
+                            materialName:'',//物品名称
+                            num:''//数量
                         }
                     ],
                 },
                 rules: {
-                    stampApplyTitle:[
-                        { required: true, message: '标题不能为空', trigger: 'blur' },
-                        { min:2, max: 100, message: '长度在不能超过100字符或少于2个字符', trigger: 'blur' }
+                    materialReceiveTheme:[
+                        { required: true, message: '物品用途不能为空', trigger: 'blur' },
+                        { min:2, max: 100, message: '物品用途不能低于2个或超过100个字符', trigger: 'blur' }
                     ],
-                    leaveType: [
-                        { required: true, message: '请选择请假类型', trigger: 'change' },
-                    ],
-                    day: [
-                        { required: true, message: '请输入出差时长', trigger: 'blur' },
-                        { validator: checkDay, trigger: 'blur' }
-                    ],
-                    // persons: [
-                    //     { required: true, message: '请选择同行人员', trigger: 'blur' },
-                    //     { validator: checkDay, trigger: 'blur' }
-                    // ],
-                    beginTime:[
-                        { required: true, message: '请选择开始时间', trigger: 'change' },
-                        { validator: beginCheck, trigger: 'change' }
-
-                    ],
-                    endTime:[
-                        { required: true, message: '请选择结束时间', trigger: 'change' },
-                        { validator: endCheck, trigger: 'change' }
-
-                    ],
-                    desc:[
+                    materialReceiveRemarks:[
                         { required: true, message: '请输入出差事由', trigger: 'blur' },
                         { min:1, max: 150, message: '长度在不能超过150字符', trigger: 'blur' }
                     ]
@@ -251,7 +157,7 @@
             Personnel
         },
         created(){
-            document.title='出差'
+            document.title='物品领用'
             let that = this;
              this.axios.get('/work/leave/type/list').then(function(res){
                 if(res.data.h.code =200 ){
@@ -275,7 +181,7 @@
             })
         },
         watch:{
-            'form.desc':function(val){
+            'form.materialReceiveRemarks':function(val){
                 this.wordCount = val.length
             }
         },
@@ -299,12 +205,8 @@
             },
             addList() {//添加明细
                 this.form.list.push({
-                    day:'',//天数
-                    beginTime:'',//开始时间
-                    endTime:'',//结束时间
-                    persons:'',//同行人员
-                    addressDetail:'',//出差地点
-                    userlocation:''
+                    materialName:'',//物品名称
+                    num:''//数量
             })
             this.ishowDelet = true;
             },
@@ -407,8 +309,8 @@
           
                  params = {
                     Id :'', // id
-                    tripTitle:that.form.stampApplyTitle,//标题
-                    tripReason : encodeURI(that.form.desc.replace(/\n/g, '<br/>')), //出差事由
+                    materialReceiveTheme:that.form.materialReceiveTheme,//标题
+                    materialReceiveRemarks :that.form.materialReceiveRemarks, //出差事由
                     auditUserIds, //审批人
                     receiverIds, //抄送人
                     draftFlag : 0, //草稿还是发送
@@ -425,18 +327,27 @@
                 }
 
                     this.form.list.forEach((item,index)=>{
-                     params['tripList['+index+'].detailAddress'] = item.addressDetail;
-                     params['tripList['+index+'].beginTime'] = that.Util.getDate(item.beginTime);
-                     params['tripList['+index+'].endTime'] = that.Util.getDate(item.endTime);
-                     params['tripList['+index+'].tripDuration'] = item.day;
-                     params['tripList['+index+'].peerNames'] = item.persons;
-                     params['tripList['+index+'].peerUserIds'] = item.peerUserIds;
-                     params['tripList['+index+'].destination'] = item.addressDetail;
-                     params['tripList['+index+'].lon'] = item.userlocation.lng
-                     params['tripList['+index+'].lat'] = item.userlocation.lat
+                     params['list['+index+'].materialName'] = item.materialName;
+                     params['list['+index+'].num'] = item.num;
 
                 })
-                that.axios.post(this.Service.saveTrip + this.Service.queryString(params)).then(function (res){
+                that.axios({
+                    method:"post",
+                    url:`${this.Service.recipientsApi}`,
+                     headers:{
+                    'Content-type': 'application/x-www-form-urlencoded'
+                        },
+                    data:params,
+                    transformRequest: [function (data) {
+                        let ret = ''
+                        for (let it in data) {
+                        ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+                        }
+                        return ret
+                    }],
+                })
+                // that.axios.post(this.Service.recipientsApi + this.Service.queryString(params))
+                .then(function (res){
                 if(res.data.h.code!=200){
                         that.$message(res.data.h.msg)
                     }else if(res.data.h.code == 200){

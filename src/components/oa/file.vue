@@ -2,7 +2,7 @@
     <div>
         <el-form-item class="fileUpload" label="附件">
             <div style="display:flex;">
-                <a class="file-btn" v-if="accessory.length<10">上传附件
+                <a class="file-btn" v-if="accessory.length<counts">上传附件
                     <input type="file" @change="change">
                 </a>
                 <span class="el-upload__tip">仅支持图片、文档( .doc/.docx/.ppt/.pptx/.txt/.jpg/.jpeg/.png/</br>.xlsx/.xls/.pdf/.zip/.rar)</span>
@@ -39,9 +39,13 @@
     export default {
         data() {
             return {
+                counts:10,
             }
         },
-        props:['accessory'],
+        created(){
+                this.counts=this.num?this.num-0:10;
+        },
+        props:['accessory','num'],
         methods:{
             change(evfile){
                 let that = this;
@@ -56,8 +60,8 @@
 
                 file_obj.fileName = file.name
                 file_obj.fileSize = file.size
-                if(size+file.size>100 * 1024 * 1024){
-                    this.$message.error('上传的附件大小不能超过100M')
+                if(size+file.size>500 * 1024 * 1024){
+                    this.$message.error('上传的附件大小不能超过500M')
                     return false;
                 }
 

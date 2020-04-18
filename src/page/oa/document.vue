@@ -1,55 +1,38 @@
 <template>
     <div class="main">
         <HeadTitle
-            title="公出"
-            icon='gongchu'
+            title="行文呈批"
+            icon='employee'
         ></HeadTitle>
         <div class="content">
-            <el-form ref="form" :rules="rules" :model="form" label-width="100px">
-                <el-form-item label="公出事由" prop="awayReason"> 
-                    <el-input v-model="form.awayReason" placeholder="请输入公出事由" ></el-input>
+            <el-form ref="form" :rules="rules" :model="form" label-width="160px">
+                <el-form-item label="文件标题" prop="documentTitle"> 
+                    <el-input v-model="form.documentTitle" placeholder="请输入文件标题" ></el-input>
                 </el-form-item>
-                 <el-form-item label="公出类型" prop="awayType">
-                    <el-select v-model="form.awayType" placeholder="请选择">
-                        <el-option
-                        v-for="item in form.type"
-                        :key="item.key"
-                        :label="item.label"
-                        :value="item.value">
-                        </el-option>
-                    </el-select>
+                <el-form-item label="申请人"> 
+                    <el-input v-model="form.userName" placeholder="请输入申请人" disabled></el-input>
                 </el-form-item>
-                    <el-form-item label="开始时间" prop="beginTime">
-                        <!-- <el-input v-model="form.name"></el-input> -->
-                        <el-date-picker
-                            v-model="form.beginTime"
-                            type="datetime"
-                            placeholder="请选择">
-                        </el-date-picker>
-                    </el-form-item>
-
-                    <el-form-item label="结束时间" prop="endTime">
-                        <el-date-picker
-                            v-model="form.endTime"
-                            type="datetime"
-                            placeholder="请选择">
-                        </el-date-picker>
-                        <!-- <el-input v-model="form.name"></el-input> -->
-                    </el-form-item>
-
-                    <el-form-item label="公出地点" prop="addressDetail" :rules="[{required: true, message: '请选择出差地点'}]"> 
-                        <el-input v-model="form.addressDetail" placeholder="请选择出差地点" @focus='getFocus(index)'></el-input>
-                    </el-form-item>
-                    <el-form-item label="同行人员" prop="persons" :rules="[{required: true, message: '请选择同行人员'}]"> 
-                        <el-input v-model="form.persons" placeholder="请选择" @focus='getPersons'></el-input>
-                    </el-form-item>
-                <el-form-item class="textareaBox" label="附件内容" prop="desc" >
-                     <el-input  type="textarea" v-model="form.desc" maxlength="150" placeholder="请输入要点内容，限定1000字">
+                <el-form-item label="所属部门"> 
+                    <el-input v-model="form.departmentName" placeholder="请输入所属部门" disabled></el-input>
+                </el-form-item>
+                <el-form-item label="文件编号" prop="documentNo"> 
+                    <el-input v-model="form.documentNo" placeholder="请输入文件编号" ></el-input>
+                </el-form-item>
+                <el-form-item class="textareaBox" label="主送" prop="sendTo" >
+                     <el-input  type="textarea" v-model.trim="form.sendTo" maxlength="200" placeholder="请输入主送内容,限定200字">
                      </el-input>
-                     <span class="textNum">{{wordCount}}/1000</span>
-                     <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+                     <span class="textNum">{{sendLen}}/200</span>
                 </el-form-item>
-
+                <el-form-item class="textareaBox" label="抄送" prop="copyTo" >
+                     <el-input  type="textarea" v-model.trim="form.copyTo" maxlength="200" placeholder="请输入抄送,限定200字">
+                     </el-input>
+                     <span class="textNum">{{copyLen}}/200</span>
+                </el-form-item>
+                <el-form-item class="textareaBox" label="事由" prop="documentReason" >
+                     <el-input  type="textarea" v-model.trim="form.documentReason" maxlength="1000" placeholder="请输入事由,限定1000字">
+                     </el-input>
+                     <span class="textNum">{{textNum}}/1000</span>
+                </el-form-item>
                 <File :accessory="accessory"
                     v-on:remove="removeFile"
                 >
@@ -102,22 +85,6 @@
             :personnels="Personnel_data"
             
         ></AddressList>
-        
-        <el-dialog  
-        title="公出地点"
-        :visible.sync="dialogVisible"
-        width="80%"
-        :close-on-click-modal="false"
-        >
-        <template>
-            <my-map id="myMap" @func="getMsgFormSon" @hanlerfunc="getMsgData"></my-map>
-        </template>
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-        </span>
-        </el-dialog>
-
     </div>
 </template>
 
@@ -139,63 +106,110 @@
                  callback();
                 }
             };
-            var beginCheck = (rule, value, callback) => {
-                if (this.form.endTime!=''&&value.getTime()>=this.form.endTime.getTime()) {
-                    callback(new Error('开始时间不能大于结束时间'));
-                } else {
-                 callback();
-                }
-            };
-            var endCheck = (rule, value, callback) => {
-                if (this.form.beginTime!=''&&value.getTime()<=this.form.beginTime.getTime()) {
-                    callback(new Error('结束时间不能小于开始时间'));
+            // var beginCheck = (rule, value, callback) => {
+            //     if (this.form.endTime!=''&&value.getTime()>=this.form.endTime.getTime()) {
+            //         callback(new Error('用车时间不能大于返回时间'));
+            //     } else {
+            //      callback();
+            //     }
+            // };
+            // var endCheck = (rule, value, callback) => {
+            //     if (this.form.beginTime!=''&&value.getTime()<=this.form.beginTime.getTime()) {
+            //         callback(new Error('返回时间不能小于用车时间'));
                    
-                } else {
-                 callback();
-                }
-            };
+            //     } else {
+            //      callback();
+            //     }
+            // };
             return {
                 form: {
                     type: [],
-                    awayType:'',//公出类型
-                    awayReason:'',//公出事由
-                    desc: '',//公出出事由
-                    beginTime:'',//开始时间
-                    endTime:'',//结束时间
-                    persons:'',//同行人员
-                    addressDetail:'',//公出地点
+                    documentTitle:'',//文件标题
+                    userName:'',
+                    departmentName:'',
+                    sendTo:'',
+                    copyTo:'',
+                    documentReason:'',
+                    documentNo:'',
+                    num:'',
+                    arrivalDate:'',
+                    employeeReason:'',
+                    sexType:'',
+                    marriageType:'',
+                    ageName:'',
+                    educationName:'',
+                    major:'',
+                    highestEducationName:'',
+                    jobExperienceName:'',
+   
                     userlocation:'',
                     peerUserIds:''
                 },
+                    qualifications:'',//证书
+                    computerLevel:'',//计算机水平
+                    foreignLevel:'', //外语水平
+                    skill:'',//特殊技能
+                    writings:'', //写作
+                    priority:'', //优先录用
+                    condition:'',
+                    isComplie:'',
+                sexTypeOptions:[],
+                marriageTypeOptions:[],
+                ageNameOptions:[],
+                educationNameOptions:[],
+                highestEducationNameOptions:[],
+                jobExperienceNameOptions:[],
+                centerDialogVisible: false,
+                visitTrafficWay:'',
                 rules: {
-                    awayReason:[
-                        { required: true, message: '请输入公出事由', trigger: 'blur' },
+                    documentTitle:[
+                        { required: true, message: '文件标题不能为空', trigger: 'blur' },
                         { min:2, max: 100, message: '长度在不能超过100字符或少于2个字符', trigger: 'blur' }
                     ],
-                    awayType: [
-                        { required: true, message: '请选择公出类型', trigger: 'change' },
+                    documentNo: [
+                        { required: true, message: '文件编号不能为空', trigger: 'blur' },
                     ],
-                    day: [
-                        { required: true, message: '请输入请假时长', trigger: 'blur' },
-                        { validator: checkDay, trigger: 'blur' }
+                    num: [
+                        { required: true, message: '请输入需求人数', trigger: 'blur' },
                     ],
-                    persons: [
-                        { required: true, message: '请选择同行人员', trigger: 'blur' },
-                        { validator: checkDay, trigger: 'blur' }
+                    arrivalDate:[
+                        { required: true, message: '请选择到岗日期', trigger: 'change' }
                     ],
-                    beginTime:[
-                        { required: true, message: '请选择开始时间', trigger: 'change' },
-                        { validator: beginCheck, trigger: 'change' }
-
+                    employeeReason:[
+                        { required: true, message: '请输入申请理由', trigger: 'blur' },
                     ],
-                    endTime:[
-                        { required: true, message: '请选择结束时间', trigger: 'change' },
-                        { validator: endCheck, trigger: 'change' }
-
+                    sexType:[
+                        { required: true, message: '性别不能为空', trigger: 'blur' },
                     ],
-                    desc:[
-                        { required: true, message: '请输入请假事由', trigger: 'blur' },
-                        { min:1, max: 150, message: '长度在不能超过150字符', trigger: 'blur' }
+                    marriageType:[
+                        { required: true, message: '婚姻不能为空', trigger: 'blur' },
+                    ],
+                    ageName:[
+                        { required: true, message: '年龄不能为空', trigger: 'blur' },
+                    ],
+                    educationName:[
+                         { required: true, message: '学历不能为空', trigger: 'blur' },
+                    ],
+                    major:[
+                        { required: true, message: '专业不能为空', trigger: 'blur' },
+                    ],
+                    highestEducationName:[
+                        { required: true, message: '最高学历毕业学校不能为空', trigger: 'blur' },
+                    ],
+                    jobExperienceName:[
+                        { required: true, message: '工作经验不能为空', trigger: 'blur' },
+                    ],
+                    sendTo:[
+                        {required: true, message: '请输入主送内容', trigger: 'blur'},
+                        { min:1, max: 200, message: '长度在不能超过200字符或少于1个字符', trigger: 'blur' }
+                    ],
+                    copyTo:[
+                         {required: true, message: '请输入抄送', trigger: 'blur'},
+                         { min:1, max: 200, message: '长度在不能超过200字符或少于1个字符', trigger: 'blur' }
+                    ],
+                    documentReason:[
+                        {required: true, message: '请输入事由', trigger: 'blur'},
+                         { min:1, max: 1000, message: '长度在不能超过1000字符或少于1个字符', trigger: 'blur' }
                     ]
                 },
                 approvers_data:[],//审批人
@@ -206,6 +220,8 @@
                 accessory:[],
                 btnStatus:true,
                 wordCount:0,
+                sendLen:0,
+                copyLen:0,
                 dialogVisible:false,
                 address_detail: "", //详细地址
                 userlocation:'',
@@ -223,7 +239,14 @@
                 linkAuditNum:'',
                 applyLinkIds:'',
                 allApprovers:[],
-                ishowDelet:false
+                ishowDelet:false,
+                sexVal:'',
+                marriage:'',
+                age:'',
+                education:'',
+                highEducation:'',
+                jobExperience:'',
+               
             }
         },
         components:{
@@ -236,7 +259,7 @@
             Personnel
         },
         created(){
-            document.title='公出申请'
+            document.title='行文呈批'
             let that = this;
              this.axios.get('/outsign/task/type').then(function(res){
                  console.log(res.data.b)
@@ -246,9 +269,45 @@
                     })
                 }
             })
-
+            this.axios.get('/work/sex/type').then(res=>{
+                if(res.data.h.code==200){
+                    this.sexTypeOptions = res.data.b;
+                }
+            })
+             this.axios.get('/work/marriage/type').then(res=>{
+                if(res.data.h.code==200){
+                    this.marriageTypeOptions = res.data.b;
+                }
+            })
+            this.axios.get('/work/education/type').then(res=>{
+                if(res.data.h.code==200){
+                    this.educationNameOptions = res.data.b;
+                }
+            })
+            
+            this.axios.get('/work/age/type').then(res=>{
+                if(res.data.h.code==200){
+                    this.ageNameOptions = res.data.b;
+                }
+            })
+              this.axios.get('/work/highestEducation/type').then(res=>{
+                if(res.data.h.code==200){
+                    this.highestEducationNameOptions = res.data.b;
+                }
+            })
+            this.axios.get('/work/jobExperience/type').then(res=>{
+                if(res.data.h.code==200){
+                    this.jobExperienceNameOptions = res.data.b;
+                }
+            })
+            
+            this.axios.post('/user/current/userinfo').then(function(res){
+                that.form.departmentName = res.data.b.officeName
+                that.form.userName = res.data.b.name
+            })
             this.axios.get('/process/apply/enter?req=3').then((res)=>{
                 let data = res.data.b;
+                console.log(data,'data')
                 this.allApprovers  = this.Util.approverDataInit(data.links);
                 this.linkAuditNum = data.linkAuditNum;
                 this.applyLinkIds = data.applyLinkIds;
@@ -261,9 +320,18 @@
             
         },
         watch:{
-            'form.desc':function(val){
+            'form.employeeReason':function(val){
                 this.wordCount = val.length
-            }
+            },
+            'form.sendTo':function(val){
+                this.sendLen = val.length
+            },
+            'form.copyTo':function(val){
+                this.copyLen = val.length
+            },
+             'form.documentReason':function(val){
+                this.textNum = val.length
+            },
         },
         computed:{
             getAddrDetail(){
@@ -271,6 +339,46 @@
             }
         },
         methods:{
+            moreSelect(){
+                this.centerDialogVisible = true;
+            },
+            toLink(){
+             this.$router.push({path:'/menu'})
+            console.log(6655)
+            },
+            hanlderVisitTrafficName(val){
+                console.log(val,'到访交通工具')
+                this.visitTrafficWay = val;
+            },
+            hanlderComplie(val){
+                console.log(val,'编制')
+                this.isComplie = val;
+
+            },
+            hanldersexType(val){
+                console.log('性别',val)
+                this.sexVal = val;
+            },
+            hanlderMarriageType(val){
+                console.log('婚姻',val)
+                this.marriage = val;
+            },
+            hanlderAgeName(val){
+                console.log(val,'年龄')
+                this.age = val;
+            },
+            hanlderEducationName(val){
+                console.log(val)
+                this.education = val;
+            },
+            hanlderHighestEducationName(val){
+                console.log(val)
+                this.highEducation = val;
+            },
+            hanlderJobExperienceName(val){
+                console.log(val)
+                this.jobExperience = val;
+            },
             getMsgData(val){
                 this.form.addressDetail = val.address
                 this.form.userlocation = val.point;
@@ -352,8 +460,17 @@
                 if(this.Util.checkApprovers(this.allApprovers)){
                     this.$message('请选择审批人!')
                     return 
+                }else if(this.form.documentReason.length>1000||this.form.documentReason.length<6){
+                    this.$message('事由不能少于6个或超过1000字符!')
+                    return 
+                }else if(this.form.sendTo.length>200||this.form.sendTo.length<1){
+                    this.$message('主送内容不能少于1个或超过200字符')
+                    return 
+                }else if(this.form.copyTo.length>200||this.form.copyTo.length<1){
+                    this.$message('抄送内容不能少于1个或超过200字符')
+                    return 
                 }
-
+                
                 let that = this;
                 let beginTime = '',endTime = '',day = '';
 
@@ -366,17 +483,15 @@
           
                  params = {
                     Id :'', // id
-                    outSideReason : encodeURI(that.form.desc.replace(/\n/g, '<br/>')), //外出事由
-                    outsideType:that.form.awayType,//外出类型
-                    beginTime:that.Util.getDate(that.form.beginTime),//开始时间
-                    endTime:that.Util.getDate( that.form.endTime),//结束时间
-                    outsideAddress:that.form.addressDetail,//外出地点
-                    detailAddress:that.form.addressDetail,//详细地点
-                    peerNames:that.form.persons,//同行人员
+                    documentTitle:that.form.documentTitle,//文件标题
+                    documentReason: that.form.documentReason, 
+                    documentNo:that.form.documentNo, 
+                    sendTo:that.form.sendTo,
+                    copyTo:that.form.copyTo,
+               
+    
+ 
                     peerUserIds:that.form.peerUserIds,
-                    applyContent:that.form.desc,//申请内容
-                    lon:that.form.userlocation.lng,//经度
-                    lat:that.form.userlocation.lat,//纬度
                     url : fileObj.urlStr, //附件
                     receiverIds, //抄送人
                     receiverCompanyIds,
@@ -389,8 +504,23 @@
                     fileSize :fileObj.fileSizeStr, //文件大小
                     
                 }
-            
-                that.axios.post(this.Service.saveAwayApply + this.Service.queryString(params)).then(function (res){
+                that.axios({
+                    method:"post",
+                    url:`${this.Service.getDocumentSave}`,
+                    headers:{
+                        'Content-type': 'application/x-www-form-urlencoded'
+                    },
+                    data:params,
+                      transformRequest: [function (data) {
+                        let ret = ''
+                        for (let it in data) {
+                        ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+                        }
+                        return ret
+                    }],
+                })
+                // that.axios(this.Service.getEmployeeSave + params)
+                .then(function (res){
                 if(res.data.h.code!=200){
                         that.$message(res.data.h.msg)
                     }else if(res.data.h.code == 200){
@@ -429,7 +559,7 @@
     }
 
     /deep/ .el-form-item__label{
-            font-size 16px;
+     font-size 16px;
     }
 
     /deep/ .el-input__inner{
@@ -506,10 +636,10 @@
         background-color:#24b36b;
         cursor pointer;
     }
-    // #myMap{
-    //     width: 70%;
-    //     position: absolute;
-    //     top: 19%;
-    //     left: 35%;
-    // }
+    .title_food{
+        position :absolute;
+        cursor:pointer;
+        left: 30%;
+        z-index :1000;
+    }
 </style>

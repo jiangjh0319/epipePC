@@ -418,6 +418,25 @@
                     </div>
                 </div>
             </div>
+            <div v-else-if="oaType==23">
+                <div class="details_box">
+                   <div >
+                        <span>姓名 : </span><a >{{item.applyName}} </a>
+                    </div>
+                    <div >
+                        <span>部门 :</span>
+                        <a >{{item.applyDept}}</a>
+                    </div>
+                    <div >
+                        <span>异动原因 :</span>
+                        <a >{{item.moveReason}}</a>
+                    </div>
+                    <div  >
+                        <span>异动类型 :</span>
+                        <a >{{item.moveType }}</a>
+                    </div>
+                </div>
+            </div>
 
         </div>
 

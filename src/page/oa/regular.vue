@@ -1,67 +1,82 @@
 <template>
     <div class="main">
         <HeadTitle
-            title="出差"
-            icon='chucha'
+            title="员工转正"
+            icon='regular'
         ></HeadTitle>
         <div class="content">
-            <el-form ref="form" :rules="rules" :model="form" label-width="100px">
-                 <!-- <el-form-item label="请假类型" prop="leaveType">
-                    <el-select v-model="form.leaveType" placeholder="请选择">
+            <el-form ref="form" :rules="rules" :model="form" label-width="120px">
+                <el-form-item label="文件标题" prop="regularTitle"> 
+                    <el-input v-model="form.regularTitle" placeholder="请输入标题" ></el-input>
+                </el-form-item>
+                <el-form-item label="转正员工姓名" style="width:180px"> 
+                        <el-input v-model="userInfo.name" placeholder="请选择" @focus='getPersons' disabled></el-input>
+                </el-form-item>
+                <el-form-item label="所属部门"> 
+                    <el-input v-model="userInfo.officeName" placeholder="所属部门" disabled></el-input>
+                </el-form-item>
+                <el-form-item label="岗位"> 
+                    <el-input v-model="userInfo.userPosition" placeholder="岗位名称" disabled></el-input>
+                </el-form-item>
+                <el-form-item label="年龄" prop="age"> 
+                    <el-input v-model="form.age" placeholder="请输入年龄" type="number" ></el-input>
+                </el-form-item>
+                <el-form-item label="性别" prop="sexName"> 
+                    <el-select v-model="form.sexName" placeholder="请选择" @change="hanlderVal">
                         <el-option
-                        v-for="item in form.type"
+                        v-for="item in sexNameOptions"
                         :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
+                        :label="item.key"
+                        :value="item.value"
+                        >
                         </el-option>
                     </el-select>
-                </el-form-item> -->
-                <el-form-item label="标题" prop="stampApplyTitle"> 
-                    <el-input v-model="form.stampApplyTitle" placeholder="请输入标题" ></el-input>
                 </el-form-item>
-                <div v-for="(v,index) in form.list" :key="index">
-                    <el-form-item v-if="ishowDelet"> 
-                        行程明细（{{index+1}}）<el-button type="danger" round @click="deleteRules(v,index)">删除</el-button>
-                    </el-form-item>
-                    <el-form-item label="出差地点" :prop="'list.'+index+'.addressDetail'" :rules="[{required: true, message: '请选择出差地点'}]"> 
-                        <el-input v-model="v.addressDetail" placeholder="请选择出差地点" @focus='getFocus(index)'></el-input>
-                    </el-form-item>
-
-                    <el-form-item label="开始时间" :prop="'list.'+index+'.beginTime'" :rules="[{required: true, message: '请选择开始时间'}]">
-                        <!-- <el-input v-model="form.name"></el-input> -->
+                <el-form-item label="籍贯" prop="birthPlace"> 
+                    <el-input v-model="form.birthPlace" placeholder="请输入籍贯"></el-input>
+                </el-form-item>
+             
+                <el-form-item label="出生时间"  prop="birthday">
                         <el-date-picker
-                            v-model="v.beginTime"
-                            type="datetime"
+                            v-model="form.birthday"
+                            type="date"
                             placeholder="请选择">
                         </el-date-picker>
-                    </el-form-item>
-
-                    <el-form-item label="结束时间"  :prop="'list.'+index+'.endTime'" :rules="[{required: true, message: '请选择结束时间'}]">
+                </el-form-item>
+                <el-form-item label="学历" prop="education"> 
+                    <el-input v-model="form.education" placeholder="请输入学历"></el-input>
+                </el-form-item>
+                <el-form-item label="专业" prop="major"> 
+                    <el-input v-model="form.major" placeholder="请输入专业"></el-input>
+                </el-form-item>
+                <el-form-item label="毕业时间"  prop="graduationDate">
                         <el-date-picker
-                            v-model="v.endTime"
-                            type="datetime"
+                            v-model="form.graduationDate"
+                            type="date"
                             placeholder="请选择">
                         </el-date-picker>
-                        <!-- <el-input v-model="form.name"></el-input> -->
-                    </el-form-item>
-
-                    <el-form-item label="时长 (天)" :prop="'list.'+index+'.day'" :rules="[{required: true, message: '请输入时长天数'}]"> 
-                        <el-input v-model="v.day" placeholder="请输入时长 (0.5为单位)"></el-input>
-                    </el-form-item>
-                    <el-form-item label="同行人员" :prop="'list.'+index+'.persons'" :rules="[{required: true, message: '请选择同行人员'}]"> 
-                        <el-input v-model="v.persons" placeholder="请选择" @focus='getPersons'></el-input>
-                    </el-form-item>
-                </div>
-                     <el-form-item> 
-                        <el-button type="primary" round @click="addList">增加行程明细</el-button>
-                    </el-form-item>
-                <el-form-item class="textareaBox" label="出差事由" prop="desc" >
-                     <el-input  type="textarea" v-model="form.desc" maxlength="150" placeholder="请输入出差事由">
-                     </el-input>
-                     <span class="textNum">{{wordCount}}/150</span>
-                     <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
                 </el-form-item>
-
+                <el-form-item label="入司时间"  prop="hireDate">
+                        <el-date-picker
+                            v-model="form.hireDate"
+                            type="date"
+                            placeholder="请选择">
+                        </el-date-picker>
+                </el-form-item>
+                <el-form-item label="试用开始时间"  prop="beginTime">
+                        <el-date-picker
+                            v-model="form.beginTime"
+                            type="date"
+                            placeholder="请选择">
+                        </el-date-picker>
+                </el-form-item>
+                <el-form-item label="试用结束时间"  prop="endTime">
+                        <el-date-picker
+                            v-model="form.endTime"
+                            type="date"
+                            placeholder="请选择">
+                        </el-date-picker>
+                </el-form-item>
                 <File :accessory="accessory"
                     v-on:remove="removeFile"
                 >
@@ -112,21 +127,6 @@
             :personnels="Personnel_data"
             
         ></AddressList>
-        
-        <el-dialog  
-        title="出差地点"
-        :visible.sync="dialogVisible"
-        width="80%"
-        :close-on-click-modal="false"
-        >
-        <template>
-            <my-map id="myMap" @func="getMsgFormSon" @hanlerfunc="getMsgData"></my-map>
-        </template>
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-        </span>
-        </el-dialog>
 
     </div>
 </template>
@@ -152,15 +152,15 @@
                 }
             };
             var beginCheck = (rule, value, callback) => {
-                if (this.form.endTime!=''&&value.getTime()>=this.form.endTime.getTime()) {
-                    callback(new Error('开始时间不能大于结束时间'));
+                if (this.form.beginTime!=''&&value.getTime()>=this.form.endTime.getTime()) {
+                    callback(new Error('试用开始时间不能大于试用结束时间'));
                 } else {
                  callback();
                 }
             };
             var endCheck = (rule, value, callback) => {
-                if (this.form.beginTime!=''&&value.getTime()<=this.form.beginTime.getTime()) {
-                    callback(new Error('结束时间不能小于开始时间'));
+                if (this.form.endTime!=''&&value.getTime()<=this.form.beginTime.getTime()) {
+                    callback(new Error('试用结束时间不能小于试用开始时间'));
                    
                 } else {
                  callback();
@@ -169,49 +169,62 @@
             return {
                 form: {
                     type: [],
-                    stampApplyTitle:'',
-                    name: '',
-                    desc: '',//出差事由
-                    list:[
-                        {
-                            day:'',//天数
-                            beginTime:'',//开始时间
-                            endTime:'',//结束时间
-                            persons:'',//同行人员
-                            peerUserIds:'',
-                            addressDetail:''//出差地点
-                        }
-                    ],
+                    regularTitle:'',
+                    age:'',
+                    education:'',
+                    birthday:'',
+                    beginTime:'',
+                    endTime:'',
+                    birthPlace:'',
+                    hireDate:'',
+                    major:'',
                 },
+                userInfo:{},
+                positionCode:'',
+                dimissionCode:'',
+                sexNameOptions:[],
                 rules: {
-                    stampApplyTitle:[
-                        { required: true, message: '标题不能为空', trigger: 'blur' },
+                    regularTitle:[
+                        { required: true, message: '文件标题不能为空', trigger: 'blur' },
                         { min:2, max: 100, message: '长度在不能超过100字符或少于2个字符', trigger: 'blur' }
                     ],
-                    leaveType: [
-                        { required: true, message: '请选择请假类型', trigger: 'change' },
+                    employeeNo: [
+                        { required: true, message: '请输入员工编号', trigger: 'blur' },
                     ],
-                    day: [
-                        { required: true, message: '请输入出差时长', trigger: 'blur' },
-                        { validator: checkDay, trigger: 'blur' }
+                    sexName: [
+                        { required: true, message: '请选择性别', trigger: 'blur' },
                     ],
-                    // persons: [
-                    //     { required: true, message: '请选择同行人员', trigger: 'blur' },
-                    //     { validator: checkDay, trigger: 'blur' }
-                    // ],
+                    age:[
+                         { required: true, message: '请输入年龄', trigger: 'blur' },
+                    ],
+                    education: [
+                        { required: true, message: '请输入最高学历', trigger: 'blur' },
+                    ],
+                    birthday:[
+                        { required: true, message: '请选择出生时间', trigger: 'change' },
+                        // { validator: beginCheck, trigger: 'change' }
+                    ],
+                    graduationDate:[
+                        { required: true, message: '请选择毕业时间', trigger: 'change' },
+                        // { validator: endCheck, trigger: 'change' }
+                    ],
                     beginTime:[
-                        { required: true, message: '请选择开始时间', trigger: 'change' },
-                        { validator: beginCheck, trigger: 'change' }
-
+                       { required: true, message: '请选择使用开始时间', trigger: 'blur' },
+                       { validator: beginCheck , trigger: 'change' }
                     ],
                     endTime:[
-                        { required: true, message: '请选择结束时间', trigger: 'change' },
+                        { required: true, message: '请选择使用结束时间', trigger: 'blur' },
                         { validator: endCheck, trigger: 'change' }
-
                     ],
-                    desc:[
-                        { required: true, message: '请输入出差事由', trigger: 'blur' },
-                        { min:1, max: 150, message: '长度在不能超过150字符', trigger: 'blur' }
+                    birthPlace:[
+                         { required: true, message: '籍贯不能为空', trigger: 'blur' },
+                         { max: 100, message: '长度在不能超过10字符', trigger: 'blur' }
+                    ],
+                    hireDate:[
+                         { required: true, message: '请选择入司时间', trigger: 'blur' },
+                    ],
+                    major:[
+                          { required: true, message: '请输入专业', trigger: 'blur' },
                     ]
                 },
                 approvers_data:[],//审批人
@@ -239,6 +252,7 @@
                 showCopy:false,
                 showGroup:false,
                 approver_index:0,
+                sexNum:''
             }
         },
         components:{
@@ -251,7 +265,7 @@
             Personnel
         },
         created(){
-            document.title='出差'
+            document.title='员工转正'
             let that = this;
              this.axios.get('/work/leave/type/list').then(function(res){
                 if(res.data.h.code =200 ){
@@ -261,7 +275,19 @@
                 }
             })
             
+            this.axios.get('/work/sex/type').then(res=>{//岗位类别
+                if(res.data.h.code =200 ){
+                //    console.log(res.data.b)
+                   this.sexNameOptions = res.data.b;
+                }
+            })
 
+            this.axios.post('/user/current/userinfo').then((res)=>{
+            this.userInfo.name = res.data.b.name
+            this.userInfo.officeName = res.data.b.officeName
+            this.userInfo.userPosition = res.data.b.userPosition
+            this.userInfo.userId = res.data.b.id
+            })
             this.axios.get('/process/apply/enter?req=4').then((res)=>{
                 let data = res.data.b;
                 this.allApprovers  = this.Util.approverDataInit(data.links);
@@ -273,9 +299,10 @@
                         this.receivers_data = data.receivers
                 }
             })
+
         },
         watch:{
-            'form.desc':function(val){
+            'form.dimissionDesc':function(val){
                 this.wordCount = val.length
             }
         },
@@ -285,37 +312,8 @@
             }
         },
         methods:{
-            getMsgData(val){
-                this.form.list[this._index].addressDetail = val.address
-                this.form.list[this._index].userlocation = val.point;
-            },
-            getMsgFormSon(data){
-                if(data==undefined){
-
-                }else{
-                    this.form.list[this._index].addressDetail = data.addr;
-                    this.form.list[this._index].userlocation = data.point;
-                }
-            },
-            addList() {//添加明细
-                this.form.list.push({
-                    day:'',//天数
-                    beginTime:'',//开始时间
-                    endTime:'',//结束时间
-                    persons:'',//同行人员
-                    addressDetail:'',//出差地点
-                    userlocation:''
-            })
-            this.ishowDelet = true;
-            },
-            deleteRules(item, index) {
-                if(this.form.list.length==2){
-                    this.ishowDelet = false;
-                }
-                var index = this.form.list.indexOf(item)
-                if (index !== -1) {
-                    this.form.list.splice(index, 1)
-                }
+            hanlderVal(val){
+                 this.sexNum = val;
             },
              add_people(index){
                 this.approver_index = index
@@ -330,6 +328,7 @@
                 this.allApprovers[index].auditers.splice(num,1)
             },
             getPersons(){
+                return
                 this.selectOpen('per');
             },
             getFocus(i){
@@ -357,8 +356,8 @@
                     setTimeout(()=>{
                         personsData = arrName.join(',');
                         let userId = peerUserIds.join(',')
-                        this.form.list[this._index].persons = personsData;
-                        this.form.list[this._index].peerUserIds = userId;
+                        this.form.persons = personsData;
+                        this.form.peerUserIds = userId;
                     },300)
 
                         console.log('peerUserIds',peerUserIds)
@@ -407,8 +406,20 @@
           
                  params = {
                     Id :'', // id
-                    tripTitle:that.form.stampApplyTitle,//标题
-                    tripReason : encodeURI(that.form.desc.replace(/\n/g, '<br/>')), //出差事由
+                    regularTitle:that.form.regularTitle,//标题
+                    age:that.form.age, //年龄
+                    education:that.form.education, //学历
+                    position:that.userInfo.userPosition,// 岗位
+                    employeeNameId:that.userInfo.userId,
+                    major:that.form.major,
+                    birthPlace:that.form.birthPlace,
+                    employeeName:that.userInfo.name,
+                    birthday: that.Util.getDate(that.form.birthday),
+                    beginTime:that.Util.getDate(that.form.beginTime),
+                    hireDate:that.Util.getDate(that.form.hireDate),
+                    endTime:that.Util.getDate(that.form.endTime),
+                    graduationDate:that.Util.getDate(that.form.graduationDate),
+                    sex:that.sexNum,
                     auditUserIds, //审批人
                     receiverIds, //抄送人
                     draftFlag : 0, //草稿还是发送
@@ -423,20 +434,7 @@
                     fileSizes :fileObj.fileSizeStr, //文件大小
                     
                 }
-
-                    this.form.list.forEach((item,index)=>{
-                     params['tripList['+index+'].detailAddress'] = item.addressDetail;
-                     params['tripList['+index+'].beginTime'] = that.Util.getDate(item.beginTime);
-                     params['tripList['+index+'].endTime'] = that.Util.getDate(item.endTime);
-                     params['tripList['+index+'].tripDuration'] = item.day;
-                     params['tripList['+index+'].peerNames'] = item.persons;
-                     params['tripList['+index+'].peerUserIds'] = item.peerUserIds;
-                     params['tripList['+index+'].destination'] = item.addressDetail;
-                     params['tripList['+index+'].lon'] = item.userlocation.lng
-                     params['tripList['+index+'].lat'] = item.userlocation.lat
-
-                })
-                that.axios.post(this.Service.saveTrip + this.Service.queryString(params)).then(function (res){
+                that.axios.post(this.Service.getRegularSave + this.Service.queryString(params)).then(function (res){
                 if(res.data.h.code!=200){
                         that.$message(res.data.h.msg)
                     }else if(res.data.h.code == 200){

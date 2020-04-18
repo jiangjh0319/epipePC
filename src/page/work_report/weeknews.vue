@@ -139,12 +139,12 @@
                 },
                 rules:{
                     summary:[
-                        { required: true, message: '请输入下周工作总结', trigger: 'blur' },
-                        { required: true, message: '请输入下周工作总结', trigger: 'change' },
+                        { required: true, message: '请输入本周工作总结', trigger: 'blur' },
+                        { required: true, message: '请输入本周工作总结', trigger: 'change' },
                     ],
                     plan:[
-                        { required: true, message: '请输入本月工作计划', trigger: 'blur' },
-                        { required: true, message: '请输入本月工作计划', trigger: 'change' },
+                        { required: true, message: '请输入下周工作计划', trigger: 'blur' },
+                        { required: true, message: '请输入下周工作计划', trigger: 'change' },
                     ],
 
                 }

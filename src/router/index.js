@@ -22,9 +22,20 @@ const Stamp = r => require.ensure([], () => r(require('@/page/oa/stamp.vue')), '
 const Absence = r => require.ensure([], () => r(require('@/page/oa/absence.vue')), 'group-oa')
 const OverTime = r => require.ensure([], () => r(require('@/page/oa/overTime.vue')), 'group-oa')
 const Meal = r => require.ensure([], () => r(require('@/page/oa/meal.vue')), 'group-oa')
+const Pay = r => require.ensure([], () => r(require('@/page/oa/pay.vue')), 'group-oa')
 const iframeSize = r => require.ensure([], () => r(require('@/page/oa/iframeSize.vue')), 'group-oa')
 const Trip = r => require.ensure([],() => r(require('@/page/oa/trip.vue')), 'group-oa') //出差
 const BeAwayApply = r => require.ensure([],() => r(require('@/page/oa/beAwayApply.vue')), 'group-oa') //公出申请
+const UseCar = r => require.ensure([],() => r(require('@/page/oa/useCar.vue')), 'group-oa') //用车
+const Recipients = r => require.ensure([],() => r(require('@/page/oa/recipients.vue')), 'group-oa') //物品领用
+const Buy = r => require.ensure([],() => r(require('@/page/oa/buy.vue')), 'group-oa') //采购
+const Dimission = r => require.ensure([],() => r(require('@/page/oa/dimission.vue')), 'group-oa') //离职
+const Reception = r => require.ensure([],() => r(require('@/page/oa/reception.vue')), 'group-oa') //公务接待
+const Menu = r => require.ensure([], () => r(require('@/page/oa/menu.vue')), 'group-oa')//菜单
+const Employee = r => require.ensure([], () => r(require('@/page/oa/employee.vue')), 'group-oa')//人员需求
+const Project = r => require.ensure([], () => r(require('@/page/oa/project.vue')), 'group-oa')//项目立项
+const Regular = r => require.ensure([], () => r(require('@/page/oa/regular.vue')), 'group-oa')//转正
+const Document = r => require.ensure([], () => r(require('@/page/oa/document.vue')), 'group-oa')//行文呈批
 
 //oa_other ===============================
 const FinishAffairs = r => require.ensure([], () => r(require('@/page/oa_other/finish_affairs.vue')), 'group-oa')
@@ -66,6 +77,14 @@ export default new Router({
       component: Trip,
       meta: {
         title: '出差'
+      }
+    },
+    {
+      path: '/pay',
+      name: 'pay',
+      component: Pay,
+      meta: {
+        title: '付款'
       }
     },
     {
@@ -204,6 +223,73 @@ export default new Router({
       component:RecentlyFile,
       meta: {
         title: '最近文件'
+      }
+    },
+    {
+      path: '/useCar',
+      component:UseCar,
+      meta: {
+        title: '用车'
+      }
+    },
+    {
+      path: '/recipients',
+      component:Recipients,
+      meta: {
+        title: '物品领用'
+      }
+    },
+    {
+      path: '/buy',
+      component:Buy,
+      meta: {
+        title: '采购'
+      }
+    },
+    {
+      path: '/dimission',
+      component:Dimission,
+      meta: {
+        title: '离职'
+      }
+    },
+    {
+      path: '/reception',
+      component:Reception,
+      meta: {
+        title: '公务接待'
+      }
+    },
+    {
+      path:'/menu', //菜单
+      component:Menu,
+    },
+    {
+      path:'/employee', //人员需求
+      component:Employee,
+      meta: {
+        title: '人员需求'
+      }
+    },
+    {
+      path:'/project', //项目立项
+      component:Project,
+      meta: {
+        title: '项目立项'
+      }
+    },
+    {
+      path:'/regular', //转正
+      component:Regular,
+      meta: {
+        title: '员工转正'
+      }
+    },
+    {
+      path:'/document', //行文呈批
+      component:Document,
+      meta: {
+        title: '行文呈批'
       }
     },
   ]

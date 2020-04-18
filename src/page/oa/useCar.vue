@@ -1,64 +1,64 @@
 <template>
     <div class="main">
         <HeadTitle
-            title="出差"
-            icon='chucha'
+            title="用车"
+            icon='useCar'
         ></HeadTitle>
         <div class="content">
             <el-form ref="form" :rules="rules" :model="form" label-width="100px">
-                 <!-- <el-form-item label="请假类型" prop="leaveType">
-                    <el-select v-model="form.leaveType" placeholder="请选择">
+                <el-form-item label="文件标题" prop="carTitle"> 
+                    <el-input v-model="form.carTitle" placeholder="请输入文件标题" ></el-input>
+                </el-form-item>
+                <el-form-item label="用车人"> 
+                    <el-input v-model="form.userName" placeholder="请输入申请人" disabled></el-input>
+                </el-form-item>
+                <el-form-item label="用车部门"> 
+                    <el-input v-model="form.departmentName" placeholder="请输入所属部门" disabled></el-input>
+                </el-form-item>
+                <el-form-item label="车辆类型" prop="carType"> 
+                    <el-input v-model="form.carType" placeholder="请输入所需车辆类型" ></el-input>
+                </el-form-item>
+                <el-form-item label="数量(辆)" prop="carNum"> 
+                    <el-input v-model="form.carNum" placeholder="请输入车辆数量" type="number" ></el-input>
+                </el-form-item>
+                 <!-- <el-form-item label="公出类型" prop="awayType">
+                    <el-select v-model="form.awayType" placeholder="请选择">
                         <el-option
                         v-for="item in form.type"
-                        :key="item.value"
+                        :key="item.key"
                         :label="item.label"
                         :value="item.value">
                         </el-option>
                     </el-select>
                 </el-form-item> -->
-                <el-form-item label="标题" prop="stampApplyTitle"> 
-                    <el-input v-model="form.stampApplyTitle" placeholder="请输入标题" ></el-input>
-                </el-form-item>
-                <div v-for="(v,index) in form.list" :key="index">
-                    <el-form-item v-if="ishowDelet"> 
-                        行程明细（{{index+1}}）<el-button type="danger" round @click="deleteRules(v,index)">删除</el-button>
-                    </el-form-item>
-                    <el-form-item label="出差地点" :prop="'list.'+index+'.addressDetail'" :rules="[{required: true, message: '请选择出差地点'}]"> 
-                        <el-input v-model="v.addressDetail" placeholder="请选择出差地点" @focus='getFocus(index)'></el-input>
-                    </el-form-item>
-
-                    <el-form-item label="开始时间" :prop="'list.'+index+'.beginTime'" :rules="[{required: true, message: '请选择开始时间'}]">
+                    <el-form-item label="用车时间" prop="beginTime">
                         <!-- <el-input v-model="form.name"></el-input> -->
                         <el-date-picker
-                            v-model="v.beginTime"
+                            v-model="form.beginTime"
                             type="datetime"
                             placeholder="请选择">
                         </el-date-picker>
                     </el-form-item>
 
-                    <el-form-item label="结束时间"  :prop="'list.'+index+'.endTime'" :rules="[{required: true, message: '请选择结束时间'}]">
+                    <el-form-item label="返回时间" prop="endTime">
                         <el-date-picker
-                            v-model="v.endTime"
+                            v-model="form.endTime"
                             type="datetime"
                             placeholder="请选择">
                         </el-date-picker>
                         <!-- <el-input v-model="form.name"></el-input> -->
                     </el-form-item>
 
-                    <el-form-item label="时长 (天)" :prop="'list.'+index+'.day'" :rules="[{required: true, message: '请输入时长天数'}]"> 
-                        <el-input v-model="v.day" placeholder="请输入时长 (0.5为单位)"></el-input>
-                    </el-form-item>
-                    <el-form-item label="同行人员" :prop="'list.'+index+'.persons'" :rules="[{required: true, message: '请选择同行人员'}]"> 
-                        <el-input v-model="v.persons" placeholder="请选择" @focus='getPersons'></el-input>
-                    </el-form-item>
-                </div>
-                     <el-form-item> 
-                        <el-button type="primary" round @click="addList">增加行程明细</el-button>
-                    </el-form-item>
-                <el-form-item class="textareaBox" label="出差事由" prop="desc" >
-                     <el-input  type="textarea" v-model="form.desc" maxlength="150" placeholder="请输入出差事由">
+                    <!-- <el-form-item label="随行人员" prop="persons" :rules="[{required: true, message: '请选择同行人员'}]"> 
+                        <el-input v-model="form.persons" placeholder="请选择" @focus='getPersons'></el-input>
+                    </el-form-item> -->
+                    <el-form-item label="随行人员" prop="persons"> 
+                    <el-input v-model="form.persons" placeholder="请输入随行人员(多个用逗号隔开)"></el-input>
+                     </el-form-item>
+                <el-form-item class="textareaBox" label="用车事由" prop="desc" >
+                     <el-input  type="textarea" v-model="form.desc" maxlength="150" placeholder="请输入用车事由,限定1000字">
                      </el-input>
-                     <span class="textNum">{{wordCount}}/150</span>
+                     <span class="textNum">{{wordCount}}/1000</span>
                      <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
                 </el-form-item>
 
@@ -75,15 +75,17 @@
                     guideType=0
                 >
                 </Approve> -->
-                <Approve
+
+                 <Approve
                     :approver_list='allApprovers'
                     v-on:selectOpen='selectOpen'
                     v-on:remove='remove'
-                    hintType=2
+                    hintType=0
                     v-on:del_poeple="del_poeple"
                     v-on:address="add_people"
                 >
                 </Approve>
+
                 <Copy
                     :receivers_data='receivers_data'
                     v-on:selectOpen='selectOpen'
@@ -112,30 +114,13 @@
             :personnels="Personnel_data"
             
         ></AddressList>
-        
-        <el-dialog  
-        title="出差地点"
-        :visible.sync="dialogVisible"
-        width="80%"
-        :close-on-click-modal="false"
-        >
-        <template>
-            <my-map id="myMap" @func="getMsgFormSon" @hanlerfunc="getMsgData"></my-map>
-        </template>
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-        </span>
-        </el-dialog>
-
+    
     </div>
 </template>
 
 <script>
     import HeadTitle from './../../components/common/headTitle.vue'
-    // import Approve from './../../components/oa/approve_contacts.vue'
     import Approve from './../../components/oa/new_approve.vue'
-
     import Copy from './../../components/oa/copy_contacts.vue'
     import Personnel from './../../components/oa/personnel_contacts.vue'
     import AddressList from './../../components/common/addressList.vue'
@@ -153,14 +138,14 @@
             };
             var beginCheck = (rule, value, callback) => {
                 if (this.form.endTime!=''&&value.getTime()>=this.form.endTime.getTime()) {
-                    callback(new Error('开始时间不能大于结束时间'));
+                    callback(new Error('用车时间不能大于返回时间'));
                 } else {
                  callback();
                 }
             };
             var endCheck = (rule, value, callback) => {
                 if (this.form.beginTime!=''&&value.getTime()<=this.form.beginTime.getTime()) {
-                    callback(new Error('结束时间不能小于开始时间'));
+                    callback(new Error('返回时间不能小于用车时间'));
                    
                 } else {
                  callback();
@@ -169,36 +154,33 @@
             return {
                 form: {
                     type: [],
-                    stampApplyTitle:'',
-                    name: '',
-                    desc: '',//出差事由
-                    list:[
-                        {
-                            day:'',//天数
-                            beginTime:'',//开始时间
-                            endTime:'',//结束时间
-                            persons:'',//同行人员
-                            peerUserIds:'',
-                            addressDetail:''//出差地点
-                        }
-                    ],
+                    carTitle:'',//文件标题
+                    userName:'',//用车人
+                    departmentName:'',//用车部门
+                    carType:'',//车辆类型
+                    carNum:'',//数量（辆）
+                    desc: '',//用车事由
+                    beginTime:'',//开始时间
+                    endTime:'',//结束时间
+                    persons:'',//随行人员
+                    userlocation:'',
+                    peerUserIds:''
                 },
                 rules: {
-                    stampApplyTitle:[
-                        { required: true, message: '标题不能为空', trigger: 'blur' },
+                    carTitle:[
+                        { required: true, message: '文件标题不能为空', trigger: 'blur' },
                         { min:2, max: 100, message: '长度在不能超过100字符或少于2个字符', trigger: 'blur' }
                     ],
-                    leaveType: [
-                        { required: true, message: '请选择请假类型', trigger: 'change' },
+                    carType: [
+                        { required: true, message: '车辆类型不能为空', trigger: 'blur' },
+                        // { validator: checkDay, trigger: 'blur' }
                     ],
-                    day: [
-                        { required: true, message: '请输入出差时长', trigger: 'blur' },
-                        { validator: checkDay, trigger: 'blur' }
+                    carNum: [
+                        { required: true, message: '车辆数量不能为空', trigger: 'blur' },
                     ],
-                    // persons: [
-                    //     { required: true, message: '请选择同行人员', trigger: 'blur' },
-                    //     { validator: checkDay, trigger: 'blur' }
-                    // ],
+                    persons: [
+                        { required: true, message: '请输入随行人员', trigger: 'blur' },
+                    ],
                     beginTime:[
                         { required: true, message: '请选择开始时间', trigger: 'change' },
                         { validator: beginCheck, trigger: 'change' }
@@ -210,7 +192,7 @@
 
                     ],
                     desc:[
-                        { required: true, message: '请输入出差事由', trigger: 'blur' },
+                        { required: true, message: '请输入请假事由', trigger: 'blur' },
                         { min:1, max: 150, message: '长度在不能超过150字符', trigger: 'blur' }
                     ]
                 },
@@ -231,14 +213,15 @@
                 mk: {},
                 showMap:false,
                 isShowPer:false,
+                personsData:'',
                 _index:0,
-                ishowDelet:false,
-                 linkAuditNum:'',
-                applyLinkIds:'',
-                allApprovers:[],
                 showCopy:false,
                 showGroup:false,
                 approver_index:0,
+                linkAuditNum:'',
+                applyLinkIds:'',
+                allApprovers:[],
+                ishowDelet:false
             }
         },
         components:{
@@ -251,19 +234,23 @@
             Personnel
         },
         created(){
-            document.title='出差'
+            document.title='用车'
             let that = this;
-             this.axios.get('/work/leave/type/list').then(function(res){
+             this.axios.get('/outsign/task/type').then(function(res){
+                 console.log(res.data.b)
                 if(res.data.h.code =200 ){
-                    res.data.b.data.forEach(item=>{
-                        that.form.type.push({value:item.id,label:item.name})
+                    res.data.b.type.forEach(item=>{
+                        that.form.type.push({value:item.value,label:item.key})
                     })
                 }
             })
-            
-
-            this.axios.get('/process/apply/enter?req=4').then((res)=>{
+            this.axios.post('/user/current/userinfo').then(function(res){
+                that.form.departmentName = res.data.b.officeName
+                that.form.userName = res.data.b.name
+            })
+            this.axios.get('/process/apply/enter?req=3').then((res)=>{
                 let data = res.data.b;
+                console.log(data,'data')
                 this.allApprovers  = this.Util.approverDataInit(data.links);
                 this.linkAuditNum = data.linkAuditNum;
                 this.applyLinkIds = data.applyLinkIds;
@@ -273,6 +260,7 @@
                         this.receivers_data = data.receivers
                 }
             })
+            
         },
         watch:{
             'form.desc':function(val){
@@ -286,38 +274,18 @@
         },
         methods:{
             getMsgData(val){
-                this.form.list[this._index].addressDetail = val.address
-                this.form.list[this._index].userlocation = val.point;
+                this.form.addressDetail = val.address
+                this.form.userlocation = val.point;
             },
             getMsgFormSon(data){
                 if(data==undefined){
 
                 }else{
-                    this.form.list[this._index].addressDetail = data.addr;
-                    this.form.list[this._index].userlocation = data.point;
+                    this.form.addressDetail = data.addr;
+                    this.form.userlocation = data.point;
                 }
             },
-            addList() {//添加明细
-                this.form.list.push({
-                    day:'',//天数
-                    beginTime:'',//开始时间
-                    endTime:'',//结束时间
-                    persons:'',//同行人员
-                    addressDetail:'',//出差地点
-                    userlocation:''
-            })
-            this.ishowDelet = true;
-            },
-            deleteRules(item, index) {
-                if(this.form.list.length==2){
-                    this.ishowDelet = false;
-                }
-                var index = this.form.list.indexOf(item)
-                if (index !== -1) {
-                    this.form.list.splice(index, 1)
-                }
-            },
-             add_people(index){
+            add_people(index){
                 this.approver_index = index
                 this.showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
                 this.approvers_data = this.allApprovers[index].auditers
@@ -340,30 +308,23 @@
                 this.openAdd=false
             },
             choose(arr){
-                let arrName = [];
+                let arrName = []
                 let peerUserIds = [];
-                let personsData = '';
                 this.openAdd=false
                 if(this.peopleType.indexOf('other')==0){
                     this.allApprovers[this.approver_index].auditers = JSON.parse(JSON.stringify(arr))
+                    
                 }else if(this.peopleType.indexOf('per')==0){
 
                     this.Personnel_data = JSON.parse(JSON.stringify(arr))
-                      console.log('peerUserIds',this.Personnel_data )
                     for(let val of this.Personnel_data){
-                        arrName.push(val.name)
                         peerUserIds.push(val.userId)
+                        arrName.push(val.name)
                     }
-                    setTimeout(()=>{
-                        personsData = arrName.join(',');
                         let userId = peerUserIds.join(',')
-                        this.form.list[this._index].persons = personsData;
-                        this.form.list[this._index].peerUserIds = userId;
-                    },300)
-
-                        console.log('peerUserIds',peerUserIds)
-
-                       
+                        this.personsData = arrName.join(',');
+                        this.form.persons = this.personsData;
+                        this.form.peerUserIds = userId;
                 }else{
                    this.receivers_data = JSON.parse(JSON.stringify(arr))
                 }
@@ -390,14 +351,17 @@
                 });
             },
             submit(){
-           
-
                 if(this.Util.checkApprovers(this.allApprovers)){
                     this.$message('请选择审批人!')
                     return 
+                }else if(this.form.desc.length>1000||this.form.desc.length<6){
+                    this.$message('用车事由不能少于6个或超过1000字符!')
+                    return 
                 }
-
+                
                 let that = this;
+                let beginTime = '',endTime = '',day = '';
+
                 let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj,params,approves;
                 receiverIds = this.Util.getIds(this.receivers_data,'userId')
                 receiverCompanyIds = this.Util.getIds(this.receivers_data,'companyId')
@@ -407,36 +371,32 @@
           
                  params = {
                     Id :'', // id
-                    tripTitle:that.form.stampApplyTitle,//标题
-                    tripReason : encodeURI(that.form.desc.replace(/\n/g, '<br/>')), //出差事由
-                    auditUserIds, //审批人
+                    carTitle:that.form.carTitle,//文件标题
+                    carType: that.form.carType,  //车型
+                    carNum: that.form.carNum,  //用车数量
+                    beginTime:that.Util.getDate(that.form.beginTime),//开始时间
+                    endTime:that.Util.getDate( that.form.endTime),//结束时间
+ 
+
+                    peerNames: that.form.persons.replace(',','|'),  //同行人员姓名
+                    peerUserIds:that.form.peerUserIds,
+                    carReason:that.form.desc,//用车事由
+    
+
+                    url : fileObj.urlStr, //附件
                     receiverIds, //抄送人
-                    draftFlag : 0, //草稿还是发送
-                    auditCompanyIds,//审批人的公司id
-                    receiverCompanyIds,//抄送人的公司id
+                    receiverCompanyIds,
                     auditUserIds:approves.userIdsStr, //审批人
                     auditCompanyIds:approves.companyIdsStr,
                     applyLinkIds:this.applyLinkIds,
                     linkAuditNum:approves.numStr,
-                    urls : fileObj.urlStr, //附件
-                    fileNames :fileObj.fileNameStr, //文件名称 
-                    fileSizes :fileObj.fileSizeStr, //文件大小
+                    draftFlag : 0, //草稿还是发送
+                    fileName :fileObj.fileNameStr, //文件名称 
+                    fileSize :fileObj.fileSizeStr, //文件大小
                     
                 }
-
-                    this.form.list.forEach((item,index)=>{
-                     params['tripList['+index+'].detailAddress'] = item.addressDetail;
-                     params['tripList['+index+'].beginTime'] = that.Util.getDate(item.beginTime);
-                     params['tripList['+index+'].endTime'] = that.Util.getDate(item.endTime);
-                     params['tripList['+index+'].tripDuration'] = item.day;
-                     params['tripList['+index+'].peerNames'] = item.persons;
-                     params['tripList['+index+'].peerUserIds'] = item.peerUserIds;
-                     params['tripList['+index+'].destination'] = item.addressDetail;
-                     params['tripList['+index+'].lon'] = item.userlocation.lng
-                     params['tripList['+index+'].lat'] = item.userlocation.lat
-
-                })
-                that.axios.post(this.Service.saveTrip + this.Service.queryString(params)).then(function (res){
+            
+                that.axios.post(this.Service.useCarApi + this.Service.queryString(params)).then(function (res){
                 if(res.data.h.code!=200){
                         that.$message(res.data.h.msg)
                     }else if(res.data.h.code == 200){
@@ -552,10 +512,4 @@
         background-color:#24b36b;
         cursor pointer;
     }
-    // #myMap{
-    //     width: 70%;
-    //     position: absolute;
-    //     top: 19%;
-    //     left: 35%;
-    // }
 </style>

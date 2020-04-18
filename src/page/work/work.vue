@@ -115,7 +115,7 @@
                         请示函&emsp;
                  </div>
 
-                 <div class="item" @click="none()">
+                 <div class="item" @click="openUrl('stamp')">
                     <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
                         <use xlink:href="#icon-yongyin"></use>
                     </svg>
@@ -129,28 +129,28 @@
                         合&emsp;&emsp;同
                  </div>
 
-                 <div class="item"  @click="none()">
+                 <div class="item"  @click="openUrl('dimission')">
                     <svg style="width: 24px;height:24px" class="icon"  aria-hidden="false">
                         <use xlink:href="#icon-lizhi"></use>
                     </svg>
                         离&emsp;&emsp;职
                  </div>
 
-                 <div class="item"  @click="none()">
+                 <div class="item"  @click="openUrl('reception')">
                     <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
                         <use xlink:href="#icon-jiedaishenqing"></use>
                     </svg>
                         公务接待
                  </div>
 
-                 <div class="item"  @click="none()">
+                 <div class="item"  @click="openUrl('employee')">
                     <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
                         <use xlink:href="#icon-zhaopin"></use>
                     </svg>
                         人员需求
                  </div>
 
-                 <div class="item"  @click="none()">
+                 <div class="item"  @click="openUrl('useCar')">
                     <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
                         <use xlink:href="#icon-yongche"></use>
                     </svg>
@@ -164,21 +164,21 @@
                         通讯录&emsp;
                  </div>
 
-                 <div class="item"  @click="none()">
+                 <div class="item"  @click="openUrl('project')">
                     <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
                         <use xlink:href="#icon-lixiang"></use>
                     </svg>
                         项目立项
                  </div>
 
-                 <div class="item"  @click="none()">
+                 <div class="item"  @click="openUrl('regular')">
                     <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
                         <use xlink:href="#icon-qingshihan"></use>
                     </svg>
                         员工转正
                  </div>
 
-                 <div class="item"  @click="none()">
+                 <div class="item"  @click="openUrl('document')">
                     <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
                         <use xlink:href="#icon-xingwen"></use>
                     </svg>
@@ -205,18 +205,24 @@
                     </svg>
                         调&emsp;&emsp;岗
                  </div>
-                  <div class="item"  @click="none()">
+                  <div class="item"  @click="openUrl('buy')">
                     <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
                         <use xlink:href="#icon-caigou"></use>
                     </svg>
                         采&emsp;&emsp;购
                  </div>
 
-                 <div class="item"  @click="none()">
+                 <div class="item"  @click="openUrl('recipients')">
                     <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
                         <use xlink:href="#icon-lingyong"></use>
                     </svg>
                         物品领用
+                 </div>
+                 <div class="item" @click="openUrl('pay')">
+                    <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
+                        <use xlink:href="#icon-lingyong"></use>
+                    </svg>
+                        付款
                  </div>
 
              </div>
