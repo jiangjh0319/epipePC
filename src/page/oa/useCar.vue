@@ -78,7 +78,6 @@
 
                  <Approve
                     :approver_list='allApprovers'
-                    v-on:selectOpen='selectOpen'
                     v-on:remove='remove'
                     hintType=0
                     v-on:del_poeple="del_poeple"
@@ -112,7 +111,7 @@
             :approvers="approvers_data"
             :receivers="receivers_data"
             :personnels="Personnel_data"
-            
+            :isMore="isMore"
         ></AddressList>
     
     </div>
@@ -219,6 +218,7 @@
                 showGroup:false,
                 approver_index:0,
                 linkAuditNum:'',
+                isMore:true,
                 applyLinkIds:'',
                 allApprovers:[],
                 ishowDelet:false
@@ -290,6 +290,7 @@
                 this.showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
                 this.approvers_data = this.allApprovers[index].auditers
                 this.peopleType = 'other'+(Math.random()+'').slice(2,10)
+                this.isMore = this.allApprovers[index].remarks=='0'?false:true;
                 setTimeout(()=>{
                     this.openAdd = true
                 },200)
@@ -331,6 +332,7 @@
             },
             selectOpen(type){
                 this.peopleType = type+(Math.random()+'').slice(2,10)
+                this.isMore = true;
                 this.openAdd = true
             },
             remove(type,index){

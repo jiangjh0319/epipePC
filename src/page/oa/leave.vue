@@ -64,7 +64,6 @@
                 
                 <Approve
                     :approver_list='allApprovers'
-                    v-on:selectOpen='selectOpen'
                     v-on:remove='remove'
                     hintType=2
                     v-on:del_poeple="del_poeple"
@@ -90,12 +89,13 @@
             :types="peopleType"
             :approvers="approvers_data"
             :receivers="receivers_data"
+            :isMore="isMore"
             
         ></AddressList>
     </div>
 </template>
 
-<script>
+<script> 
     import HeadTitle from './../../components/common/headTitle.vue'
     // import Approve from './../../components/oa/approve_contacts.vue'
     import Approve from './../../components/oa/new_approve.vue'
@@ -175,6 +175,7 @@
                 showCopy:false,
                 showGroup:false,
                 approver_index:0,
+                isMore:true,
             }
         },
         components:{
@@ -219,7 +220,7 @@
             choose(arr){
                 // modify 修改审批组件方法
                 this.openAdd=false
-                if(this.peopleType.indexOf('other')!=0){
+                if(this.peopleType.indexOf('app')!=0){
                     this.receivers_data = JSON.parse(JSON.stringify(arr))
                 }else{
                     this.allApprovers[this.approver_index].auditers = JSON.parse(JSON.stringify(arr))
@@ -227,7 +228,8 @@
             },
             selectOpen(type){
                 this.peopleType = type+(Math.random()+'').slice(2,10)
-                this.openAdd = true
+                this.isMore = true;
+                this.openAdd = true;
             },
             remove(type,index){
                 if(type){
@@ -241,7 +243,8 @@
                 this.approver_index = index
                 this.showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
                 this.approvers_data = this.allApprovers[index].auditers
-                this.peopleType = 'other'+(Math.random()+'').slice(2,10)
+                this.isMore = this.allApprovers[index].remarks=='0'?false:true;
+                this.peopleType = 'app'+(Math.random()+'').slice(2,10)
                 setTimeout(()=>{
                     this.openAdd = true
                 },200)

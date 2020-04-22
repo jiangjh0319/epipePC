@@ -90,6 +90,7 @@
             v-on:choose="choose"
             :types="peopleType"
             :receivers="receivers_data"
+            :isMore="isMore"
             
         ></AddressList>
     </div>
@@ -115,6 +116,7 @@
                 reportTimeStr:'',
                 isUpdate:false,
                 info:{},
+                isMore:true,
                 flag:true,
                 id:'',
                 form:{

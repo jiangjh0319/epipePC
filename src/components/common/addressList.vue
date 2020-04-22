@@ -48,7 +48,6 @@
                                 </div> -->
                              </div>
 
-
                         </el-scrollbar>
 
                     </div>
@@ -62,7 +61,7 @@
                             </div>
 
                             <div v-for="(item,index) in perso_data" class="personnel-item" :key="item.id" @click="pitch_on(item,index)">
-                                <div class="selectImg">
+                                <div class="selectI1mg">
                                     <img src="./../../assets/20.png" v-if="item.mark_chose"/>
                                     <img src="./../../assets/19.png" v-else/>
                                 </div>
@@ -131,7 +130,7 @@
         components:{
             addressTemplate,
         },
-        props:['show','types','receivers','approvers','other','showGroup','personnels'],
+        props:['show','types','receivers','approvers','other','showGroup','personnels','isMore'],
         watch:{
             show:function(){
                 if(this.show){
@@ -143,15 +142,16 @@
             types:function(){
                 if(this.types.indexOf('app')==0){
                     this.choose_data = JSON.parse(JSON.stringify(this.approvers))
-                }else if(this.types.indexOf('res')==0){
+                    
+                }else if(this.types.indexOf('rec')==0){
                     this.choose_data = JSON.parse(JSON.stringify(this.receivers)) 
                 }else if(this.types.indexOf('per')==0) {
                     this.choose_data = JSON.parse(JSON.stringify(this.personnels))
-                    this.perso_data= [];
                 }else if(this.types.indexOf('other')==0){
                     this.choose_data = JSON.parse(JSON.stringify(this.approvers))
                 }
 
+                this.perso_data= [];
                 this.getData()
 
                 this.reset()
@@ -188,7 +188,7 @@
                     if(item.staff.length){
                         let arr = item.staff
                         arr.forEach(el=>{
-                        el.mark_chose = false
+                            el.mark_chose = false
                         })
                     }
                 })
@@ -201,10 +201,10 @@
                     if(data[i].staff.length){
                         let arr = data[i].staff
                         for(let j=0;j<arr.length;j++){
-                        if(arr[j].userId==id){
-                            arr[j].mark_chose = val;
-                            return
-                        }
+                            if(arr[j].userId==id){
+                                arr[j].mark_chose = val;
+                                return
+                            }
                         }
                     }
                 }
@@ -212,15 +212,50 @@
             select_depart(item){
                 item.open=!item.open
 
+                this.perso_data = [];
+
                 if(item.open){
-                    this.perso_data = item.staff
+                    // this.perso_data = item.staff
+                    this.getStaff(item)
+                    // this.list.forEach(el=>{
+                    //     this.setFalse(el)
+                    // })
+                }
+            },
+            setFalse(data){
+                data.open = false;
+                if(data.subOffice.length){
+                    
+                    data.subOffice.forEach(item=>{
+                        this.setFalse(item)
+                    })
+                }
+            },
+            setTrue(data){
+                data.open = open;
+                if(data.subOffice.length){
+                    
+                    data.subOffice.forEach(item=>{
+                        this.setFalse(item)
+                    })
+                }
+            },
+            getStaff(item){
+                if(item.staff.length){
+                    this.perso_data = this.perso_data.concat(item.staff)
+                }
+
+                if(item.subOffice.length){
+                    for (let index = 0; index < item.subOffice.length; index++) {
+                            this.getStaff(item.subOffice[index])
+                    }
                 }
             },
             getData(){
                 let that = this;
                 this.axios.get('/organ/addressbook',{
                     params:{
-                    showGroup : !this.showGroup,
+                        showGroup : !this.showGroup,
                     }
 
                 }).then( (res)=>{
@@ -286,10 +321,10 @@
                     }
                 }
 
-                // if(this.types.indexOf('other')>-1){
-                //     this.$emit('choose',this.choose_data)
-                //     // return                    
-                // }
+                if(!this.isMore){
+                    this.$emit('choose',this.choose_data)
+                    // return                    
+                }
 
                 this.scroll()
 
@@ -340,14 +375,14 @@
                 let line_late = (this.getLateX(this.$refs.scroll_line)-0) //滚动条已经存在的 位移距离
                 let list_late = -(this.getLateX(this.$refs.choose_list)-0) //列表已经存在的 位移距离
 
-                        let nums = list_late-70<0?0:list_late-70;
+                let nums = list_late-70<0?0:list_late-70;
 
-                        let num = line_late - (70/prop);
-                        num= num <0?0:num;
-                        // console.log(prop)
-                        // console.log((70*prop)-70)
-                         this.$refs.choose_list.style.transform="translateX(-"+nums+"px)";
-                            this.$refs.scroll_line.style.transform="translateX("+num+"px)";
+                let num = line_late - (70/prop);
+                num= num <0?0:num;
+                // console.log(prop)
+                // console.log((70*prop)-70)
+                this.$refs.choose_list.style.transform="translateX(-"+nums+"px)";
+                this.$refs.scroll_line.style.transform="translateX("+num+"px)";
 
 
             },
@@ -529,7 +564,7 @@
             }
 
             .headImg{
-                margin-right 10px;
+                margin 0 15px;
 
                 img{
                     height 42px;

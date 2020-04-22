@@ -129,9 +129,6 @@
             pxove(type,index){
                 this.$emit('pxove',type,index)
             },
-            selectOpen(type){
-                this.$emit('selectOpen',type)
-            },
              del(index,num){
                 this.$emit('del_poeple',index,num)
 
@@ -161,13 +158,20 @@
         filters:{
             info:function(info){
 
-                let str = info.auditers.length
-                if(info.approvalUserType==1){
-                    str+='个'+info.quartersName
+                // let str = info.auditers.length
+                // if(info.approvalUserType==1){
+                //     str+='个'+info.quartersName
+                // }else{
+                //     str+='人'
+                // }
+                // str+=info.linkType==2?'依次审批':info.linkType==3?'会签':'或签'
+
+                let str = info.auditers.length+'人'
+                if(info.auditers.length<2){
+                    str+='审批'
                 }else{
-                    str+='人'
+                    str+=info.linkType==2?'依次审批':info.linkType==3?'会签':'或签'
                 }
-                str+=info.linkType==2?'依次审批':info.linkType==3?'会签':'或签'
 
                 return str
             }

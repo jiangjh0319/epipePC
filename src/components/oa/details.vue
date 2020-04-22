@@ -15,6 +15,7 @@
             v-on:choose="choose"
             v-on:close="openAdd=false"
             types="other"
+            :isMore="isMore"
         >
         </AddressList>
         
@@ -307,6 +308,7 @@
                 endIndex:99999,
                 opinionShow:false,
                 openAdd:false,
+                isMore:false,
                 myself:false,
                 peopleType:false,//打开通讯录类型
                 oa:['','请假','请示函','合同', '公出', '出差' ,'用印' ,'报销','付款','离职',

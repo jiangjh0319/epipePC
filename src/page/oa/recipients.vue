@@ -46,7 +46,6 @@
                 </Approve> -->
                 <Approve
                     :approver_list='allApprovers'
-                    v-on:selectOpen='selectOpen'
                     v-on:remove='remove'
                     hintType=2
                     v-on:del_poeple="del_poeple"
@@ -79,7 +78,7 @@
             :approvers="approvers_data"
             :receivers="receivers_data"
             :personnels="Personnel_data"
-            
+            :isMore="isMore"
         ></AddressList>
 
     </div>
@@ -142,6 +141,7 @@
                  linkAuditNum:'',
                 applyLinkIds:'',
                 allApprovers:[],
+                isMore:true,
                 showCopy:false,
                 showGroup:false,
                 approver_index:0,
@@ -224,6 +224,7 @@
                 this.showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
                 this.approvers_data = this.allApprovers[index].auditers
                 this.peopleType = 'other'+(Math.random()+'').slice(2,10)
+                this.isMore = this.allApprovers[index].remarks=='0'?false:true;
                 setTimeout(()=>{
                     this.openAdd = true
                 },200)
@@ -250,20 +251,6 @@
                     this.allApprovers[this.approver_index].auditers = JSON.parse(JSON.stringify(arr))
                 }else if(this.peopleType.indexOf('per')==0){
 
-                    this.Personnel_data = JSON.parse(JSON.stringify(arr))
-                      console.log('peerUserIds',this.Personnel_data )
-                    for(let val of this.Personnel_data){
-                        arrName.push(val.name)
-                        peerUserIds.push(val.userId)
-                    }
-                    setTimeout(()=>{
-                        personsData = arrName.join(',');
-                        let userId = peerUserIds.join(',')
-                        this.form.list[this._index].persons = personsData;
-                        this.form.list[this._index].peerUserIds = userId;
-                    },300)
-
-                        console.log('peerUserIds',peerUserIds)
 
                        
                 }else{
@@ -272,6 +259,7 @@
             },
             selectOpen(type){
                 this.peopleType = type+(Math.random()+'').slice(2,10)
+                this.isMore = true;
                 this.openAdd = true
             },
             remove(type,index){
