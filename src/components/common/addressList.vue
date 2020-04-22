@@ -29,7 +29,14 @@
                                         </svg>
                                     </div>
                                 </div>
-                                <div v-if="item.open">
+
+                                <addressTemplate
+                                v-if="item.open"
+                                :list="item.offices"
+                                v-on:select_dep="select_depart"
+                                >
+                                </addressTemplate>
+                                <!-- <div v-if="item.open">
                                     <div v-for="(dep,ind) in item.offices" :key="dep.id" :class="dep.open?'dep_active department':'department'" @click.stop="selectOffices(dep,ind)">
                                        <p >{{dep.name}}</p>
                                         <div class="organ_icon" v-show="dep.open">
@@ -38,8 +45,9 @@
                                             </svg>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                              </div>
+
 
                         </el-scrollbar>
 
@@ -107,6 +115,9 @@
 </template>
 
 <script>
+
+      import addressTemplate  from '../../components/common/address_template.vue'
+
     export default {
         data() {
             return {
@@ -117,7 +128,10 @@
                 userName:'',
             }
         },
-        props:['show','types','receivers','approvers','other','showGroup'],
+        components:{
+            addressTemplate,
+        },
+        props:['show','types','receivers','approvers','other','showGroup','personnels'],
         watch:{
             show:function(){
                 if(this.show){
@@ -128,16 +142,17 @@
             },
             types:function(){
                 if(this.types.indexOf('app')==0){
-                    console.log('审批人',this.approvers)
                     this.choose_data = JSON.parse(JSON.stringify(this.approvers))
                 }else if(this.types.indexOf('res')==0){
-                    console.log('抄送人',this.receivers)
                     this.choose_data = JSON.parse(JSON.stringify(this.receivers)) 
-                }else {
-                    this.choose_data = JSON.parse(JSON.stringify(this.approvers))
+                }else if(this.types.indexOf('per')==0) {
+                    this.choose_data = JSON.parse(JSON.stringify(this.personnels))
                     this.perso_data= [];
-                    this.getData()
+                }else if(this.types.indexOf('other')==0){
+                    this.choose_data = JSON.parse(JSON.stringify(this.approvers))
                 }
+
+                this.getData()
 
                 this.reset()
                 setTimeout(res=>{
@@ -163,6 +178,44 @@
                 this.reset();
 
             },
+            dataInit(data){
+                data.forEach(item => {
+                    item.open = false;
+                    if(item.subOffice.length){
+                        this.dataInit(item.subOffice)
+                    }
+
+                    if(item.staff.length){
+                        let arr = item.staff
+                        arr.forEach(el=>{
+                        el.mark_chose = false
+                        })
+                    }
+                })
+            },
+            chose_people(data,id,val){
+                for(let i=0;i<data.length;i++){
+                    if(data[i].subOffice.length){
+                        this.chose_people(data[i].subOffice,id,val)
+                    }
+                    if(data[i].staff.length){
+                        let arr = data[i].staff
+                        for(let j=0;j<arr.length;j++){
+                        if(arr[j].userId==id){
+                            arr[j].mark_chose = val;
+                            return
+                        }
+                        }
+                    }
+                }
+            },
+            select_depart(item){
+                item.open=!item.open
+
+                if(item.open){
+                    this.perso_data = item.staff
+                }
+            },
             getData(){
                 let that = this;
                 this.axios.get('/organ/addressbook',{
@@ -173,23 +226,14 @@
                 }).then( (res)=>{
                 let datas = res.data.b.data
 
-                    for (let i = 0; i < datas.length; i++) {
-                        datas[i].open = false;
-                        for (let j = 0; j < datas[i].offices.length; j++) {
-                            datas[i].offices[j].open = false;
+                    datas.forEach(item=>{
+                        item.open = false;
+                        that.dataInit(item.offices, that.choose_data)
 
-                            for (let a = 0; a < datas[i].offices[j].staff.length; a++) {
-                                
-                            datas[i].offices[j].staff[a].mark_chose = false
-
-                            for (let b = 0; b <that.choose_data.length; b++) {
-                                if (that.choose_data[b].userId == datas[i].offices[j].staff[a].userId) {
-                                        datas[i].offices[j].staff[a].mark_chose = true
-                                    }
-                            }
-                        }
-                        }
-                    }
+                        that.choose_data.forEach(el=>{
+                             that.chose_people(item.offices,el.userId,true)
+                        })
+                    })
 
                 that.list = datas
                 })
@@ -227,7 +271,6 @@
                 })
             },
             pitch_on(item,index){ //选中某人 
-
                 
                 item.mark_chose = !item.mark_chose
                 this.perso_data[index].mark_chose = item.mark_chose
@@ -243,10 +286,10 @@
                     }
                 }
 
-                if(this.types.indexOf('other')>-1){
-                    this.$emit('choose',this.choose_data)
-                    return                    
-                }
+                // if(this.types.indexOf('other')>-1){
+                //     this.$emit('choose',this.choose_data)
+                //     // return                    
+                // }
 
                 this.scroll()
 
@@ -283,6 +326,7 @@
             },
             confirm(){//确认按钮
                 this.$emit('choose',this.choose_data)
+                this.choose_data=[]
             },
             translate(){
                 let choose_width = this.$refs.choose.offsetWidth //盒子长度

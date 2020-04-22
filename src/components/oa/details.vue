@@ -246,8 +246,7 @@
                         </div>
                     </el-scrollbar>
             </div>
-
-            <div class="foot-behavior" v-if="info.myselfApply!='00'&&(info.auditStatus=='0'&&info.myselfApply=='0')">
+            <div class="foot-behavior" v-if="info.auditStatus=='0'">
                 <div class="foot-left-btn">
                     <div @click="consent(3)"  v-if="info.myselfApply=='0'&&info.auditStatus!=3">
                         <svg class="icon" aria-hidden="false">
@@ -386,11 +385,16 @@
                     that.title = that.info.username+'的'+that.oa[that.oaType]+'申请'
                     that.info.accessory = that.accessoryFors(that.info.accessory)
 
-                    if(that.info.userId==that.info.auditUserId){
+                    if(that.info.auditUserId.indexOf(that.info.userId)>-1){
                         that.myself=true;
                         if(that.info.auditStatus==0&&that.info.myselfApply!='00'){
                             that.info.myselfApply="0"
                         }
+                    }
+
+                    if(that.info.myselfApply=='ziji'){
+                        console.log(22)
+                        that.myself=true;
                     }
                     
                     that.status = that.info.auditStatus;
@@ -536,12 +540,11 @@
             },
             awaits:function(data){
                 let str = '';
-                console.log(data)
-                // if(data.linkType==3){
-                //     str='或签'
-                // }else if(data.linkType=4){
-                //     str='会签'
-                // }
+                if(data.linkType==4){
+                    str='或签'
+                }else if(data.linkType=3){
+                    str='会签'
+                }
                 return  str+='审批';
             }, 
             auditersState: function(value){
@@ -953,7 +956,7 @@
     display flex;
 
     .head_img{
-        width:50x;
+        width:50px;
         height:50px;
         border-radius:50%;
         margin-right 10px;

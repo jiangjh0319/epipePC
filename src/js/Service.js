@@ -19,8 +19,8 @@ const Service = {
   getRegularSave:'/work/regular/save',//转正提交接口
   getDocumentSave:'/work/document/save',//行文呈批提交接口
 
-  baseUrl:'http://192.168.3.22:8787/#/',
-  // baseUrl:'http://192.168.3.166/pc/#/',
+  // baseUrl:'http://192.168.3.22:8787/#/',
+  baseUrl:'http://192.168.3.166/pc/#/',
   // baseUrl:'https://apps.epipe.cn/app-https/pc/1.4.0/#/',
   queryString: function (params, postFlag) {
     let paramUrl = "";
