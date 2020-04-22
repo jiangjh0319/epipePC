@@ -10,7 +10,7 @@
                     <el-input v-model="form.dimissionTitle" placeholder="请输入标题" ></el-input>
                 </el-form-item>
                 <el-form-item label="离职人姓名" style="width:180px"> 
-                        <el-input v-model="userInfo.name" placeholder="请选择" @focus='getPersons' disabled></el-input>
+                        <el-input v-model="userInfo.name" placeholder="请选择" @focus='getPersons' disable></el-input>
                 </el-form-item>
                 <el-form-item label="所属部门"> 
                     <el-input v-model="userInfo.officeName" placeholder="所属部门" disabled></el-input>
