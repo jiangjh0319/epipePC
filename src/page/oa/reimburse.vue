@@ -1,77 +1,58 @@
 <template>
     <div class="main">
         <HeadTitle
-            title="采购"
-            icon='buy'
+            title="报销"
+            icon='reimburse'
         ></HeadTitle>
         <div class="content">
-            <el-form ref="form" :rules="rules" :model="form" label-width="130px">
-                <el-form-item label="申请事由" prop="userBuyApplyTheme"> 
-                    <el-input v-model="form.userBuyApplyTheme" placeholder="请输入申请事由" ></el-input>
+            <el-form ref="form" :rules="rules" :model="form" label-width="140px">
+                <el-form-item label="文件标题" prop="reimburseApplyTitle"> 
+                    <el-input v-model="form.reimburseApplyTitle" placeholder="请输入标题" ></el-input>
                 </el-form-item>
-                <el-form-item label="采购类型" prop="typeValue"> 
-                    <el-select v-model="form.typeValue" placeholder="请选择" @change="hanlderVal">
-                        <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.key"
-                        :value="item.value"
-                        >
-                        </el-option>
-                    </el-select>
+                <el-form-item label="报销人" style="width:180px"> 
+                        <el-input v-model="userInfo.name" placeholder="请选择"  disabled></el-input>
                 </el-form-item>
-                <el-form-item label="期望交付日期"  prop="hopeDeliveryDate">
-                        <el-date-picker
-                            v-model="form.hopeDeliveryDate"
-                            type="date"
-                            placeholder="请选择">
-                        </el-date-picker>
+                <el-form-item label="所属部门"> 
+                    <el-input v-model="userInfo.officeName" placeholder="所属部门" disabled></el-input>
                 </el-form-item>
                 <div v-for="(v,index) in form.list" :key="index">
                     <el-form-item v-if="ishowDelet"> 
-                        采购明细（{{index+1}}）<el-button type="danger" round @click="deleteRules(v,index)">删除</el-button>
+                        报销明细（{{index+1}}）<el-button type="danger" round @click="deleteRules(v,index)">删除</el-button>
                     </el-form-item>
 
-                    <el-form-item label="名称" :prop="'list.'+index+'.name'" :rules="[{required: true, message: '请输入名称'}]"> 
-                        <el-input v-model="v.name" placeholder="请输入名称"></el-input>
+                    <el-form-item label="金额" :prop="'list.'+index+'.reimburseAmount'" :rules="[{required: true, message: '请输入金额'}]"> 
+                        <el-input v-model="v.reimburseAmount" type="number" placeholder="请输入金额"></el-input>
                     </el-form-item>
-                    <el-form-item label="规格" :prop="'list.'+index+'.specifications'" :rules="[{required: true, message: '请输入规格'}]"> 
-                        <el-input v-model="v.specifications" placeholder="请输入规格"></el-input>
+                    <el-form-item label="日期" :prop="'list.'+index+'.reimburseDate'" :rules="[{required: true, message: '请输入日期'}]">
+                        <el-date-picker
+                            v-model="v.reimburseDate"
+                            type="date"
+                            placeholder="请选择">
+                        </el-date-picker>
                     </el-form-item>
-                    <el-form-item label="数量" :prop="'list.'+index+'.number'" :rules="[{required: true, message: '请输入数量'}]"> 
-                        <el-input v-model="v.number" type="number" @input="totalPriceF" placeholder="请输入数量"></el-input>
-                    </el-form-item>
-                    <el-form-item label="单位" :prop="'list.'+index+'.unit'" :rules="[{required: true, message: '请输入单位'}]"> 
-                        <el-input v-model="v.unit" placeholder="请输入单位"></el-input>
-                    </el-form-item>
-                    <el-form-item label="价格" :prop="'list.'+index+'.price'" :rules="[{required: true, message: '请输入价格'}]"> 
-                        <el-input v-model="v.price" type="number" @input="totalPriceF" placeholder="请输入价格"></el-input>
-                    </el-form-item>
-                </div>
-                <el-form-item> 
-                    <el-button type="primary" round @click="addList">+ 增加采购明细</el-button>
-                </el-form-item>
-                 <el-form-item label="总价格"> 
-                    <el-input v-model="totalPrice"  disabled></el-input>
-                </el-form-item>
-                <el-form-item label="支付方式" prop="payType"> 
-                    <el-select v-model="form.payType" placeholder="请选择" @change="hanlderPayType">
+                    <el-form-item label="报销类别"  :prop="'list.'+index+'.positionType'" :rules="[{required: true, message: '请选择报销类别'}]"> 
+                    <el-select v-model="v.positionType" placeholder="请选择" @change="hanlderVal">
                         <el-option
-                        v-for="item in optionsPayType"
+                        v-for="item in positionTypeOptions"
                         :key="item.value"
                         :label="item.key"
                         :value="item.value"
                         >
                         </el-option>
                     </el-select>
-                </el-form-item>
-                <el-form-item class="textareaBox" label="备注" prop="userBuyApplyRemarks" >
-                     <el-input  type="textarea" v-model="form.userBuyApplyRemarks" maxlength="150" placeholder="请输入备注,限定1000字">
+                    </el-form-item>
+                    <el-form-item class="textareaBox" label="费用明细"  :prop="'list.'+index+'.materialReceiveRemarks'" :rules="[{required: true, message: '请输入费用明细'}]" >
+                     <el-input  type="textarea" v-model="v.materialReceiveRemarks" maxlength="1000" placeholder="请输入费用明细">
                      </el-input>
-                     <span class="textNum">{{wordCount}}/150</span>
-                     <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+                    
+                    </el-form-item>
+                </div>
+                <el-form-item label="总报销金额"> 
+                    <el-input v-model="totalAmount" placeholder="总报销金额" disabled ></el-input>
                 </el-form-item>
-
+                <el-form-item> 
+                    <el-button type="primary" round @click="addList">+ 增加报销明细</el-button>
+                </el-form-item>
                 <File :accessory="accessory"
                     v-on:remove="removeFile"
                 >
@@ -142,41 +123,24 @@
             return {
                 form: {
                     type: [],
-                    userBuyApplyTheme:'',//申请事由
-                    userBuyApplyRemarks: '',//备注
+                    reimburseApplyTitle:'',
                     list:[
                         {
-                            name:'',//物品名称
-                            specifications:'',//规格
-                            unit:'',//单位
-                            price:'',//价格
-                            number:''//数量
+                            reimburseAmount:'',
+                            reimburseDate:'',
+                            positionType:'',
+                            materialReceiveRemarks:''
                         }
                     ],
-                    typeValue: '',
-                    hopeDeliveryDate:'',
-                    totalPrice:0,
-                    payType:''
                 },
-                buyTypeCode:'',
-                payTypeCode:'',
-                options: [],
-                optionsPayType:[],
+          
+                userInfo:{},
+                positionTypeOptions:[],
                 rules: {
-                    userBuyApplyTheme:[
-                        { required: true, message: '申请事由不能为空', trigger: 'blur' },
-                        { min:2, max: 100, message: '申请事由不能低于2个或超过100个字符', trigger: 'blur' }
+                    reimburseApplyTitle:[
+                        { required: true, message: '请输入文件标题', trigger: 'blur' },
+                        { min:2, max: 100, message: '文件标题不能低于2个或超过100个字符', trigger: 'blur' }
                     ],
-                    userBuyApplyRemarks:[
-                        { required: true, message: '请输入备注', trigger: 'blur' },
-                        { min:1, max: 150, message: '长度在不能超过150字符', trigger: 'blur' }
-                    ],
-                    hopeDeliveryDate:[
-                        {required: true, message: '请选择时间'}
-                    ],
-                    typeValue:[
-                        {required: true, message: '请选择采购类型'}
-                    ]
                 },
                 approvers_data:[],//审批人
                 receivers_data:[],//抄送人
@@ -215,27 +179,13 @@
             Personnel
         },
         created(){
-            document.title='采购'
+            document.title='报销'
             let that = this;
              this.axios.get('/work/leave/type/list').then(function(res){
                 if(res.data.h.code =200 ){
                     res.data.b.data.forEach(item=>{
                         that.form.type.push({value:item.id,label:item.name})
                     })
-                }
-            })
-            this.axios.get(this.Service.getBuyTypeApi).then(res=>{//采购类型
-                // console.log('采购类型',res)
-                if(res.data.h.code =200 ){
-                //    console.log(res.data.b)
-                   this.options = res.data.b;
-                }
-            })
-            this.axios.get(this.Service.getPayTypeApi).then(res=>{//支付方式
-                // console.log('支付方式',res)
-                if(res.data.h.code =200 ){
-                //    console.log(res.data.b)
-                   this.optionsPayType = res.data.b;
                 }
             })
             
@@ -251,39 +201,36 @@
                         this.receivers_data = data.receivers
                 }
             })
+            this.axios.post('/user/current/userinfo').then((res)=>{
+            this.userInfo.name = res.data.b.name
+            this.userInfo.officeName = res.data.b.officeName
+            this.userInfo.userPosition = res.data.b.userPosition
+            this.userInfo.userId = res.data.b.id
+            })
+            this.axios.get('/work/reimburse/type').then(res=>{
+                if(res.data.h.code =200 ){
+                //    console.log(res.data.b)
+                   this.positionTypeOptions = res.data.b;
+                }
+            })
         },
         watch:{
-            'form.userBuyApplyRemarks':function(val){
-                this.wordCount = val.length
-            }
+      
         },
         computed:{
             getAddrDetail(){
                 return this.$store.state.addressDetail;
-            }
+            },
+            totalAmount(){
+                let count = 0 ;
+                this.form.list.forEach(item =>{
+                    count+= (item.reimburseAmount - 0)
+                })
+
+                return count + '元'
+            },
         },
         methods:{
-            totalPriceF(){
-                let total = 0
-                this.form.list.forEach(item=>{
-                    let num = item.number==''?0:item.number
-                    let price = item.price==''?0:item.price
-
-                    if(isNaN(num)||isNaN(price)){
-                        return
-                    }
-                    total+=parseFloat(num) * parseFloat(price)
-                })
-                this.totalPrice = total.toFixed(1)+'元';
-             },
-            hanlderVal(val){
-                console.log(val,'采购')
-                this.buyTypeCode = val;
-            },
-            hanlderPayType(val){
-                console.log(val,'支付')
-                this.payTypeCode = val;
-            },
             getMsgData(val){
                 this.form.list[this._index].addressDetail = val.address
                 this.form.list[this._index].userlocation = val.point;
@@ -298,12 +245,10 @@
             },
             addList() {//添加明细
                 this.form.list.push({
-                    name:'',
-                    specifications:'',
-                    number:'',
-                    unit:'',
-                    price:''
-
+                            reimburseAmount:'',
+                            reimburseDate:'',
+                            positionType:'',
+                            materialReceiveRemarks:''
             })
             this.ishowDelet = true;
             },
@@ -314,7 +259,7 @@
                 var index = this.form.list.indexOf(item)
                 if (index !== -1) {
                     this.form.list.splice(index, 1)
-                    this.totalPriceF()
+
                 }
             },
              add_people(index){
@@ -407,11 +352,10 @@
           
                  params = {
                     Id :'', // id
-                    userBuyApplyTheme:that.form.userBuyApplyTheme,//标题
-                    userBuyApplyRemarks :that.form.userBuyApplyRemarks, //备注
-                    payType:that.payTypeCode,//支付方式
-                    buyType:that.buyTypeCode,//采购类型
-                    hopeDeliveryDate: that.Util.getDate(that.form.hopeDeliveryDate),//交付日期
+                    reimburseApplyTitle:that.form.reimburseApplyTitle,//标题
+                    officeName:that.userInfo.officeName,
+
+
                     auditUserIds, //审批人
                     receiverIds, //抄送人
                     draftFlag : 0, //草稿还是发送
@@ -428,16 +372,17 @@
                 }
 
                     this.form.list.forEach((item,index)=>{
-                     params['list['+index+'].name'] = item.name;
-                     params['list['+index+'].specifications'] = item.specifications;
-                     params['list['+index+'].number'] = item.number;
-                     params['list['+index+'].unit'] = item.unit;
-                     params['list['+index+'].price'] = item.price;
-                    
+                        console.log('to',item)
+                     params['list['+index+'].reimburseAmount'] = item.reimburseAmount;
+                     params['list['+index+'].reimburseDate'] =that.Util.getDate(item.reimburseDate);
+                     params['list['+index+'].reimburseType'] = item.positionType;
+                     params['list['+index+'].reimburseDesc'] = item.materialReceiveRemarks;
+
+
                 })
                 that.axios({
                     method:"post",
-                    url:`${this.Service.getBuySaveApi}`,
+                    url:`${this.Service.getReimburseSave}`,
                      headers:{
                     'Content-type': 'application/x-www-form-urlencoded'
                         },

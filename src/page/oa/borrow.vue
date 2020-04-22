@@ -1,13 +1,13 @@
 <template>
     <div class="main">
         <HeadTitle
-            title="付款"
-            icon='qingjia'
+            title="借款"
+            icon='borrow'
         ></HeadTitle>
         <div class="content">
             <el-form ref="form" :rules="rules" :model="form" label-width="130px">
-                <el-form-item label="文件标题" prop="payTitle"> 
-                    <el-input v-model="form.payTitle" placeholder="请输入标题"></el-input>
+                <el-form-item label="文件标题" prop="borrowTitle"> 
+                    <el-input v-model="form.borrowTitle" placeholder="请输入标题"></el-input>
                 </el-form-item>
                 <el-form-item label="申请人" > 
                     <el-input v-model="form.userName" disabled placeholder="请输入提交人"></el-input>
@@ -17,37 +17,37 @@
                 </el-form-item>
 
 
-                <el-form-item label="付款金额" prop="payAmount"> 
-                    <el-input v-model="form.payAmount" placeholder="请输入付款金额"></el-input>
+                <el-form-item label="借款金额" prop="borrowerAmount"> 
+                    <el-input v-model="form.borrowerAmount" placeholder="请输入借款金额" type='number'></el-input>
                 </el-form-item>
 
-                <el-form-item label="付款方式" prop="payType">
-                    <!-- <el-input v-model="form.name"></el-input> -->
-                    <el-select v-model="form.payType" placeholder="请选择">
-                        <el-option :label="item.key" :value="item.value" v-for="item in form.type" :key="item.value"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="付款日期" prop="payTime">
-                    <!-- <el-input v-model="form.name"></el-input> -->
+                <el-form-item label="使用日期" prop="useDate">
                     <el-date-picker
-                        v-model="form.payTime"
-                        type="datetime"
+                        v-model="form.useDate"
+                        type="date"
                         placeholder="请选择">
                     </el-date-picker>
                 </el-form-item>
-                 <el-form-item label="收款人全称"> 
-                    <el-input v-model="form.receiverName" placeholder="请输入收款人全称"></el-input>
+                <el-form-item label="预计归还日期" prop="returnDate">
+                    <el-date-picker
+                        v-model="form.returnDate"
+                        type="date"
+                        placeholder="请选择">
+                    </el-date-picker>
                 </el-form-item>
-                 <el-form-item label="银行账户" > 
-                    <el-input v-model="form.bankAcount" placeholder="请输入银行账户"></el-input>
+                 <el-form-item label="收款人全称" prop="borrowerName"> 
+                    <el-input v-model="form.borrowerName" placeholder="请输入收款人全称"></el-input>
                 </el-form-item>
-                 <el-form-item label="开户行" > 
-                    <el-input v-model="form.bankName" placeholder="请输入开户行"></el-input>
+                 <el-form-item label="银行账户" prop="borrowerAccount" > 
+                    <el-input v-model="form.borrowerAccount" placeholder="请输入银行账户" type="number"></el-input>
                 </el-form-item>
-                 <el-form-item class="textareaBox" label="付款事由" prop="payReason" >
-                     <el-input  type="textarea" v-model="form.payReason" maxlength="1000" placeholder="请输入付款事由">
+                 <el-form-item label="开户行" prop="borrowerBank"> 
+                    <el-input v-model="form.borrowerBank" placeholder="请输入开户行"></el-input>
+                </el-form-item>
+                 <el-form-item class="textareaBox" label="借款事由" prop="borrowReason">
+                     <el-input  type="textarea" v-model="form.borrowReason" maxlength="1000" placeholder="请输入借款事由">
                      </el-input>
-                     <span class="textpayAmount">{{payReasonCount}}/1000</span>
+                     <span class="textpayAmount">{{borrowReasonCount}}/1000</span>
                 </el-form-item>
 
                 <File :accessory="accessory"
@@ -117,33 +117,36 @@
             return {
                 form: {
                     name: '',
-                    payTitle:'',
-                    payAmount:'',
+                    borrowTitle:'',
+                    borrowerAmount:'',
                     type: [],
-                    payType:'',
                     mealPersons:'',
-                    payReason:'',
+                    borrowReason:'',
                     mealStandard:'',
-                    payTime:'',
+                    borrowerName:'',
+                    borrowerAccount:'',
+                    borrowerBank:'',
+                    useDate:'',
+                    returnDate:'',
                     endTime:'',
                     departmentName:'',
                     userName:''
                 },
                 rules: {
-                    payTitle:[
+                    borrowTitle:[
                         { required: true, message: '请输入文件标题', trigger: 'blur' },
                         { min:1, max: 1000, message: '长度在不能超过100字符', trigger: 'blur' }
 
                     ],
-                    payAmount: [
-                        { required: true, message: '请输入付款金额', trigger: 'blur' },
+                    borrowerAmount: [
+                        { required: true, message: '请输入借款金额', trigger: 'blur' },
                         { validator: checkDay, trigger: 'blur' }
                     ],
-                    payTime:[
-                        { required: true, message: '请选择付款时间', trigger: 'change' },
+                    useDate:[
+                        { required: true, message: '请选择使用时间', trigger: 'change' },
                     ],
-                    payType:[
-                        { required: true, message: '请选择就餐类型', trigger: 'change' },
+                    returnDate:[
+                        {  required: true, message: '请选择预计归还日期时间', trigger: 'change' },
                     ],
                     mealStandard:[
                         { required: true, message: '请输入就餐标准', trigger: 'blur' },
@@ -153,8 +156,18 @@
                         { required: true, message: '请输入人员名单', trigger: 'blur' },
                         { min:1, max: 500, message: '长度在不能超过500字符', trigger: 'blur' }
                     ],
-                    payReason:[
+                    borrowReason:[
+                        { required: true, message: '请输入借款事由', trigger: 'blur' },
                         { min:1, max: 1000, message: '长度在不能超过1000字符', trigger: 'blur' }
+                    ],
+                    borrowerName:[
+                        { required: true, message: '请输入收款人全称', trigger: 'blur' },
+                    ],
+                    borrowerAccount:[
+                        { required: true, message: '请输入银行账户', trigger: 'blur' },
+                    ],
+                    borrowerBank:[
+                        { required: true, message: '请输入开户行', trigger: 'blur' },
                     ]
                 },
                 
@@ -164,7 +177,7 @@
                 openAdd:false,
                 accessory:[],
                 btnStatus:true,
-                payReasonCount:0,
+                borrowReasonCount:0,
 
                 linkAuditNum:'',
                 applyLinkIds:'',
@@ -182,7 +195,7 @@
             Copy
         },
         created(){
-            document.title='付款'
+            document.title='借款'
             this.Ajax.get('/user/info').then(res=>{
                 this.form.departmentName = res.data.b.officeName
                 this.form.userName = res.data.b.name
@@ -210,8 +223,8 @@
             'form.mealPersons':function(val){
                 this.mealPersonsCount = val.length
             },
-            'form.payReason':function(val){
-                this.payReasonCount = val.length
+            'form.borrowReason':function(val){
+                this.borrowReasonCount = val.length
             }
         },
         methods:{
@@ -261,7 +274,6 @@
                 });
             },
             submit(){
-
                 if(this.Util.checkApprovers(this.allApprovers)){
                     this.$message('请选择审批人!')
                     return 
@@ -277,14 +289,26 @@
 
                  params = {
                     Id :'', // id
-                    payDate:this.Util.getDate(this.form.payTime), 
-                    payType : this.form.payType,
-                    payAmount:this.form.payAmount,
-                    bankName:this.form.bankName,
-                    bankAcount:this.form.bankAcount,
-                    receiverName:this.form.receiverName, //收款人
-                    payReason: this.form.payReason.replace(/\n/g, '<br/>'),
-                    payTitle:this.form.payTitle,
+                    // borrowTitle:this.form.borrowTitle,
+                    // borrowReason: this.form.borrowReason.replace(/\n/g, '<br/>'),
+                    // // useDate:this.Util.getDate(this.form.useDate), 
+                    // // returnDate:this.Util.getDate(this.form.returnDate), 
+                    // useDate:'2020-1-5',//付款时间
+                    // returnDate:'2020-1-15',//付款时间
+                    // borroweAmount:this.form.borrowerAmount,
+                    // borrowerBank:this.form.borrowerBank,
+                    // borrowerAccount:this.form.borrowerAccount,
+                    // borrowerName:this.form.borrowerName, //收款人
+                    borrowTitle:this.form.borrowTitle,//标题
+                    borrowReason:this.form.borrowReason.replace(/\n/g, '<br/>'), //付款说明
+                    borrowAmount:this.form.borrowerAmount, //付款金额
+                    borrowerBank:this.form.borrowerBank,
+                    useDate:this.Util.getDate(this.form.useDate),//付款时间
+                    returnDate:this.Util.getDate(this.form.returnDate),//付款时间
+                    borrowerAccount:this.form.borrowerAccount,
+                    borrowerName:this.form.borrowerName, //收款人
+            
+         
                     urls : fileObj.urlStr, //附件
                     fileNames: fileObj.fileNameStr, 
                     fileSizes: fileObj.fileSizeStr,
@@ -295,12 +319,28 @@
                     auditCompanyIds:approves.companyIdsStr,
                     applyLinkIds:this.applyLinkIds,
                     linkAuditNum:approves.numStr,
-                    
-                    receiverCompanyIds,
                     draftFlag : 0, //草稿还是发送
                     }
                 let that = this;
-                this.Ajax.postForm('/work/pay/save',params).then( (res)=>{
+                this.Ajax.postForm('/work/borrow/save',params)
+                //  that.axios({
+                // method:"post",
+                // url:`${this.Service.getBorrowSave}`,
+                // headers:{
+                //     'Content-type': 'application/x-www-form-urlencoded'
+                // },
+                // data:params,
+                // transformRequest: [function (data) {
+                //     let ret = ''
+                //     for (let it in data) {
+                //     ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+                //     }
+                //     return ret
+                // }],
+                // })
+                .then( (res)=>{
+
+                    console.log(res)
                         if(res.data.h.code!=200){
                             this.$message(res.data.h.msg)
                         }else if(res.data.h.code == 200){

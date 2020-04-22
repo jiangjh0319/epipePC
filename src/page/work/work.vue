@@ -199,7 +199,7 @@
                         加&emsp;&emsp;班
                  </div>
 
-                 <div class="item"  @click="none()">
+                 <div class="item"  @click="openUrl('position')">
                     <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
                         <use xlink:href="#icon-diaogang"></use>
                     </svg>
@@ -222,9 +222,26 @@
                     <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
                         <use xlink:href="#icon-lingyong"></use>
                     </svg>
-                        付款
+                        付&emsp;&emsp;款
                  </div>
-
+                <div class="item" @click="openUrl('borrow')">
+                    <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
+                        <use xlink:href="#icon-lingyong"></use>
+                    </svg>
+                        借&emsp;&emsp;款
+                 </div>
+                 <div class="item" @click="openUrl('erpPermission')">
+                    <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
+                        <use xlink:href="#icon-lingyong"></use>
+                    </svg>
+                        erp权限异动
+                 </div>
+                <div class="item" @click="openUrl('reimburse')">
+                    <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
+                        <use xlink:href="#icon-lingyong"></use>
+                    </svg>
+                        报&emsp;&emsp;销
+                 </div>
              </div>
         </div>
         <ul class="bg-bubbles">

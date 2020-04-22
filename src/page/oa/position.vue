@@ -1,63 +1,41 @@
 <template>
     <div class="main">
         <HeadTitle
-            title="采购"
-            icon='buy'
+            title="员工调岗"
+            icon='position'
         ></HeadTitle>
         <div class="content">
-            <el-form ref="form" :rules="rules" :model="form" label-width="130px">
-                <el-form-item label="申请事由" prop="userBuyApplyTheme"> 
-                    <el-input v-model="form.userBuyApplyTheme" placeholder="请输入申请事由" ></el-input>
+            <el-form ref="form" :rules="rules" :model="form" label-width="120px">
+                <el-form-item label="姓名" style="width:180px"> 
+                        <el-input v-model="userInfo.name" placeholder="请选择" @focus='getPersons'></el-input>
                 </el-form-item>
-                <el-form-item label="采购类型" prop="typeValue"> 
-                    <el-select v-model="form.typeValue" placeholder="请选择" @change="hanlderVal">
-                        <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.key"
-                        :value="item.value"
-                        >
-                        </el-option>
-                    </el-select>
+                <el-form-item label="工号" prop="employeeNo"> 
+                    <el-input v-model="form.employeeNo" placeholder="请输入工号" ></el-input>
                 </el-form-item>
-                <el-form-item label="期望交付日期"  prop="hopeDeliveryDate">
+                <el-form-item label="所属部门"> 
+                    <el-input v-model="userInfo.officeName" placeholder="所属部门" disabled></el-input>
+                </el-form-item>
+                <el-form-item label="岗位名称"> 
+                    <el-input v-model="userInfo.userPosition" placeholder="岗位名称"></el-input>
+                </el-form-item>
+                <el-form-item label="入职日期"  prop="hireDate">
                         <el-date-picker
-                            v-model="form.hopeDeliveryDate"
+                            v-model="form.hireDate"
                             type="date"
                             placeholder="请选择">
                         </el-date-picker>
                 </el-form-item>
-                <div v-for="(v,index) in form.list" :key="index">
-                    <el-form-item v-if="ishowDelet"> 
-                        采购明细（{{index+1}}）<el-button type="danger" round @click="deleteRules(v,index)">删除</el-button>
-                    </el-form-item>
 
-                    <el-form-item label="名称" :prop="'list.'+index+'.name'" :rules="[{required: true, message: '请输入名称'}]"> 
-                        <el-input v-model="v.name" placeholder="请输入名称"></el-input>
-                    </el-form-item>
-                    <el-form-item label="规格" :prop="'list.'+index+'.specifications'" :rules="[{required: true, message: '请输入规格'}]"> 
-                        <el-input v-model="v.specifications" placeholder="请输入规格"></el-input>
-                    </el-form-item>
-                    <el-form-item label="数量" :prop="'list.'+index+'.number'" :rules="[{required: true, message: '请输入数量'}]"> 
-                        <el-input v-model="v.number" type="number" @input="totalPriceF" placeholder="请输入数量"></el-input>
-                    </el-form-item>
-                    <el-form-item label="单位" :prop="'list.'+index+'.unit'" :rules="[{required: true, message: '请输入单位'}]"> 
-                        <el-input v-model="v.unit" placeholder="请输入单位"></el-input>
-                    </el-form-item>
-                    <el-form-item label="价格" :prop="'list.'+index+'.price'" :rules="[{required: true, message: '请输入价格'}]"> 
-                        <el-input v-model="v.price" type="number" @input="totalPriceF" placeholder="请输入价格"></el-input>
-                    </el-form-item>
-                </div>
-                <el-form-item> 
-                    <el-button type="primary" round @click="addList">+ 增加采购明细</el-button>
+                <el-form-item class="textareaBox" label="调岗原因" prop="dimissionDesc" >
+                     <el-input  type="textarea" v-model.trim="form.dimissionDesc" maxlength="1000" placeholder="请输入调岗原因,限定1000字">
+                     </el-input>
+                     <span class="textNum">{{wordCount}}/1000</span>
+                     <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
                 </el-form-item>
-                 <el-form-item label="总价格"> 
-                    <el-input v-model="totalPrice"  disabled></el-input>
-                </el-form-item>
-                <el-form-item label="支付方式" prop="payType"> 
-                    <el-select v-model="form.payType" placeholder="请选择" @change="hanlderPayType">
+                <el-form-item label="调岗后部门" prop="afterOffice"> 
+                    <el-select v-model="form.afterOffice" placeholder="请选择" @change="hanlderAfterOfficee" @focus="hanlderoffce">
                         <el-option
-                        v-for="item in optionsPayType"
+                        v-for="item in afterOfficeOptions"
                         :key="item.value"
                         :label="item.key"
                         :value="item.value"
@@ -65,13 +43,16 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item class="textareaBox" label="备注" prop="userBuyApplyRemarks" >
-                     <el-input  type="textarea" v-model="form.userBuyApplyRemarks" maxlength="150" placeholder="请输入备注,限定1000字">
-                     </el-input>
-                     <span class="textNum">{{wordCount}}/150</span>
-                     <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+                <el-form-item label="调岗后岗位" prop="afterPosition"> 
+                    <el-input v-model="form.afterPosition" placeholder="请输入调岗后岗位" ></el-input>
                 </el-form-item>
-
+                <el-form-item label="调岗日期"  prop="changeDate">
+                    <el-date-picker
+                        v-model="form.changeDate"
+                        type="date"
+                        placeholder="请选择">
+                    </el-date-picker>
+                </el-form-item>
                 <File :accessory="accessory"
                     v-on:remove="removeFile"
                 >
@@ -139,43 +120,54 @@
     // import BMap from 'BMap'
     export default {
         data() {
+             var checkDay = (rule, value, callback) => {
+                if (value*10%5!=0) {
+                    callback(new Error('请输入正确的请假天数'));
+                } else {
+                 callback();
+                }
+            };
             return {
                 form: {
                     type: [],
-                    userBuyApplyTheme:'',//申请事由
-                    userBuyApplyRemarks: '',//备注
-                    list:[
-                        {
-                            name:'',//物品名称
-                            specifications:'',//规格
-                            unit:'',//单位
-                            price:'',//价格
-                            number:''//数量
-                        }
-                    ],
-                    typeValue: '',
-                    hopeDeliveryDate:'',
-                    totalPrice:0,
-                    payType:''
+                    employeeNo:'',
+                    hireDate:'',
+                    changeDate:'',
+                    dimissionDesc: '',
+                    peerUserIds:'',
+                    afterOffice:'请选择',
+                    afterPosition:'',
+                    afterOfficeId:'1',
+                    exOfficeId:'1',
                 },
-                buyTypeCode:'',
-                payTypeCode:'',
-                options: [],
-                optionsPayType:[],
+                userInfo:{
+                    name:'',
+                    officeName:'',
+                    userPosition:''
+                },
+                positionCode:'',
+                dimissionCode:'',
                 rules: {
-                    userBuyApplyTheme:[
-                        { required: true, message: '申请事由不能为空', trigger: 'blur' },
-                        { min:2, max: 100, message: '申请事由不能低于2个或超过100个字符', trigger: 'blur' }
+                    employeeNo: [
+                        { required: true, message: '请输入工号', trigger: 'blur' },
                     ],
-                    userBuyApplyRemarks:[
-                        { required: true, message: '请输入备注', trigger: 'blur' },
-                        { min:1, max: 150, message: '长度在不能超过150字符', trigger: 'blur' }
+                    afterOffice: [
+                        { required: true, message: '请选择调岗后部门', trigger: 'blur' },
                     ],
-                    hopeDeliveryDate:[
-                        {required: true, message: '请选择时间'}
+                    afterPosition:[
+                        { required: true, message: '请输入调岗后岗位', trigger: 'blur' },
+                        // { validator: beginCheck, trigger: 'change' }
                     ],
-                    typeValue:[
-                        {required: true, message: '请选择采购类型'}
+                    contractEndDate:[
+                        { required: true, message: '请选择合同到期日时间', trigger: 'change' },
+                        // { validator: endCheck, trigger: 'change' }
+                    ],
+                    changeDate:[
+                       { required: true, message: '请选择调岗日期', trigger: 'blur' },
+                    ],
+                    dimissionDesc:[
+                        { required: true, message: '请输入调岗原因', trigger: 'blur' },
+                        { min:1, max: 1000, message: '长度在不能超过1000字符', trigger: 'blur' }
                     ]
                 },
                 approvers_data:[],//审批人
@@ -203,6 +195,13 @@
                 showCopy:false,
                 showGroup:false,
                 approver_index:0,
+                afterOfficeOptions:[
+                    // {value:'1',key:'测试'},
+                    // {value:'2',key:'运维'},
+                    // {value:'3',key:'前端'},
+                    // {value:'4',key:'JAVA'},
+
+                ]
             }
         },
         components:{
@@ -215,7 +214,7 @@
             Personnel
         },
         created(){
-            document.title='采购'
+            document.title='员工调岗'
             let that = this;
              this.axios.get('/work/leave/type/list').then(function(res){
                 if(res.data.h.code =200 ){
@@ -224,22 +223,6 @@
                     })
                 }
             })
-            this.axios.get(this.Service.getBuyTypeApi).then(res=>{//采购类型
-                // console.log('采购类型',res)
-                if(res.data.h.code =200 ){
-                //    console.log(res.data.b)
-                   this.options = res.data.b;
-                }
-            })
-            this.axios.get(this.Service.getPayTypeApi).then(res=>{//支付方式
-                // console.log('支付方式',res)
-                if(res.data.h.code =200 ){
-                //    console.log(res.data.b)
-                   this.optionsPayType = res.data.b;
-                }
-            })
-            
-
             this.axios.get('/process/apply/enter?req=4').then((res)=>{
                 let data = res.data.b;
                 this.allApprovers  = this.Util.approverDataInit(data.links);
@@ -251,9 +234,10 @@
                         this.receivers_data = data.receivers
                 }
             })
+
         },
         watch:{
-            'form.userBuyApplyRemarks':function(val){
+            'form.dimissionDesc':function(val){
                 this.wordCount = val.length
             }
         },
@@ -263,59 +247,28 @@
             }
         },
         methods:{
-            totalPriceF(){
-                let total = 0
-                this.form.list.forEach(item=>{
-                    let num = item.number==''?0:item.number
-                    let price = item.price==''?0:item.price
-
-                    if(isNaN(num)||isNaN(price)){
-                        return
+            hanlderAfterOfficee(val){
+                this.form.exOfficeId = val;
+                console.log(val,'eo')
+            },
+            hanlderoffce(){
+                if(this.userInfo.name==''){
+                    this.$message({
+                    message: '请选择调岗员名称',
+                    type: 'warning'
+                    });
+                    return;
+                }else{      
+                    this.axios.get('/work/changeposition/offices?userId='+this.form.peerUserIds).then(function(res){
+                    if(res.data.h.code =200 ){
+                       this.afterOfficeOptions = res.data.b;
                     }
-                    total+=parseFloat(num) * parseFloat(price)
                 })
-                this.totalPrice = total.toFixed(1)+'元';
-             },
+                }
+            },
             hanlderVal(val){
-                console.log(val,'采购')
-                this.buyTypeCode = val;
-            },
-            hanlderPayType(val){
-                console.log(val,'支付')
-                this.payTypeCode = val;
-            },
-            getMsgData(val){
-                this.form.list[this._index].addressDetail = val.address
-                this.form.list[this._index].userlocation = val.point;
-            },
-            getMsgFormSon(data){
-                if(data==undefined){
-
-                }else{
-                    this.form.list[this._index].addressDetail = data.addr;
-                    this.form.list[this._index].userlocation = data.point;
-                }
-            },
-            addList() {//添加明细
-                this.form.list.push({
-                    name:'',
-                    specifications:'',
-                    number:'',
-                    unit:'',
-                    price:''
-
-            })
-            this.ishowDelet = true;
-            },
-            deleteRules(item, index) {
-                if(this.form.list.length==2){
-                    this.ishowDelet = false;
-                }
-                var index = this.form.list.indexOf(item)
-                if (index !== -1) {
-                    this.form.list.splice(index, 1)
-                    this.totalPriceF()
-                }
+                 console.log(val,'岗位类别')
+                 this.positionCode = val;
             },
              add_people(index){
                 this.approver_index = index
@@ -340,9 +293,11 @@
                 this.openAdd=false
             },
             choose(arr){
-                let arrName = [];
+                let arrName = ''
                 let peerUserIds = [];
                 let personsData = '';
+                 let userPosition = ''
+                 let officeName = ''
                 this.openAdd=false
                 if(this.peopleType.indexOf('other')==0){
                     this.allApprovers[this.approver_index].auditers = JSON.parse(JSON.stringify(arr))
@@ -351,16 +306,21 @@
                     this.Personnel_data = JSON.parse(JSON.stringify(arr))
                       console.log('peerUserIds',this.Personnel_data )
                     for(let val of this.Personnel_data){
-                        arrName.push(val.name)
-                        peerUserIds.push(val.userId)
+                        console.log(val,'9998')
+                        arrName = val.name;
+                        peerUserIds = val.userId
+                        userPosition= val.userPosition
+                        officeName = val.officeName
                     }
                     setTimeout(()=>{
-                        personsData = arrName.join(',');
-                        let userId = peerUserIds.join(',')
-                        this.form.list[this._index].persons = personsData;
-                        this.form.list[this._index].peerUserIds = userId;
-                    },300)
-
+                        personsData = arrName
+                        console.log(personsData,'nama')
+                        let userId = peerUserIds
+                        this.userInfo.name = personsData;
+                        this.userInfo.userPosition = userPosition;
+                        this.userInfo.officeName = officeName;
+                        this.form.peerUserIds = userId;
+                    },100)
                         console.log('peerUserIds',peerUserIds)
 
                        
@@ -407,11 +367,19 @@
           
                  params = {
                     Id :'', // id
-                    userBuyApplyTheme:that.form.userBuyApplyTheme,//标题
-                    userBuyApplyRemarks :that.form.userBuyApplyRemarks, //备注
-                    payType:that.payTypeCode,//支付方式
-                    buyType:that.buyTypeCode,//采购类型
-                    hopeDeliveryDate: that.Util.getDate(that.form.hopeDeliveryDate),//交付日期
+                    reason:that.form.dimissionDesc.replace(/\n/g, '<br/>'), 
+                    userId:that.form.peerUserIds,
+                    name:that.userInfo.name,
+                    employeeNo:that.form.employeeNo, 
+                    exOfficeId:that.form.exOfficeId,
+                    exPosition:that.userInfo.userPosition,// 岗位
+                    afterOfficeId:that.form.afterOfficeId,
+                    officeName:that.userInfo.officeName,
+                    // peerUserIds:that.form.peerUserIds,
+                     afterPosition:that.form.afterPosition,
+                     changeDate:that.Util.getDate(that.form.changeDate),
+                    hireDate: that.Util.getDate(that.form.hireDate),//入职时间
+   
                     auditUserIds, //审批人
                     receiverIds, //抄送人
                     draftFlag : 0, //草稿还是发送
@@ -426,23 +394,15 @@
                     fileSizes :fileObj.fileSizeStr, //文件大小
                     
                 }
-
-                    this.form.list.forEach((item,index)=>{
-                     params['list['+index+'].name'] = item.name;
-                     params['list['+index+'].specifications'] = item.specifications;
-                     params['list['+index+'].number'] = item.number;
-                     params['list['+index+'].unit'] = item.unit;
-                     params['list['+index+'].price'] = item.price;
-                    
-                })
+                // that.axios.post(this.Service.getChangepositionSave + this.Service.queryString(params))
                 that.axios({
                     method:"post",
-                    url:`${this.Service.getBuySaveApi}`,
-                     headers:{
-                    'Content-type': 'application/x-www-form-urlencoded'
-                        },
+                    url:`${this.Service.getChangepositionSave}`,
+                    headers:{
+                        'Content-type': 'application/x-www-form-urlencoded'
+                    },
                     data:params,
-                    transformRequest: [function (data) {
+                      transformRequest: [function (data) {
                         let ret = ''
                         for (let it in data) {
                         ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
@@ -450,7 +410,6 @@
                         return ret
                     }],
                 })
-                // that.axios.post(this.Service.recipientsApi + this.Service.queryString(params))
                 .then(function (res){
                 if(res.data.h.code!=200){
                         that.$message(res.data.h.msg)

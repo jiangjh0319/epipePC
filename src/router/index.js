@@ -36,6 +36,10 @@ const Employee = r => require.ensure([], () => r(require('@/page/oa/employee.vue
 const Project = r => require.ensure([], () => r(require('@/page/oa/project.vue')), 'group-oa')//项目立项
 const Regular = r => require.ensure([], () => r(require('@/page/oa/regular.vue')), 'group-oa')//转正
 const Document = r => require.ensure([], () => r(require('@/page/oa/document.vue')), 'group-oa')//行文呈批
+const Position = r => require.ensure([], () => r(require('@/page/oa/position.vue')), 'group-oa')//调岗
+const Borrow = r => require.ensure([], () => r(require('@/page/oa/borrow.vue')), 'group-oa')//借款
+const ErpPermission = r => require.ensure([], () => r(require('@/page/oa/erpPermission.vue')), 'group-oa')//erp权限异动
+const Reimburse = r => require.ensure([], () => r(require('@/page/oa/reimburse.vue')), 'group-oa')//报销
 
 //oa_other ===============================
 const FinishAffairs = r => require.ensure([], () => r(require('@/page/oa_other/finish_affairs.vue')), 'group-oa')
@@ -290,6 +294,34 @@ export default new Router({
       component:Document,
       meta: {
         title: '行文呈批'
+      }
+    },
+    {
+      path:'/position', //调岗
+      component:Position,
+      meta: {
+        title: '调岗'
+      }
+    },
+    {
+      path:'/borrow', 
+      component:Borrow,
+      meta: {
+        title: '借款'
+      }
+    },
+    {
+      path:'/erpPermission', 
+      component:ErpPermission,
+      meta: {
+        title: 'erp权限异动'
+      }
+    },
+    {
+      path:'/reimburse', 
+      component:Reimburse,
+      meta: {
+        title: '报销'
       }
     },
   ]

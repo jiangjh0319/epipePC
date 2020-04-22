@@ -18,6 +18,10 @@ const Service = {
   getProjectSave:'/work/project/save',//项目立项提交接口
   getRegularSave:'/work/regular/save',//转正提交接口
   getDocumentSave:'/work/document/save',//行文呈批提交接口
+  getChangepositionSave:'/work/changeposition/save',//调岗提交接口
+  getBorrowSave:'/work/borrow/save',//借款提交接口
+  getErpprimoveSave:'/move/erpprimove/save',//ERP权限异动提交接口
+  getReimburseSave:'/work/reimburse/save',//报销提交接口
 
   baseUrl:'http://192.168.3.22:8787/#/',
   // baseUrl:'http://192.168.3.166/pc/#/',

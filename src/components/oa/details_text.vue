@@ -346,6 +346,38 @@
                     <span>离职原因 </span>
                     <p>{{data.dimissionDesc}} </p>
                 </div>
+                <div class="infor-box" v-if="data.isHrSys=='Y'">
+                    <span>离职评价</span>
+                    <!-- <p style="color:#609DF6;cursor: pointer;" v-if="data.isHrSys=='N'">查看转正明细及意见</p> -->
+                      <el-popover
+                    placement="right"
+                    :title="title"
+                    width="300"
+                    v-model="visible"
+                    trigger="click">
+                    <div>
+                        <div>直属领导：{{superleadName}}</div>
+                        <div>导师意见：{{superleadComment}}</div>
+                        <div>监交人：{{monitorName}}</div>
+                        <div>监交人意见：{{monitorcomment}}</div>
+                        <div>HR姓名：{{hrName}}</div>
+                        <div>HR意见：{{hrComment}}</div>
+                        <div>建议离职日期：{{hrSuggestDismTime}}</div>
+                        <div>交接信息明细</div>
+                        <div v-for="(item,index) in listDatas" :key="index">
+                            <div>工作项：{{item.handovertitle}}</div>
+                            <div>交接明细：{{item.handoverdetail}}</div>
+                            <div>交接人：{{item.handoverpersonname}}</div>
+                            <div>交接日期：{{item.handovertime}}</div>
+                        </div>
+                    </div>
+                    <div style="text-align: right; margin: 0">
+                        <!-- <el-button size="mini" type="text" @click="visible = false">取消</el-button> -->
+                        <el-button type="primary" size="mini" @click="visible = false">确定</el-button>
+                    </div>
+                    <p slot="reference" style="color:#609DF6;cursor: pointer;width:145px">查看转正明细及意见</p>
+                </el-popover>
+                </div>
             </div>
             <div v-else-if="type==10">
                  <div class="infor-box">
@@ -710,6 +742,30 @@
                     <span>试用结束时间 </span>
                     <p>{{data.endTime.slice(0,-8)}} </p>
                 </div>
+                <div class="infor-box" v-if="data.isHrSys=='Y'">
+                    <span>转正评价</span>
+                    <!-- <p style="color:#609DF6;cursor: pointer;" v-if="data.isHrSys=='N'">查看转正明细及意见</p> -->
+                      <el-popover
+                    placement="right"
+                    :title="title"
+                    width="300"
+                    v-model="visible"
+                    trigger="click">
+                    <div>
+                        <div>申请转正类型：{{processType}}</div>
+                        <div>申请转正日期：{{applyTime}}</div>
+                        <div>导师姓名：{{superleadname}}</div>
+                        <div>导师意见：{{superleadcomment}}</div>
+                        <div>HR姓名：{{hrname}}</div>
+                        <div>HR意见：{{hrcomment}}</div>
+                    </div>
+                    <div style="text-align: right; margin: 0">
+                        <!-- <el-button size="mini" type="text" @click="visible = false">取消</el-button> -->
+                        <el-button type="primary" size="mini" @click="visible = false">确定</el-button>
+                    </div>
+                    <p slot="reference" style="color:#609DF6;cursor: pointer;width:145px">查看转正明细及意见</p>
+                </el-popover>
+                </div>
             </div>
             <div v-else-if="type==17">
                 <div class="infor-box">
@@ -1014,7 +1070,17 @@
                     <p>{{data.applyRason}} </p>
                 </div>
             </div>
-
+       <el-dialog
+        title="提示"
+        :visible.sync="centerDialogVisible"
+        width="30%"
+        center>
+        <span>需要注意的是内容是默认不居中的</span>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="centerDialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="centerDialogVisible = false">确 定</el-button>
+        </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -1024,6 +1090,24 @@
             return{
               
                 item:{},
+                visible: false,
+                title:'',
+                hrname:'',
+                hrcomment:'',
+                superleadname:'',
+                superleadcomment:'',
+                processType:'',
+                applyTime:'',
+
+
+                superleadName:'',//直属领导
+                monitorName:'',//监交人
+                hrName:'',//hr
+                superleadComment:'',
+                monitorComment:'',
+                hrComment:'',
+                hrSuggestDismTime:'',
+                listDatas:[]
             }
         },
         props:['type','data'],
@@ -1032,6 +1116,53 @@
                     if(!value) return;
                   return  value.indexOf('.5')>-1?Number(value).toFixed(1):parseInt(value)
             },
+        },
+        methods:{
+        },
+        created(){
+            console.log(this.type,'type')
+            console.log(this.data.isHrSys)
+            let that = this;
+            if(this.data.isHrSys=='Y'){
+                setTimeout(()=>{
+                    if(this.type=='16'){
+                        this.title = this.data.username+'的转正明细及意见'
+                        let regularApplyId =this.data.regularApplyId;
+                        this.axios.post('/work/regular/hrsys/comment?regularApplyId='+regularApplyId).then(res=>{
+                       if(res.data.h.code==200){
+                         console.log(res.data.b)
+                        this.hrname = res.data.b.hrname;
+                        this.hrcomment = res.data.b.hrcomment;
+                        this.superleadname = res.data.b.superleadname;
+                        this.superleadcomment = res.data.b.superleadcomment;
+                        this.processType = res.data.b.processType;
+                        this.applyTime = res.data.b.applyTime.slice(0,10);
+                       }else{
+                        this.$message(res.data.h.msg);
+                       }
+                         })
+                    }{
+                        this.title = this.data.username+'的离职明细及意见'
+                        let dimissionApplyId =this.data.dimissionApplyId;
+                        this.axios.post('/work//dimission/hrsys/comment?dimissionApplyId='+ dimissionApplyId + '&type=1').then(res=>{
+                            // this.axios.post('/work//dimission/hrsys/comment?dimissionApplyId=83e1704131e311ea98024ccc6ac12eca&type=1').then(res=>{
+                            if(res.data.h.code==200){
+                                that.superleadName =res.data.b.superleadname;
+                                that.superleadComment =res.data.b.superleadcomment;
+                                 that.monitorName =res.data.b.monitorname;
+                                  that.monitorComment =res.data.b.monitorcomment;
+                                  that.hrName =res.data.b.hrname;
+                                     that.hrComment =res.data.b.hrcomment;
+                                      that.hrSuggestDismTime =res.data.b.hrsuggestdismtime;
+                                      that.listDatas = res.data.b.handovers;
+            
+                            }else{
+                                this.$message(res.data.h.msg);
+                            }
+                        })
+                    }
+                },1000)
+            }
         }
     }
 </script>
