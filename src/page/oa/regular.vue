@@ -10,13 +10,13 @@
                     <el-input v-model="form.regularTitle" placeholder="请输入标题" ></el-input>
                 </el-form-item>
                 <el-form-item label="转正员工姓名" style="width:180px"> 
-                        <el-input v-model="userInfo.name" placeholder="请选择" @focus='getPersons' disabled></el-input>
+                        <el-input v-model="form.name" placeholder="请选择" @focus='getPersons' ></el-input>
                 </el-form-item>
                 <el-form-item label="所属部门"> 
-                    <el-input v-model="userInfo.officeName" placeholder="所属部门" disabled></el-input>
+                    <el-input v-model="form.officeName" placeholder="所属部门" ></el-input>
                 </el-form-item>
                 <el-form-item label="岗位"> 
-                    <el-input v-model="userInfo.userPosition" placeholder="岗位名称" disabled></el-input>
+                    <el-input v-model="form.userPosition" placeholder="岗位名称" ></el-input>
                 </el-form-item>
                 <el-form-item label="年龄" prop="age"> 
                     <el-input v-model="form.age" placeholder="请输入年龄" type="number" ></el-input>
@@ -92,7 +92,6 @@
                 </Approve> -->
                 <Approve
                     :approver_list='allApprovers'
-                    v-on:selectOpen='selectOpen'
                     v-on:remove='remove'
                     hintType=2
                     v-on:del_poeple="del_poeple"
@@ -125,7 +124,7 @@
             :approvers="approvers_data"
             :receivers="receivers_data"
             :personnels="Personnel_data"
-            
+            :isMore="isMore"
         ></AddressList>
 
     </div>
@@ -178,6 +177,10 @@
                     birthPlace:'',
                     hireDate:'',
                     major:'',
+                    userPosition:'',
+                    userId:'',
+                    name:'',
+                    officeName:'',
                 },
                 userInfo:{},
                 positionCode:'',
@@ -249,6 +252,7 @@
                  linkAuditNum:'',
                 applyLinkIds:'',
                 allApprovers:[],
+                isMore:true,
                 showCopy:false,
                 showGroup:false,
                 approver_index:0,
@@ -320,6 +324,7 @@
                 this.showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
                 this.approvers_data = this.allApprovers[index].auditers
                 this.peopleType = 'other'+(Math.random()+'').slice(2,10)
+                this.isMore = this.allApprovers[index].remarks=='0'?false:true;
                 setTimeout(()=>{
                     this.openAdd = true
                 },200)
@@ -328,7 +333,6 @@
                 this.allApprovers[index].auditers.splice(num,1)
             },
             getPersons(){
-                return
                 this.selectOpen('per');
             },
             getFocus(i){
@@ -347,21 +351,10 @@
                     this.allApprovers[this.approver_index].auditers = JSON.parse(JSON.stringify(arr))
                 }else if(this.peopleType.indexOf('per')==0){
 
-                    this.Personnel_data = JSON.parse(JSON.stringify(arr))
-                      console.log('peerUserIds',this.Personnel_data )
-                    for(let val of this.Personnel_data){
-                        arrName.push(val.name)
-                        peerUserIds.push(val.userId)
-                    }
-                    setTimeout(()=>{
-                        personsData = arrName.join(',');
-                        let userId = peerUserIds.join(',')
-                        this.form.persons = personsData;
-                        this.form.peerUserIds = userId;
-                    },300)
-
-                        console.log('peerUserIds',peerUserIds)
-
+                        this.form.name = arr[0].name
+                        this.form.officeName = arr[0].officeName
+                        this.form.userId = arr[0].userId
+                        this.form.userPosition = arr[0].userPosition
                        
                 }else{
                    this.receivers_data = JSON.parse(JSON.stringify(arr))
@@ -369,6 +362,10 @@
             },
             selectOpen(type){
                 this.peopleType = type+(Math.random()+'').slice(2,10)
+                this.isMore = true;
+                if(type=='per'){
+                    this.isMore = false;
+                }
                 this.openAdd = true
             },
             remove(type,index){

@@ -13,7 +13,6 @@
                                 <div class="people_list">
                                     <div class="people_list_item" v-if="item.isSelect">
                                         <div class="select_text" >
-                                            <button>选择人员</button>
                                             <el-button @click="go_select(item.approvealList,item.quartersName,index,item.index)">选择人员</el-button>
                                         </div>
                                     </div>
@@ -22,8 +21,11 @@
                                             <svg  class="icon" aria-hidden="false" v-if="item.approvalUserType==3" @click="del(index,num)">
                                                 <use xlink:href="#icon-shanchu"></use>
                                             </svg>
-                                            <img :src="child.profileImg"/>
-                                            <span class="omit">{{child.name}}</span>
+                                            <img v-if="child.profileImg" :src="child.profileImg"/>
+                                            <img v-else src="../../assets/head.png"/>
+                                            <span class="omit" v-if="child.name">{{child.name}}</span>
+                                            <span class="omit" v-else>主管为空</span>
+                                            
                                         </div>
                                         <img v-if="item.linkType==2" src="../../assets/lefts.png"/>
                                         <img v-else-if="item.linkType==3" src="../../assets/add.png"/>
@@ -127,9 +129,6 @@
             pxove(type,index){
                 this.$emit('pxove',type,index)
             },
-            selectOpen(type){
-                this.$emit('selectOpen',type)
-            },
              del(index,num){
                 this.$emit('del_poeple',index,num)
 
@@ -159,13 +158,20 @@
         filters:{
             info:function(info){
 
-                let str = info.auditers.length
-                if(info.approvalUserType==1){
-                    str+='个'+info.quartersName
+                // let str = info.auditers.length
+                // if(info.approvalUserType==1){
+                //     str+='个'+info.quartersName
+                // }else{
+                //     str+='人'
+                // }
+                // str+=info.linkType==2?'依次审批':info.linkType==3?'会签':'或签'
+
+                let str = info.auditers.length+'人'
+                if(info.auditers.length<2){
+                    str+='审批'
                 }else{
-                    str+='人'
+                    str+=info.linkType==2?'依次审批':info.linkType==3?'会签':'或签'
                 }
-                str+=info.linkType==2?'依次审批':info.linkType==3?'会签':'或签'
 
                 return str
             }

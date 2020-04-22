@@ -49,7 +49,7 @@
                         <el-input v-model="v.day" placeholder="请输入时长 (0.5为单位)"></el-input>
                     </el-form-item>
                     <el-form-item label="同行人员" :prop="'list.'+index+'.persons'" :rules="[{required: true, message: '请选择同行人员'}]"> 
-                        <el-input v-model="v.persons" placeholder="请选择" @focus='getPersons'></el-input>
+                        <el-input v-model="v.persons" placeholder="请选择" @focus='getPersons(index)'></el-input>
                     </el-form-item>
                 </div>
                      <el-form-item> 
@@ -77,7 +77,6 @@
                 </Approve> -->
                 <Approve
                     :approver_list='allApprovers'
-                    v-on:selectOpen='selectOpen'
                     v-on:remove='remove'
                     hintType=2
                     v-on:del_poeple="del_poeple"
@@ -102,16 +101,6 @@
                 </div>
             </el-form>
         </div>
-        <AddressList
-            :show="openAdd"
-            v-on:close="close"
-            v-on:choose="choose"
-            :types="peopleType"
-            :approvers="approvers_data"
-            :receivers="receivers_data"
-            :personnels="Personnel_data"
-            
-        ></AddressList>
         
         <el-dialog  
         title="出差地点"
@@ -128,6 +117,16 @@
         </span>
         </el-dialog>
 
+        <AddressList
+            :show="openAdd"
+            v-on:close="close"
+            v-on:choose="choose"
+            :types="peopleType"
+            :approvers="approvers_data"
+            :receivers="receivers_data"
+            :personnels="Personnel_data"
+            :isMore="isMore"
+        ></AddressList>
     </div>
 </template>
 
@@ -179,7 +178,8 @@
                             endTime:'',//结束时间
                             persons:'',//同行人员
                             peerUserIds:'',
-                            addressDetail:''//出差地点
+                            addressDetail:'',//出差地点,
+                            data:[],
                         }
                     ],
                 },
@@ -232,6 +232,7 @@
                 showMap:false,
                 isShowPer:false,
                 _index:0,
+                isMore:true,
                 ishowDelet:false,
                  linkAuditNum:'',
                 applyLinkIds:'',
@@ -239,6 +240,8 @@
                 showCopy:false,
                 showGroup:false,
                 approver_index:0,
+                personsData:[],
+                per_index:0,
             }
         },
         components:{
@@ -304,7 +307,8 @@
                     endTime:'',//结束时间
                     persons:'',//同行人员
                     addressDetail:'',//出差地点
-                    userlocation:''
+                    userlocation:'',
+                    data:[],
             })
             this.ishowDelet = true;
             },
@@ -322,6 +326,7 @@
                 this.showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
                 this.approvers_data = this.allApprovers[index].auditers
                 this.peopleType = 'other'+(Math.random()+'').slice(2,10)
+                this.isMore = this.allApprovers[index].remarks=='0'?false:true;
                 setTimeout(()=>{
                     this.openAdd = true
                 },200)
@@ -329,7 +334,9 @@
             del_poeple(index,num){
                 this.allApprovers[index].auditers.splice(num,1)
             },
-            getPersons(){
+            getPersons(index){
+                this.per_index = index;
+                this.Personnel_data = this.form.list[index].data
                 this.selectOpen('per');
             },
             getFocus(i){
@@ -342,27 +349,19 @@
             choose(arr){
                 let arrName = [];
                 let peerUserIds = [];
-                let personsData = '';
                 this.openAdd=false
                 if(this.peopleType.indexOf('other')==0){
                     this.allApprovers[this.approver_index].auditers = JSON.parse(JSON.stringify(arr))
                 }else if(this.peopleType.indexOf('per')==0){
-
-                    this.Personnel_data = JSON.parse(JSON.stringify(arr))
-                      console.log('peerUserIds',this.Personnel_data )
-                    for(let val of this.Personnel_data){
-                        arrName.push(val.name)
+                    let arrs = JSON.parse(JSON.stringify(arr))
+                    this.form.list[this.per_index].data = arrs
+                    for(let val of arrs){
                         peerUserIds.push(val.userId)
+                        arrName.push(val.name)
                     }
-                    setTimeout(()=>{
-                        personsData = arrName.join(',');
-                        let userId = peerUserIds.join(',')
-                        this.form.list[this._index].persons = personsData;
-                        this.form.list[this._index].peerUserIds = userId;
-                    },300)
 
-                        console.log('peerUserIds',peerUserIds)
-
+                    this.form.list[this.per_index].persons = arrName.join(',');
+                    this.form.list[this.per_index].peerUserIds = peerUserIds.join(',')
                        
                 }else{
                    this.receivers_data = JSON.parse(JSON.stringify(arr))
@@ -370,6 +369,7 @@
             },
             selectOpen(type){
                 this.peopleType = type+(Math.random()+'').slice(2,10)
+                this.isMore = true;
                 this.openAdd = true
             },
             remove(type,index){

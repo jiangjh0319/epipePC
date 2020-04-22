@@ -346,12 +346,14 @@ section >>>.default-scrollbar__view{
         white-space:nowrap;
         margin-top 20px;
 
-        .file_btn{
+    }
+.file_btn{
             color #24b36b;
             width 60px;
             position relative
             margin 5px 0;
             text-decoration underline
+    
 
             input{
                 opacity 0
@@ -362,7 +364,6 @@ section >>>.default-scrollbar__view{
                 left 0
             }
         }
-    }
 
 .file-item{
     display flex;

@@ -167,7 +167,7 @@
           height 100%;
           opacity 0;
           top:0
-          pointer
+          cursor pointer
           left 0
           right 0
       }

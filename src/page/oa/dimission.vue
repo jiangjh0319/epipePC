@@ -10,10 +10,10 @@
                     <el-input v-model="form.dimissionTitle" placeholder="请输入标题" ></el-input>
                 </el-form-item>
                 <el-form-item label="离职人姓名" style="width:180px"> 
-                        <el-input v-model="userInfo.name" placeholder="请选择" @focus='getPersons' disable></el-input>
+                        <el-input v-model="form.name" placeholder="请选择" @focus='getPersons'></el-input>
                 </el-form-item>
                 <el-form-item label="所属部门"> 
-                    <el-input v-model="userInfo.officeName" placeholder="所属部门" disabled></el-input>
+                    <el-input v-model="form.officeName" placeholder="所属部门"></el-input>
                 </el-form-item>
                 <el-form-item label="员工编号" prop="employeeNo"> 
                     <el-input v-model="form.employeeNo" placeholder="请输入员工编号" ></el-input>
@@ -89,7 +89,6 @@
                 </Approve> -->
                 <Approve
                     :approver_list='allApprovers'
-                    v-on:selectOpen='selectOpen'
                     v-on:remove='remove'
                     hintType=2
                     v-on:del_poeple="del_poeple"
@@ -122,7 +121,7 @@
             :approvers="approvers_data"
             :receivers="receivers_data"
             :personnels="Personnel_data"
-            
+            :isMore="isMore"
         ></AddressList>
 
     </div>
@@ -173,10 +172,14 @@
                     hireDate:'',
                     dimissionDate:'',
                     dimissionDesc: '',
-                    peerUserIds:''
+                    peerUserIds:'',
+                    officeName:'',
+                    name:'',
+                    userId:'',
                 },
                 userInfo:{},
                 positionCode:'',
+                isMore:true,
                 dimissionCode:'',
                 positionTypeOptions:[],
                 dimissionTypeOptions:[],
@@ -274,12 +277,6 @@
                 }
             })
 
-            this.axios.post('/user/current/userinfo').then((res)=>{
-            this.userInfo.name = res.data.b.name
-            this.userInfo.officeName = res.data.b.officeName
-            this.userInfo.userPosition = res.data.b.userPosition
-            this.userInfo.userId = res.data.b.id
-            })
             this.axios.get('/process/apply/enter?req=4').then((res)=>{
                 let data = res.data.b;
                 this.allApprovers  = this.Util.approverDataInit(data.links);
@@ -317,6 +314,7 @@
                 this.showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
                 this.approvers_data = this.allApprovers[index].auditers
                 this.peopleType = 'other'+(Math.random()+'').slice(2,10)
+                this.isMore = this.allApprovers[index].remarks=='0'?false:true;
                 setTimeout(()=>{
                     this.openAdd = true
                 },200)
@@ -325,7 +323,6 @@
                 this.allApprovers[index].auditers.splice(num,1)
             },
             getPersons(){
-                return
                 this.selectOpen('per');
             },
             getFocus(i){
@@ -336,6 +333,7 @@
                 this.openAdd=false
             },
             choose(arr){
+                console.log(arr)
                 let arrName = [];
                 let peerUserIds = [];
                 let personsData = '';
@@ -343,23 +341,9 @@
                 if(this.peopleType.indexOf('other')==0){
                     this.allApprovers[this.approver_index].auditers = JSON.parse(JSON.stringify(arr))
                 }else if(this.peopleType.indexOf('per')==0){
-
-                    this.Personnel_data = JSON.parse(JSON.stringify(arr))
-                      console.log('peerUserIds',this.Personnel_data )
-                    for(let val of this.Personnel_data){
-                        arrName.push(val.name)
-                        peerUserIds.push(val.userId)
-                    }
-                    setTimeout(()=>{
-                        personsData = arrName.join(',');
-                        console.log(personsData,'nama')
-                        let userId = peerUserIds.join(',')
-                        this.userInfo.name = personsData;
-                        this.form.peerUserIds = userId;
-                    },500)
-
-                        console.log('peerUserIds',peerUserIds)
-
+                        this.form.name = arr[0].name
+                        this.form.officeName = arr[0].officeName
+                        this.form.userId = arr[0].userId
                        
                 }else{
                    this.receivers_data = JSON.parse(JSON.stringify(arr))
@@ -367,6 +351,10 @@
             },
             selectOpen(type){
                 this.peopleType = type+(Math.random()+'').slice(2,10)
+                this.isMore = true;
+                if(type=='per'){
+                    this.isMore=false;
+                }
                 this.openAdd = true
             },
             remove(type,index){
@@ -387,7 +375,6 @@
                 });
             },
             submit(){
-           
 
                 if(this.Util.checkApprovers(this.allApprovers)){
                     this.$message('请选择审批人!')
@@ -410,8 +397,8 @@
                     education:that.form.education, //学历
                     position:that.userInfo.userPosition,// 岗位
                     positionType:that.positionCode,// 岗位类型
-                    employeeNameId:that.userInfo.userId,
-                    employeeName:that.userInfo.name,//
+                    employeeNameId:that.form.userId,
+                    employeeName:that.form.name,//
                     // peerUserIds:that.form.peerUserIds,
                     dimissionType:that.dimissionCode,
                     hireDate: that.Util.getDate(that.form.hireDate),//入职时间

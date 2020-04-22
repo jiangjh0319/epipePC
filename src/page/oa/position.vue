@@ -7,16 +7,16 @@
         <div class="content">
             <el-form ref="form" :rules="rules" :model="form" label-width="120px">
                 <el-form-item label="姓名" style="width:180px"> 
-                        <el-input v-model="userInfo.name" placeholder="请选择" @focus='getPersons'></el-input>
+                        <el-input v-model="form.name" placeholder="请选择" @focus='getPersons'></el-input>
                 </el-form-item>
                 <el-form-item label="工号" prop="employeeNo"> 
                     <el-input v-model="form.employeeNo" placeholder="请输入工号" ></el-input>
                 </el-form-item>
                 <el-form-item label="所属部门"> 
-                    <el-input v-model="userInfo.officeName" placeholder="所属部门" disabled></el-input>
+                    <el-input v-model="form.officeName" placeholder="所属部门"></el-input>
                 </el-form-item>
                 <el-form-item label="岗位名称"> 
-                    <el-input v-model="userInfo.userPosition" placeholder="岗位名称"></el-input>
+                    <el-input v-model="form.userPosition" placeholder="岗位名称"></el-input>
                 </el-form-item>
                 <el-form-item label="入职日期"  prop="hireDate">
                         <el-date-picker
@@ -68,7 +68,6 @@
                 </Approve> -->
                 <Approve
                     :approver_list='allApprovers'
-                    v-on:selectOpen='selectOpen'
                     v-on:remove='remove'
                     hintType=2
                     v-on:del_poeple="del_poeple"
@@ -101,7 +100,7 @@
             :approvers="approvers_data"
             :receivers="receivers_data"
             :personnels="Personnel_data"
-            
+            :isMore="isMore"
         ></AddressList>
 
     </div>
@@ -139,6 +138,10 @@
                     afterPosition:'',
                     afterOfficeId:'1',
                     exOfficeId:'1',
+                    userId:'',
+                    name:'',
+                    officeName:'',
+                    userPosition:'',
                 },
                 userInfo:{
                     name:'',
@@ -194,6 +197,7 @@
                 allApprovers:[],
                 showCopy:false,
                 showGroup:false,
+                isMore:true,
                 approver_index:0,
                 afterOfficeOptions:[
                     // {value:'1',key:'测试'},
@@ -249,7 +253,6 @@
         methods:{
             hanlderAfterOfficee(val){
                 this.form.exOfficeId = val;
-                console.log(val,'eo')
             },
             hanlderoffce(){
                 if(this.userInfo.name==''){
@@ -275,6 +278,7 @@
                 this.showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
                 this.approvers_data = this.allApprovers[index].auditers
                 this.peopleType = 'other'+(Math.random()+'').slice(2,10)
+                this.isMore = this.allApprovers[index].remarks=='0'?false:true;
                 setTimeout(()=>{
                     this.openAdd = true
                 },200)
@@ -303,25 +307,28 @@
                     this.allApprovers[this.approver_index].auditers = JSON.parse(JSON.stringify(arr))
                 }else if(this.peopleType.indexOf('per')==0){
 
-                    this.Personnel_data = JSON.parse(JSON.stringify(arr))
-                      console.log('peerUserIds',this.Personnel_data )
-                    for(let val of this.Personnel_data){
-                        console.log(val,'9998')
-                        arrName = val.name;
-                        peerUserIds = val.userId
-                        userPosition= val.userPosition
-                        officeName = val.officeName
-                    }
-                    setTimeout(()=>{
-                        personsData = arrName
-                        console.log(personsData,'nama')
-                        let userId = peerUserIds
-                        this.userInfo.name = personsData;
-                        this.userInfo.userPosition = userPosition;
-                        this.userInfo.officeName = officeName;
-                        this.form.peerUserIds = userId;
-                    },100)
-                        console.log('peerUserIds',peerUserIds)
+                        this.form.name = arr[0].name
+                        this.form.officeName = arr[0].officeName
+                        this.form.userId = arr[0].userId
+                        this.form.userPosition = arr[0].userPosition
+                    // this.Personnel_data = JSON.parse(JSON.stringify(arr))
+                    //   console.log('peerUserIds',this.Personnel_data )
+                    // for(let val of this.Personnel_data){
+                    //     arrName = val.name;
+                    //     peerUserIds = val.userId
+                    //     userPosition= val.userPosition
+                    //     officeName = val.officeName
+                    // }
+                    // setTimeout(()=>{
+                    //     personsData = arrName
+                    //     console.log(personsData,'nama')
+                    //     let userId = peerUserIds
+                    //     this.userInfo.name = personsData;
+                    //     this.userInfo.userPosition = userPosition;
+                    //     this.userInfo.officeName = officeName;
+                    //     this.form.peerUserIds = userId;
+                    // },100)
+                    //     console.log('peerUserIds',peerUserIds)
 
                        
                 }else{
@@ -330,6 +337,10 @@
             },
             selectOpen(type){
                 this.peopleType = type+(Math.random()+'').slice(2,10)
+                this.isMore = true;
+                if(type=='per'){
+                    this.isMore = false;
+                }
                 this.openAdd = true
             },
             remove(type,index){
@@ -369,12 +380,12 @@
                     Id :'', // id
                     reason:that.form.dimissionDesc.replace(/\n/g, '<br/>'), 
                     userId:that.form.peerUserIds,
-                    name:that.userInfo.name,
+                    name:that.form.name,
                     employeeNo:that.form.employeeNo, 
                     exOfficeId:that.form.exOfficeId,
-                    exPosition:that.userInfo.userPosition,// 岗位
+                    exPosition:that.form.userPosition,// 岗位
                     afterOfficeId:that.form.afterOfficeId,
-                    officeName:that.userInfo.officeName,
+                    officeName:that.form.officeName,
                     // peerUserIds:that.form.peerUserIds,
                      afterPosition:that.form.afterPosition,
                      changeDate:that.Util.getDate(that.form.changeDate),

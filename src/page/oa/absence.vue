@@ -54,7 +54,6 @@
                 </Approve> -->
                 <Approve
                     :approver_list='allApprovers'
-                    v-on:selectOpen='selectOpen'
                     v-on:remove='remove'
                     hintType=2
                     v-on:del_poeple="del_poeple"
@@ -83,7 +82,8 @@
             :types="peopleType"
             :approvers="approvers_data"
             :receivers="receivers_data"
-            
+            :isMore="isMore"
+
         ></AddressList>
     </section>
 </template>
@@ -101,6 +101,7 @@
                 wordCount:0,
                 accessory:[],
                 approvers_data:[],
+                isMore:true,
                 receivers_data:[],
                 form:{
                     absenceTitle:'',
@@ -195,6 +196,7 @@
             },
             selectOpen(type){
                 this.peopleType = type+(Math.random()+'').slice(2,10)
+                this.isMore = true;
                 this.openAdd = true
             },
             remove(type,index){
@@ -218,6 +220,7 @@
                 this.approver_index = index
                 this.showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
                 this.approvers_data = this.allApprovers[index].auditers
+                this.isMore = this.allApprovers[index].remarks=='0'?false:true;
                 this.peopleType = 'other'+(Math.random()+'').slice(2,10)
                 setTimeout(()=>{
                     this.openAdd = true
