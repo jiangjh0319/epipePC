@@ -162,6 +162,7 @@
         },
         created(){
             this.getData();
+            console.log(11)
         },
         methods: {
             selectOffices(item,index){ //选中部门
@@ -210,13 +211,14 @@
                 }
             },
             select_depart(item){
+                console.log(item.open)
                 item.open=!item.open
 
                 this.perso_data = [];
 
                 if(item.open){
                     // this.perso_data = item.staff
-                    this.getStaff(item)
+                    // this.getStaff(item)
                     // this.list.forEach(el=>{
                     //     this.setFalse(el)
                     // })
