@@ -262,7 +262,7 @@
 
                 }).then( (res)=>{
                 let datas = res.data.b.data
-
+                    console.log(datas,'数据')
                     datas.forEach(item=>{
                         item.open = false;
                         that.dataInit(item.offices, that.choose_data)
@@ -332,8 +332,8 @@
 
             },
             scroll(){
-
                 let choose_width = this.$refs.choose.offsetWidth
+                console.log(choose_width)
                 let choose_list_width = (this.choose_data.length*70)
                 this.$refs.choose_list.style.width = choose_list_width+'px'
 

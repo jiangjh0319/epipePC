@@ -186,6 +186,7 @@
             Copy
         },
         created(){
+            console.log(88888)
             document.title='请假'
             let that = this;
             this.axios.get('/work/leave/type/list').then(function(res){
