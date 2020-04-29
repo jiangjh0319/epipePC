@@ -27,6 +27,8 @@ Vue.prototype.Msg.init();
 // import "./js/rem";
 import "./js/http"; //axios请求配置
 
+
+
 Vue.config.productionTip = false
 
 import ElementUI from 'element-ui'

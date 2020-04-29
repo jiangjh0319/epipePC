@@ -210,35 +210,29 @@
                     }
                 }
             },
-            select_depart(item){
-                console.log(item.open)
+            select_depart(item,index){
+                let that = this;
                 item.open=!item.open
-
                 this.perso_data = [];
-
                 if(item.open){
-                    // this.perso_data = item.staff
-                    // this.getStaff(item)
-                    // this.list.forEach(el=>{
-                    //     this.setFalse(el)
-                    // })
-                }
-            },
-            setFalse(data){
-                data.open = false;
-                if(data.subOffice.length){
-                    
-                    data.subOffice.forEach(item=>{
-                        this.setFalse(item)
+                    this.list.forEach(el=>{ 
+                        this.perso_data = item.staff
+                        this.getStaff(item)
+                        // that.setFalse(el) 
                     })
                 }
+               
+                
+            },
+            setFalse(data){
+                let that = this;
+                data.open = false;
             },
             setTrue(data){
-                data.open = open;
+                data.open = false;
                 if(data.subOffice.length){
-                    
                     data.subOffice.forEach(item=>{
-                        this.setFalse(item)
+                    this.setFalse(item)
                     })
                 }
             },

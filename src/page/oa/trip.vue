@@ -62,7 +62,7 @@
                      <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
                 </el-form-item>
 
-                <File :accessory="accessory"
+                <File :accessory="accessory"    
                     v-on:remove="removeFile"
                 >
 

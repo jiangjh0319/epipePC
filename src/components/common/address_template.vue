@@ -13,7 +13,7 @@
                 <addressTemplate
                 v-show="dep.open"
                 :list="dep.subOffice"
-                v-on:select_dep="select_depart"
+                v-on:select_dep="select_depart(dep,ind)"
                 >
                 </addressTemplate>
             </div>
@@ -30,12 +30,23 @@
         },
         props:['list'],
         methods:{
-            selectOffices(item){
-                this.$emit('select_dep',item)
+            selectOffices(item,index){
+                // console.log('ppppll',item,'ind',index)
+                this.list.map(i => {
+                    if(i != item) {
+                        i.open = false
+                    }
+                })
+                this.$emit('select_dep',item,index)
             },
-            select_depart(item){
-                this.$emit('select_dep',item)
+            select_depart(item,index){
+                console.log(index,'indddd')
+                this.$emit('select_dep',item,index)
             }
+        },
+        created(){
+            
+            console.log(this.list,'listkk')
         }
     }
 </script>
