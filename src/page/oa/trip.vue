@@ -446,6 +446,7 @@
                                 message: '提交成功!',
                                 type: 'success',
                                 onClose:function(){
+                                
                                     location.href = that.Service.baseUrl+'myApply'
                                     setTimeout(()=>{
                                         that.btnStatus = true

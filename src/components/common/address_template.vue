@@ -2,7 +2,7 @@
     <div style="padding-left:20px;">
         <div v-for="(dep,ind) in list"  :key="dep.id">
             <div :class="dep.open?'dep_active department':'department'" @click.stop="selectOffices(dep,ind)">
-                <p >{{dep.name}}</p>
+                <p>{{dep.name}}</p>
                 <div :class="dep.open?'':'organ_icon'" v-show="dep.open&&dep.staff.length||dep.subOffice.length">
                     <svg  class="icon" aria-hidden="false">
                         <use xlink:href="#icon-sanjiao"></use>
@@ -13,7 +13,7 @@
                 <addressTemplate
                 v-show="dep.open"
                 :list="dep.subOffice"
-                v-on:select_dep="select_depart(dep,ind)"
+                v-on:select_dep="select_depart(dep.subOffice,ind)"
                 >
                 </addressTemplate>
             </div>
@@ -40,13 +40,14 @@
                 this.$emit('select_dep',item,index)
             },
             select_depart(item,index){
-                console.log(index,'indddd')
+                console.log(index,'indddd',item,'item')
+                this.$set(item,'second',2)
                 this.$emit('select_dep',item,index)
             }
         },
         created(){
             
-            console.log(this.list,'listkk')
+            // console.log(this.list,'listkk')
         }
     }
 </script>

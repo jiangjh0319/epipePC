@@ -60,7 +60,7 @@
                                 <el-button type="primary" @click="search" plain>搜索</el-button>
                             </div>
 
-                            <div v-for="(item,index) in perso_data" class="personnel-item" :key="item.id" @click="pitch_on(item,index)">
+                            <div v-for="(item,index) in perso_data" class="personnel-item" :key="index" @click="pitch_on(item,index)">
                                 <div class="selectI1mg">
                                     <img src="./../../assets/20.png" v-if="item.mark_chose"/>
                                     <img src="./../../assets/19.png" v-else/>
@@ -211,16 +211,57 @@
                 }
             },
             select_depart(item,index){
+                // console.log('iiiooooo',item)
                 let that = this;
-                item.open=!item.open
                 this.perso_data = [];
-                if(item.open){
-                    this.list.forEach(el=>{ 
+                if(item.second===2){
+                    console.log(1111)
+                    item.open = true
+
+                    // this.perso_data = item.staff;
+                    if(item.length>0){
+                        item.forEach(val =>{
+                            
+                            val.open = true
+                            // console.log(val,'llllllddddd')
+                            if(val.subOffice.length>0){
+                                val.subOffice.forEach(v=>{
+                                    // console.log(v,'88888pppp')
+                                    if(v.subOffice.length>0){
+                                        v.open = true;
+                                    }else{
+                                          console.log(v.staff,'sta')
+                                          this.perso_data = this.perso_data.concat(v.staff)
+                                    }
+                                })
+                            }
+                        })
+                    }
+                    // item.subOffice.forEach(val=>{
+                    //     val.open = true
+                    //     // console.log(val.subOffice,'ppppp')
+                    //     val.subOffice.forEach(v=>{
+                    //         if(v.subOffice.length==0){
+                    //             that.perso_data = v.staff;
+                    //         }
+                    //     })
+                    //     // this.perso_data = val.staff;
+                    // })
+                    // setTimeout(() => {
+                    //     item.open = false;
+                    // }, 3500);
+                }else{
+                    console.log(2222)
+                    console.log(item,'222222')
+                    item.open=!item.open
+                     this.list.forEach(el=>{ 
                         this.perso_data = item.staff
                         this.getStaff(item)
                         // that.setFalse(el) 
                     })
                 }
+             
+             
                
                 
             },

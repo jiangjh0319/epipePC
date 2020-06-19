@@ -41,6 +41,9 @@ const Borrow = r => require.ensure([], () => r(require('@/page/oa/borrow.vue')),
 const ErpPermission = r => require.ensure([], () => r(require('@/page/oa/erpPermission.vue')), 'group-oa')//erp权限异动
 const Reimburse = r => require.ensure([], () => r(require('@/page/oa/reimburse.vue')), 'group-oa')//报销
 
+
+const Test = r => require.ensure([], () => r(require('@/page/oa/test.vue')), 'group-oa')//报销
+
 //oa_other ===============================
 const FinishAffairs = r => require.ensure([], () => r(require('@/page/oa_other/finish_affairs.vue')), 'group-oa')
 const UnFinishAffairs = r => require.ensure([], () => r(require('@/page/oa_other/unfinish_affairs.vue')), 'group-oa')
@@ -322,6 +325,13 @@ export default new Router({
       component:Reimburse,
       meta: {
         title: '报销'
+      }
+    },
+    {
+      path:'/test', 
+      component:Test,
+      meta: {
+        title: '测试'
       }
     },
   ]
