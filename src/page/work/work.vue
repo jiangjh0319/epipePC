@@ -100,6 +100,18 @@
                     </svg>
                         补卡申请
                 </div>
+                <div class="item"   @click="openUrl('archAplly')">
+                    <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
+                        <use xlink:href="#icon-buqiashenqing"></use>
+                    </svg>
+                        档案借阅
+                </div>
+                <div class="item"   @click="openUrl('archTurnOver')">
+                    <svg style="width: 24px;height:24px" class="icon" aria-hidden="false">
+                        <use xlink:href="#icon-buqiashenqing"></use>
+                    </svg>
+                        档案移交
+                </div>
              </div>
         </div>
         <!-- {{token}} -->

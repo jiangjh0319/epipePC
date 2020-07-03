@@ -22,9 +22,11 @@ const Service = {
   getBorrowSave:'/work/borrow/save',//借款提交接口
   getErpprimoveSave:'/move/erpprimove/save',//ERP权限异动提交接口
   getReimburseSave:'/work/reimburse/save',//报销提交接口
+  saveDossierBorrowApply:'work/dossierBorrowApply/save',//档案借阅
+  saveDossierTransferApply:'work/dossierTransferApply/save',//档案移交
 
-  baseUrl:'http://192.168.3.87:8787/#/',
-  // baseUrl:'http://192.168.3.166/pc/#/',
+  // baseUrl:'http://192.168.3.87:8787/#/',
+  baseUrl:'http://192.168.3.166/pc/#/',
   // baseUrl:'https://apps.epipe.cn/app-https/pc/1.4.0/#/',
   queryString: function (params, postFlag) {
     let paramUrl = "";

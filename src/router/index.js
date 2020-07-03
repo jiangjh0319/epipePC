@@ -40,6 +40,8 @@ const Position = r => require.ensure([], () => r(require('@/page/oa/position.vue
 const Borrow = r => require.ensure([], () => r(require('@/page/oa/borrow.vue')), 'group-oa')//借款
 const ErpPermission = r => require.ensure([], () => r(require('@/page/oa/erpPermission.vue')), 'group-oa')//erp权限异动
 const Reimburse = r => require.ensure([], () => r(require('@/page/oa/reimburse.vue')), 'group-oa')//报销
+const ArchAplly = r => require.ensure([], () => r(require('@/page/oa/archAplly.vue')), 'group-oa')//档案借阅
+const ArchTurnOver = r => require.ensure([], () => r(require('@/page/oa/archTurnOver.vue')), 'group-oa')//档案移交
 
 
 const Test = r => require.ensure([], () => r(require('@/page/oa/test.vue')), 'group-oa')//报销
@@ -100,6 +102,22 @@ export default new Router({
       component: BeAwayApply,
       meta: {
         title: '公出申请'
+      }
+    },
+    {
+      path: '/archAplly',
+      name: 'archAplly',
+      component: ArchAplly,
+      meta: {
+        title: '档案借阅'
+      }
+    },
+    {
+      path: '/archTurnOver',
+      name: 'archTurnOver',
+      component: ArchTurnOver,
+      meta: {
+        title: '档案借阅'
       }
     },
     {
